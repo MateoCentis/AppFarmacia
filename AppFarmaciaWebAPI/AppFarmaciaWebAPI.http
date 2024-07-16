@@ -1,0 +1,6 @@
+@AppFarmaciaWebAPI_HostAddress = http://localhost:5266
+
+GET {{AppFarmaciaWebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

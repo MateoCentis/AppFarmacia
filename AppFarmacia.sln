@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35013.160
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppFarmaciaWebAPI", "AppFarmaciaWebAPI\AppFarmaciaWebAPI.csproj", "{14C92D4B-33B5-4125-A6B3-43C2B3FF44B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppFarmacia", "AppFarmacia\AppFarmacia.csproj", "{2DEF4DD9-094B-40FD-9450-783435A3B39F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{14C92D4B-33B5-4125-A6B3-43C2B3FF44B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14C92D4B-33B5-4125-A6B3-43C2B3FF44B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14C92D4B-33B5-4125-A6B3-43C2B3FF44B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14C92D4B-33B5-4125-A6B3-43C2B3FF44B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DEF4DD9-094B-40FD-9450-783435A3B39F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DEF4DD9-094B-40FD-9450-783435A3B39F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DEF4DD9-094B-40FD-9450-783435A3B39F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{2DEF4DD9-094B-40FD-9450-783435A3B39F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DEF4DD9-094B-40FD-9450-783435A3B39F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DEF4DD9-094B-40FD-9450-783435A3B39F}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {094CCFCD-64CC-42BD-A037-3CAD6F71E6D2}
+	EndGlobalSection
+EndGlobal
