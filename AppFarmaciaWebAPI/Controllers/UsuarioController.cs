@@ -42,25 +42,15 @@ namespace AppFarmaciaWebAPI.Controllers
         }
 
         // PUT: api/Usuario/5
-        // Overposting attacks: https://go.microsoft.com/fwlink/?linkid=2123754
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUsuario(int id, Usuario usuario)
         {
-            //Chequear que el usuario existe
             if (id != usuario.IdUsuario)
             {
                 return BadRequest();
             }
-            // Chequear que el privilegio existe
 
-            // Acá se podría poner para crear un nuevo privilegio (creo que no conviene)
-            var privilegio = await _context.Privilegios.FindAsync(usuario.IdPrivilegio);
-            if (privilegio == null)
-            {
-                return BadRequest("El privilegio especificado no existe.");
-            }
-
-            //Actualizar el usuario
             _context.Entry(usuario).State = EntityState.Modified;
 
             try
@@ -83,32 +73,12 @@ namespace AppFarmaciaWebAPI.Controllers
         }
 
         // POST: api/Usuario
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Usuario>> PostUsuario(Usuario usuario)
         {
-            // Validaciones
-            var privilegio = await _context.Privilegios.FindAsync(usuario.IdPrivilegio);
-            if (privilegio == null)
-            {
-                return BadRequest("El privilegio especificado no existe.");
-            }
-            // Si pasa validaciones -> agrego el usuario
             _context.Usuarios.Add(usuario);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (UsuarioExists(usuario.IdUsuario))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetUsuario", new { id = usuario.IdUsuario }, usuario);
         }
@@ -129,7 +99,6 @@ namespace AppFarmaciaWebAPI.Controllers
             return NoContent();
         }
 
-        //Toma un IdUsuario y devuelve verdadero si existe
         private bool UsuarioExists(int id)
         {
             return _context.Usuarios.Any(e => e.IdUsuario == id);

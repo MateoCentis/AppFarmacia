@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AppFarmaciaWebAPI.Models;
 
-namespace AppFarmaciaWebAPI.Controllers
+namespace AppFarmaciaWebAPI.Controllers  
 {
     [Route("api/[controller]/[Action]")]
     [ApiController]

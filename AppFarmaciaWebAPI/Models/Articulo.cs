@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace AppFarmaciaWebAPI.Models;
+﻿namespace AppFarmaciaWebAPI.Models;
 
 public partial class Articulo
 {
@@ -17,9 +14,9 @@ public partial class Articulo
 
     public bool Activo { get; set; }
 
-    public virtual ICollection<ArticuloFinal> ArticuloFinals { get; set; } = new List<ArticuloFinal>();
-
     public virtual Categoria? IdCategoriaNavigation { get; set; }
 
-    public virtual ICollection<Precio> Precios { get; set; } = new List<Precio>();
+    public virtual ICollection<ArticuloFinal> ArticulosFinales { get; set; } = [];
+
+    public virtual ICollection<Precio> Precios { get; set; } = [];
 }

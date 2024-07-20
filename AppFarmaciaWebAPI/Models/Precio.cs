@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace AppFarmaciaWebAPI.Models;
+﻿namespace AppFarmaciaWebAPI.Models;
 
 public partial class Precio
 {
@@ -14,6 +11,4 @@ public partial class Precio
     public int IdArticulo { get; set; }
 
     public virtual Articulo IdArticuloNavigation { get; set; } = null!;
-
-
 }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace AppFarmaciaWebAPI.Models;
+﻿namespace AppFarmaciaWebAPI.Models;
 
 public partial class ArticuloEnVenta
 {

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace AppFarmaciaWebAPI.Models;
 
@@ -41,7 +39,6 @@ public partial class FarmaciaDbContext : DbContext
 
             entity.ToTable("ARTICULO");
 
-            entity.Property(e => e.IdArticulo).ValueGeneratedNever();
             entity.Property(e => e.Descripcion).IsUnicode(false);
             entity.Property(e => e.Marca)
                 .HasMaxLength(50)
@@ -61,7 +58,6 @@ public partial class FarmaciaDbContext : DbContext
 
             entity.ToTable("ARTICULO_EN_VENTA");
 
-            entity.Property(e => e.IdArticuloVenta).ValueGeneratedNever();
             entity.Property(e => e.Precio).HasColumnType("decimal(16, 2)");
 
             entity.HasOne(d => d.IdArticuloFinalNavigation).WithMany(p => p.ArticuloEnVenta)
@@ -81,8 +77,6 @@ public partial class FarmaciaDbContext : DbContext
 
             entity.ToTable("ARTICULO_FINAL");
 
-            entity.Property(e => e.IdArticuloFinal).ValueGeneratedNever();
-
             entity.HasOne(d => d.IdArticuloNavigation).WithMany(p => p.ArticuloFinals)
                 .HasForeignKey(d => d.IdArticulo)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -95,7 +89,6 @@ public partial class FarmaciaDbContext : DbContext
 
             entity.ToTable("CATEGORIA");
 
-            entity.Property(e => e.IdCategoria).ValueGeneratedNever();
             entity.Property(e => e.Nombre)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -107,7 +100,7 @@ public partial class FarmaciaDbContext : DbContext
 
             entity.ToTable("PRECIO");
 
-            entity.Property(e => e.IdPrecio).ValueGeneratedNever();
+            entity.Property(e => e.Fecha).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.Valor).HasColumnType("decimal(16, 2)");
 
             entity.HasOne(d => d.IdArticuloNavigation).WithMany(p => p.Precios)
@@ -122,7 +115,6 @@ public partial class FarmaciaDbContext : DbContext
 
             entity.ToTable("PRIVILEGIO");
 
-            entity.Property(e => e.IdPrivilegio).ValueGeneratedNever();
             entity.Property(e => e.Nombre)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -134,8 +126,9 @@ public partial class FarmaciaDbContext : DbContext
 
             entity.ToTable("STOCK");
 
-            entity.Property(e => e.IdStock).ValueGeneratedNever();
-            entity.Property(e => e.Fecha).HasColumnType("datetime");
+            entity.Property(e => e.Fecha)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
 
             entity.HasOne(d => d.IdArticuloFinalNavigation).WithMany(p => p.Stocks)
                 .HasForeignKey(d => d.IdArticuloFinal)
@@ -149,7 +142,6 @@ public partial class FarmaciaDbContext : DbContext
 
             entity.ToTable("USUARIO");
 
-            entity.Property(e => e.IdUsuario).ValueGeneratedNever();
             entity.Property(e => e.Nombre)
                 .HasMaxLength(100)
                 .IsUnicode(false);
@@ -169,8 +161,9 @@ public partial class FarmaciaDbContext : DbContext
 
             entity.ToTable("VENTA");
 
-            entity.Property(e => e.IdVenta).ValueGeneratedNever();
-            entity.Property(e => e.Fecha).HasColumnType("datetime");
+            entity.Property(e => e.Fecha)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
         });
 
         OnModelCreatingPartial(modelBuilder);

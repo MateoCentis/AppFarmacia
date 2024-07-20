@@ -32,7 +32,7 @@ namespace AppFarmaciaWebAPI.Controllers
         public async Task<ActionResult<Privilegio>> GetPrivilegio(int id)
         {
             var privilegio = await _context.Privilegios.FindAsync(id);
-
+            
             if (privilegio == null)
             {
                 return NotFound();
@@ -94,7 +94,7 @@ namespace AppFarmaciaWebAPI.Controllers
 
             return CreatedAtAction("GetPrivilegio", new { id = privilegio.IdPrivilegio }, privilegio);
         }
-
+        
         // DELETE: api/Privilegio/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePrivilegio(int id)
