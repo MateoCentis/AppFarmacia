@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AppFarmaciaWebAPI.Models;
+using AppFarmaciaWebAPI.ModelsDTO;
+using AutoMapper;
 
 namespace AppFarmaciaWebAPI.Controllers
 {
@@ -14,22 +16,26 @@ namespace AppFarmaciaWebAPI.Controllers
     public class PrecioController : ControllerBase
     {
         private readonly FarmaciaDbContext _context;
-
-        public PrecioController(FarmaciaDbContext context)
+        private readonly IMapper _mapper;
+        public PrecioController(IMapper mapper, FarmaciaDbContext context)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/Precio
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Precio>>> GetPrecios()
         {
-            return await _context.Precios.ToListAsync();
+            var precio = await _context.Precios.ToListAsync();
+            var precioDTO = _mapper.Map<IEnumerable<PrecioDTO>>(precio);
+            return Ok(precioDTO);
+
         }
 
         // GET: api/Precio/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Precio>> GetPrecio(int id)
+        public async Task<ActionResult<PrecioDTO>> GetPrecio(int id)
         {
             var precio = await _context.Precios.FindAsync(id);
 
@@ -37,21 +43,30 @@ namespace AppFarmaciaWebAPI.Controllers
             {
                 return NotFound();
             }
-
-            return precio;
+            var precioDTO = _mapper.Map<PrecioDTO>(precio);
+            return Ok(precioDTO);
         }
 
         // PUT: api/Precio/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPrecio(int id, Precio precio)
+        public async Task<IActionResult> EditPrecio(int id, [FromBody] PrecioDTO precioDTO)
         {
-            if (id != precio.IdPrecio)
+            if (id != precioDTO.IdPrecio)
             {
-                return BadRequest();
+                return BadRequest("El ID del precio no se encuentra en la base de datos");
+            }
+            //Se cambian solo fecha y valor
+            var precioExistente = await _context.Precios.FindAsync(id);
+            if (precioExistente == null)
+            {
+                return NotFound($"No se encontró un precio con el ID {id}.")
             }
 
-            _context.Entry(precio).State = EntityState.Modified;
+            precioExistente.Fecha = precioDTO.Fecha;
+            precioExistente.Valor = precioDTO.Valor;
+
+            _context.Entry(precioExistente).State = EntityState.Modified;
 
             try
             {
@@ -75,8 +90,9 @@ namespace AppFarmaciaWebAPI.Controllers
         // POST: api/Precio
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Precio>> PostPrecio(Precio precio)
+        public async Task<ActionResult<Precio>> PostPrecio(PrecioDTO precioDTO)
         {
+            var precio = _mapper.Map<Precio>(precioDTO);
             _context.Precios.Add(precio);
             try
             {
@@ -93,8 +109,9 @@ namespace AppFarmaciaWebAPI.Controllers
                     throw;
                 }
             }
+            var createdPrecioDTO = _mapper.Map<PrecioDTO>(precio);
 
-            return CreatedAtAction("GetPrecio", new { id = precio.IdPrecio }, precio);
+            return CreatedAtAction(nameof(GetPrecio), new { id = createdPrecioDTO.IdPrecio }, createdPrecioDTO);
         }
 
         // DELETE: api/Precio/5
@@ -108,7 +125,14 @@ namespace AppFarmaciaWebAPI.Controllers
             }
 
             _context.Precios.Remove(precio);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, $"Error al eliminar el precio: {ex.Message}");
+            }
 
             return NoContent();
         }

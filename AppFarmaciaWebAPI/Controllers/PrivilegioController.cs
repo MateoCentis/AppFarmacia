@@ -21,9 +21,9 @@ namespace AppFarmaciaWebAPI.Controllers
 
         // GET: api/Privilegio
         [HttpGet]
-        public ActionResult<IEnumerable<PrivilegioDTO>> GetPrivilegios()
+        public async Task<ActionResult<IEnumerable<PrivilegioDTO>>> GetPrivilegios()
         {
-            var privilegio = _context.Privilegios.Include(p => p.Usuarios).ToList();
+            var privilegio = await _context.Privilegios.Include(p => p.Usuarios).ToListAsync();
             var privilegioDTO = _mapper.Map<IEnumerable<PrivilegioDTO>>(privilegio);
             return Ok(privilegioDTO);
         }
@@ -94,8 +94,21 @@ namespace AppFarmaciaWebAPI.Controllers
             var privilegio = _mapper.Map<Privilegio>(privilegioDTO);
 
             _context.Privilegios.Add(privilegio);
-
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                if (PrivilegioExists(privilegio.IdPrivilegio))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
             var createdPrivilegioDTO = _mapper.Map<PrivilegioDTO>(privilegio);
 

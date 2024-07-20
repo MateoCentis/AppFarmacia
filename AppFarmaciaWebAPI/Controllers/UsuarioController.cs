@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using AppFarmaciaWebAPI.Models;
 using AppFarmaciaWebAPI.ModelsDTO;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace AppFarmaciaWebAPI.Controllers
 {
@@ -90,8 +91,21 @@ namespace AppFarmaciaWebAPI.Controllers
             var usuario = _mapper.Map<Usuario>(usuarioDTO);
             
             _context.Usuarios.Add(usuario);
-
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                if (UsuarioExists(usuario.IdUsuario))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
             var createdUsuarioDTO = _mapper.Map<UsuarioDTO>(usuario);
 
@@ -108,7 +122,14 @@ namespace AppFarmaciaWebAPI.Controllers
                 return NotFound($"No se encontró un usuario con el ID {id}.");
             }
             _context.Usuarios.Remove(usuario);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                return StatusCode(500, $"Ocurrió un error al querer borrar el usuario");
+            }
             return NoContent();
         }
 
