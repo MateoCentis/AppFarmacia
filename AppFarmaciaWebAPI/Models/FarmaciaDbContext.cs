@@ -77,7 +77,7 @@ public partial class FarmaciaDbContext : DbContext
 
             entity.ToTable("ARTICULO_FINAL");
 
-            entity.HasOne(d => d.IdArticuloNavigation).WithMany(p => p.ArticuloFinals)
+            entity.HasOne(d => d.IdArticuloNavigation).WithMany(p => p.ArticulosFinales)
                 .HasForeignKey(d => d.IdArticulo)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ARTICULO_FINAL_ARTICULO");
