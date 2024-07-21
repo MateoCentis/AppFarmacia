@@ -60,10 +60,10 @@ namespace AppFarmaciaWebAPI.Controllers
                 return NotFound($"No se encontró un privilegio con el ID {id}.");
             }
             // Cuando Editamos un privilegio solo nos interesa cambia el nombre
-            privilegioExistente.Nombre = privilegioDTO.Nombre;
+            //privilegioExistente.Nombre = privilegioDTO.Nombre;
 
             // Tambien podemos hacer otra DTO llama EditPrivilegioDTO y quitarle el vector de usuarios, esta clase se usaria como [FromBody]
-            //_mapper.Map(privilegioDTO, privilegioExistente);
+            _mapper.Map(privilegioDTO, privilegioExistente);
 
 
             // Marcar la entidad como modificada

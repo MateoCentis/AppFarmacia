@@ -25,7 +25,7 @@ namespace AppFarmaciaWebAPI.Controllers
 
         // GET: api/Precio
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Precio>>> GetPrecios()
+        public async Task<ActionResult<IEnumerable<PrecioDTO>>> GetPrecios()
         {
             var precio = await _context.Precios.ToListAsync();
             var precioDTO = _mapper.Map<IEnumerable<PrecioDTO>>(precio);
@@ -60,7 +60,7 @@ namespace AppFarmaciaWebAPI.Controllers
             var precioExistente = await _context.Precios.FindAsync(id);
             if (precioExistente == null)
             {
-                return NotFound($"No se encontró un precio con el ID {id}.")
+                return NotFound($"No se encontró un precio con el ID {id}.");
             }
 
             precioExistente.Fecha = precioDTO.Fecha;
@@ -90,7 +90,7 @@ namespace AppFarmaciaWebAPI.Controllers
         // POST: api/Precio
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Precio>> PostPrecio(PrecioDTO precioDTO)
+        public async Task<ActionResult<PrecioDTO>> PostPrecio(PrecioDTO precioDTO)
         {
             var precio = _mapper.Map<Precio>(precioDTO);
             _context.Precios.Add(precio);
