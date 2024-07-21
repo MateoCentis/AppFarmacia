@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AppFarmaciaWebAPI.Models;
+using AutoMapper;
+using AppFarmaciaWebAPI.ModelsDTO;
 
 namespace AppFarmaciaWebAPI.Controllers  
 {
@@ -14,45 +11,59 @@ namespace AppFarmaciaWebAPI.Controllers
     public class ArticuloController : ControllerBase
     {
         private readonly FarmaciaDbContext _context;
+        private readonly IMapper _mapper;
 
-        public ArticuloController(FarmaciaDbContext context)
+        public ArticuloController(IMapper mapper, FarmaciaDbContext context)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/Articulo
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Articulo>>> GetArticulos()
+        public async Task<ActionResult<IEnumerable<ArticuloDTO>>> GetArticulos()
         {
-            return await _context.Articulos.ToListAsync();
+            var articulo = await _context.Articulos.ToListAsync();
+            var articuloDTO = _mapper.Map<IEnumerable<ArticuloDTO>>(articulo);
+            return Ok(articuloDTO);
         }
 
         // GET: api/Articulo/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Articulo>> GetArticulo(int id)
+        public async Task<ActionResult<ArticuloDTO>> GetArticulo(int id)
         {
-            var articulo = await _context.Articulos.FindAsync(id);
+            var articulo = await _context.Articulos
+                .FirstOrDefaultAsync(a => a.IdArticulo == id);
 
             if (articulo == null)
             {
                 return NotFound();
             }
-
-            return articulo;
+            var articuloDTO = _mapper.Map<ArticuloDTO>(articulo);
+            return Ok(articuloDTO);
         }
 
         // PUT: api/Articulo/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutArticulo(int id, Articulo articulo)
+        public async Task<IActionResult> PutArticulo(int id, ArticuloDTO articuloDTO)
         {
-            if (id != articulo.IdArticulo)
+            // Verificar si el ID del articulo en el DTO coincide con el ID de la ruta
+            if (id != articuloDTO.IdArticulo)
             {
-                return BadRequest();
+                return BadRequest("El ID del articulo en el cuerpo de la solicitud no coincide con el ID de la ruta.");
+            }
+            // Verificar si el articulo con el ID especificado existe en la base de datos
+            var articuloExistente = await _context.Articulos.FindAsync(id);
+            if (articuloExistente == null)
+            {
+                return NotFound($"No se encontró un articulo con el ID {id}.");
             }
 
-            _context.Entry(articulo).State = EntityState.Modified;
+            _mapper.Map(articuloDTO, articuloExistente);
 
+
+            // Marcar la entidad como modificada
+            _context.Entry(articuloExistente).State = EntityState.Modified;
             try
             {
                 await _context.SaveChangesAsync();
@@ -61,22 +72,24 @@ namespace AppFarmaciaWebAPI.Controllers
             {
                 if (!ArticuloExists(id))
                 {
-                    return NotFound();
+                    return NotFound($"No se encontró un articulo con el ID {id}.");
                 }
                 else
                 {
                     throw;
                 }
             }
-
+            // Devolver una respuesta 204 No Content para indicar que la actualización fue exitosa
             return NoContent();
         }
 
         // POST: api/Articulo
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Articulo>> PostArticulo(Articulo articulo)
+        public async Task<ActionResult<ArticuloDTO>> AddArticulo(ArticuloDTO articuloDTO)
         {
+            var articulo = _mapper.Map<Articulo>(articuloDTO);
+
             _context.Articulos.Add(articulo);
             try
             {
@@ -94,21 +107,42 @@ namespace AppFarmaciaWebAPI.Controllers
                 }
             }
 
-            return CreatedAtAction("GetArticulo", new { id = articulo.IdArticulo }, articulo);
+            var createdarticuloDTO = _mapper.Map<ArticuloDTO>(articulo);
+
+            return CreatedAtAction(nameof(GetArticulo), new { id = createdarticuloDTO.IdArticulo }, createdarticuloDTO);
         }
 
         // DELETE: api/Articulo/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteArticulo(int id)
         {
-            var articulo = await _context.Articulos.FindAsync(id);
+            var articulo = await _context.Articulos.FirstOrDefaultAsync(p => p.IdArticulo == id);
             if (articulo == null)
             {
-                return NotFound();
+                return NotFound($"No se encontró un articulo con el ID {id}.");
+            }
+
+            // Verificar si hay usuarios asociados al articulo
+            if (articulo.ArticulosFinales.Any())
+            {
+                return BadRequest("No se puede eliminar el articulo porque tiene usuarios asignados.");
+            }
+            if (articulo.Precios.Any())
+            {
+                return BadRequest("No se puede eliminar el articulo porque tiene usuarios asignados.");
             }
 
             _context.Articulos.Remove(articulo);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                // Manejar excepciones de actualización de base de datos
+                return StatusCode(500, $"Ocurrió un error al intentar eliminar el Articulo: {ex.Message}");
+            }
 
             return NoContent();
         }
