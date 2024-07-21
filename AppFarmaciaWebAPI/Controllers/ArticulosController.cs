@@ -6,18 +6,20 @@ using AppFarmaciaWebAPI.ModelsDTO;
 
 namespace AppFarmaciaWebAPI.Controllers  
 {
-    [Route("api/[controller]/[Action]")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class ArticuloController : ControllerBase
+    public class ArticulosController : ControllerBase
     {
         private readonly FarmaciaDbContext _context;
         private readonly IMapper _mapper;
 
-        public ArticuloController(IMapper mapper, FarmaciaDbContext context)
+        public ArticulosController(IMapper mapper, FarmaciaDbContext context)
         {
             _context = context;
             _mapper = mapper;
         }
+
+        // GET'S---
 
         // GET: api/Articulo
         [HttpGet]
@@ -42,6 +44,8 @@ namespace AppFarmaciaWebAPI.Controllers
             var articuloDTO = _mapper.Map<ArticuloDTO>(articulo);
             return Ok(articuloDTO);
         }
+
+        // GET: api/Articulo/5/precios
 
         // PUT: api/Articulo/5
         [HttpPut("{id}")]

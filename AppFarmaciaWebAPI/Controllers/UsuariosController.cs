@@ -7,14 +7,14 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace AppFarmaciaWebAPI.Controllers
 {
-    [Route("api/[controller]/[Action]")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class UsuarioController : ControllerBase
+    public class UsuariosController : ControllerBase
     {
         private readonly IMapper _mapper;
         private readonly FarmaciaDbContext _context;
 
-        public UsuarioController(IMapper mapper, FarmaciaDbContext context)
+        public UsuariosController(IMapper mapper, FarmaciaDbContext context)
         {
             _mapper = mapper;
             _context = context;

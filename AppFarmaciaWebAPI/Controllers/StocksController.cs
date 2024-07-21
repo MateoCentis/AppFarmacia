@@ -9,7 +9,7 @@ using AppFarmaciaWebAPI.Models;
 
 namespace AppFarmaciaWebAPI.Controllers
 {
-    [Route("api/[controller]/[Action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class StocksController : ControllerBase
     {

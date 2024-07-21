@@ -11,13 +11,13 @@ using AutoMapper;
 
 namespace AppFarmaciaWebAPI.Controllers
 {
-    [Route("api/[controller]/[Action]")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class PrecioController : ControllerBase
+    public class PreciosController : ControllerBase
     {
         private readonly FarmaciaDbContext _context;
         private readonly IMapper _mapper;
-        public PrecioController(IMapper mapper, FarmaciaDbContext context)
+        public PreciosController(IMapper mapper, FarmaciaDbContext context)
         {
             _context = context;
             _mapper = mapper;

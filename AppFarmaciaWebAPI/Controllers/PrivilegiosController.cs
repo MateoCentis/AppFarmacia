@@ -6,14 +6,14 @@ using AutoMapper;
 
 namespace AppFarmaciaWebAPI.Controllers
 {
-    [Route("api/[controller]/[Action]")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class PrivilegioController : ControllerBase
+    public class PrivilegiosController : ControllerBase
     {
         private readonly FarmaciaDbContext _context;
         private readonly IMapper _mapper;
 
-        public PrivilegioController(IMapper mapper, FarmaciaDbContext context)
+        public PrivilegiosController(IMapper mapper, FarmaciaDbContext context)
         {
             _context = context;
             _mapper = mapper;

@@ -6,14 +6,14 @@ using AppFarmaciaWebAPI.ModelsDTO;
 
 namespace AppFarmaciaWebAPI.Controllers
 {
-    [Route("api/[controller]/[Action]")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class CategoriaController : ControllerBase
+    public class CategoriasController : ControllerBase
     {
         private readonly FarmaciaDbContext _context;
         private readonly IMapper _mapper;
 
-        public CategoriaController(IMapper mapper, FarmaciaDbContext context)
+        public CategoriasController(IMapper mapper, FarmaciaDbContext context)
         {
             _mapper = mapper;
             _context = context;

@@ -9,49 +9,49 @@ using AppFarmaciaWebAPI.Models;
 
 namespace AppFarmaciaWebAPI.Controllers
 {
-    [Route("api/[controller]/[Action]")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class ArticuloFinalController : ControllerBase
+    public class VentasController : ControllerBase
     {
         private readonly FarmaciaDbContext _context;
 
-        public ArticuloFinalController(FarmaciaDbContext context)
+        public VentasController(FarmaciaDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/ArticuloFinal
+        // GET: api/Venta
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ArticuloFinal>>> GetArticulosFinales()
+        public async Task<ActionResult<IEnumerable<Venta>>> GetVentas()
         {
-            return await _context.ArticulosFinales.ToListAsync();
+            return await _context.Ventas.ToListAsync();
         }
 
-        // GET: api/ArticuloFinal/5
+        // GET: api/Venta/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ArticuloFinal>> GetArticuloFinal(int id)
+        public async Task<ActionResult<Venta>> GetVenta(int id)
         {
-            var articuloFinal = await _context.ArticulosFinales.FindAsync(id);
+            var venta = await _context.Ventas.FindAsync(id);
 
-            if (articuloFinal == null)
+            if (venta == null)
             {
                 return NotFound();
             }
 
-            return articuloFinal;
+            return venta;
         }
 
-        // PUT: api/ArticuloFinal/5
+        // PUT: api/Venta/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutArticuloFinal(int id, ArticuloFinal articuloFinal)
+        public async Task<IActionResult> PutVenta(int id, Venta venta)
         {
-            if (id != articuloFinal.IdArticuloFinal)
+            if (id != venta.IdVenta)
             {
                 return BadRequest();
             }
 
-            _context.Entry(articuloFinal).State = EntityState.Modified;
+            _context.Entry(venta).State = EntityState.Modified;
 
             try
             {
@@ -59,7 +59,7 @@ namespace AppFarmaciaWebAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ArticuloFinalExists(id))
+                if (!VentaExists(id))
                 {
                     return NotFound();
                 }
@@ -72,19 +72,19 @@ namespace AppFarmaciaWebAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/ArticuloFinal
+        // POST: api/Venta
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ArticuloFinal>> PostArticuloFinal(ArticuloFinal articuloFinal)
+        public async Task<ActionResult<Venta>> PostVenta(Venta venta)
         {
-            _context.ArticulosFinales.Add(articuloFinal);
+            _context.Ventas.Add(venta);
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (ArticuloFinalExists(articuloFinal.IdArticuloFinal))
+                if (VentaExists(venta.IdVenta))
                 {
                     return Conflict();
                 }
@@ -94,28 +94,28 @@ namespace AppFarmaciaWebAPI.Controllers
                 }
             }
 
-            return CreatedAtAction("GetArticuloFinal", new { id = articuloFinal.IdArticuloFinal }, articuloFinal);
+            return CreatedAtAction("GetVenta", new { id = venta.IdVenta }, venta);
         }
 
-        // DELETE: api/ArticuloFinal/5
+        // DELETE: api/Venta/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteArticuloFinal(int id)
+        public async Task<IActionResult> DeleteVenta(int id)
         {
-            var articuloFinal = await _context.ArticulosFinales.FindAsync(id);
-            if (articuloFinal == null)
+            var venta = await _context.Ventas.FindAsync(id);
+            if (venta == null)
             {
                 return NotFound();
             }
 
-            _context.ArticulosFinales.Remove(articuloFinal);
+            _context.Ventas.Remove(venta);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool ArticuloFinalExists(int id)
+        private bool VentaExists(int id)
         {
-            return _context.ArticulosFinales.Any(e => e.IdArticuloFinal == id);
+            return _context.Ventas.Any(e => e.IdVenta == id);
         }
     }
 }
