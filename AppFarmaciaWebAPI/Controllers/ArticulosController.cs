@@ -25,7 +25,7 @@ namespace AppFarmaciaWebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ArticuloDTO>>> GetArticulos()
         {
-            var articulo = await _context.Articulos.ToListAsync();
+            var articulo = await _context.Articulos.Where(a => a.Activo==true).ToListAsync();
             var articuloDTO = _mapper.Map<IEnumerable<ArticuloDTO>>(articulo);
             return Ok(articuloDTO);
         }
@@ -35,6 +35,7 @@ namespace AppFarmaciaWebAPI.Controllers
         public async Task<ActionResult<ArticuloDTO>> GetArticulo(int id)
         {
             var articulo = await _context.Articulos
+                .Where(a => a.Activo == true)
                 .FirstOrDefaultAsync(a => a.IdArticulo == id);
 
             if (articulo == null)
