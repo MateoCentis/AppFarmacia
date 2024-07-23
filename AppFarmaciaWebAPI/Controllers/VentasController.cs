@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AppFarmaciaWebAPI.Models;
+using AutoMapper;
+using AppFarmaciaWebAPI.ModelsDTO;
 
 namespace AppFarmaciaWebAPI.Controllers
 {
@@ -14,45 +16,62 @@ namespace AppFarmaciaWebAPI.Controllers
     public class VentasController : ControllerBase
     {
         private readonly FarmaciaDbContext _context;
+        private readonly IMapper _mapper;
 
-        public VentasController(FarmaciaDbContext context)
+        public VentasController(IMapper mapper, FarmaciaDbContext context)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/Venta
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Venta>>> GetVentas()
+        public async Task<ActionResult<IEnumerable<VentaDTO>>> GetVentas()
         {
-            return await _context.Ventas.ToListAsync();
+            var ventas = await _context.Ventas.Include(v => v.ArticuloEnVenta).ToListAsync();
+            var ventasDTO = _mapper.Map<IEnumerable<VentaDTO>>(ventas);
+            return Ok(ventasDTO);
         }
 
         // GET: api/Venta/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Venta>> GetVenta(int id)
+        public async Task<ActionResult<VentaDTO>> GetVenta(int id)
         {
-            var venta = await _context.Ventas.FindAsync(id);
+            var venta = await _context.Ventas
+                .Include(v => v.ArticuloEnVenta)
+                .FirstOrDefaultAsync(v => v.IdVenta == id);
 
             if (venta == null)
             {
                 return NotFound();
             }
 
-            return venta;
+            var ventaDTO = _mapper.Map<VentaDTO>(venta);
+            return Ok(ventaDTO);
         }
 
         // PUT: api/Venta/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutVenta(int id, Venta venta)
+        public async Task<IActionResult> EditVenta(int id, [FromBody] VentaDTO ventaDTO)
         {
-            if (id != venta.IdVenta)
+            // Verificar si el ID de la Venta en el DTO coincide con el ID de la ruta
+            if (id != ventaDTO.IdVenta)
             {
-                return BadRequest();
+                return BadRequest("El ID de la venta en el cuerpo de la solicitud no coincide con el ID de la ruta.");
             }
 
-            _context.Entry(venta).State = EntityState.Modified;
+            // Verificar si la venta con el ID especificado existe en la base de datos
+            var ventaExistente = await _context.Ventas.FindAsync(id);
+            if (ventaExistente == null)
+            {
+                return NotFound($"No se encontró una venta con el ID {id}.");
+            }
 
+            // Actualizar la venta existente con los datos del DTO
+            _mapper.Map(ventaDTO, ventaExistente);
+
+            // Marcar la entidad como modificada
+            _context.Entry(ventaExistente).State = EntityState.Modified;
             try
             {
                 await _context.SaveChangesAsync();
@@ -61,7 +80,7 @@ namespace AppFarmaciaWebAPI.Controllers
             {
                 if (!VentaExists(id))
                 {
-                    return NotFound();
+                    return NotFound($"No se encontró una venta con el ID {id}.");
                 }
                 else
                 {
@@ -69,14 +88,16 @@ namespace AppFarmaciaWebAPI.Controllers
                 }
             }
 
+            // Devolver una respuesta 204 No Content para indicar que la actualización fue exitosa
             return NoContent();
         }
 
         // POST: api/Venta
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Venta>> PostVenta(Venta venta)
+        public async Task<ActionResult<VentaDTO>> PostVenta([FromBody] VentaDTO ventaDTO)
         {
+            var venta = _mapper.Map<Venta>(ventaDTO);
+
             _context.Ventas.Add(venta);
             try
             {
@@ -94,24 +115,42 @@ namespace AppFarmaciaWebAPI.Controllers
                 }
             }
 
-            return CreatedAtAction("GetVenta", new { id = venta.IdVenta }, venta);
+            var createdVentaDTO = _mapper.Map<VentaDTO>(venta);
+
+            return CreatedAtAction(nameof(GetVenta), new { id = createdVentaDTO.IdVenta }, createdVentaDTO);
         }
 
         // DELETE: api/Venta/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVenta(int id)
         {
-            var venta = await _context.Ventas.FindAsync(id);
+            var venta = await _context.Ventas.Include(v => v.ArticuloEnVenta).FirstOrDefaultAsync(v => v.IdVenta == id);
             if (venta == null)
             {
-                return NotFound();
+                return NotFound($"No se encontró una venta con el ID {id}.");
+            }
+
+            // Verificar si hay artículos asociados a la venta
+            if (venta.ArticuloEnVenta.Any())
+            {
+                return BadRequest("No se puede eliminar la venta porque tiene artículos asignados.");
             }
 
             _context.Ventas.Remove(venta);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                // Manejar excepciones de actualización de base de datos
+                return StatusCode(500, $"Ocurrió un error al intentar eliminar la venta: {ex.Message}");
+            }
 
             return NoContent();
         }
+
 
         private bool VentaExists(int id)
         {
