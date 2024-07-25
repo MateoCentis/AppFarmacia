@@ -4,10 +4,6 @@
              xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
              Title="PaginaArticulosView">
 
-    <ContentPage.BindingContext>
-        <viewModels:PaginaArticulosViewModel/>
-    </ContentPage.BindingContext>
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
