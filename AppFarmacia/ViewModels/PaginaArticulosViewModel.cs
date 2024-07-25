@@ -10,18 +10,29 @@ namespace AppFarmacia.ViewModels
 {
     public partial class PaginaArticulosViewModel : ObservableObject
     {
-        public ObservableCollection<Articulo> ListaArticulos { get; } = [];
+        public ObservableCollection<Articulo> ListaArticulos { get; set; } = new ObservableCollection<Articulo>();
         ArticulosService articulosService;
 
-        public ICommand ObtenerArticulosCommand { get; }
+        //Los IComman tengo entendido que se tienen que ejecutar a travez de un evento o boton
+        public ICommand ObtenerArticulosCommand { get; private set; }
+        public ICommand OrdenarPorNombreCommand { get; }
+        public ICommand OrdenarPorDescriptionCommand { get; }
+        public ICommand OrdenarPorMarcaCommand { get; }
 
-        public PaginaArticulosViewModel(ArticulosService articulosService)
+        public PaginaArticulosViewModel()
         {
-            this.articulosService = articulosService;
-            ObtenerArticulosCommand = new AsyncRelayCommand(ObtenerArticulos);
+            this.articulosService = new ArticulosService();
+
+            //ObtenerArticulosCommand = new AsyncRelayCommand(ObtenerArticulos); No uso esto porque nunca se estaria ejecutando el comando ObtenerArticulosCommand, por lo tanto no se ejecuta ObtenerArticulos
+            ObtenerArticulos(); //Con esto me aseguro que se ejecuta ObtenerArticulos. Lo podemos redefinir o sino lo dejamos asi
+
+            OrdenarPorNombreCommand = new Command(OrdenarPorNombre);
+            OrdenarPorDescriptionCommand = new Command(OrdenarPorDescription);
+            OrdenarPorMarcaCommand = new Command(OrdenarPorBrand);
+
         }
 
-        
+
         async Task ObtenerArticulos()
         {
             try
@@ -38,8 +49,39 @@ namespace AppFarmacia.ViewModels
                 Debug.WriteLine($"Unable to get articles: {ex.Message}");
                 await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
             }
-
-
         }
+
+        private void OrdenarPorNombre()
+        {
+            var sortedList = ListaArticulos.OrderBy(a => a.Nombre).ToList();
+            ListaArticulos.Clear();
+            foreach (var articulo in sortedList)
+            {
+                ListaArticulos.Add(articulo);
+            }
+        }
+
+        private void OrdenarPorDescription()
+        {
+            var sortedList = ListaArticulos.OrderBy(a => a.Descripcion).ToList();
+            ListaArticulos.Clear();
+            foreach (var articulo in sortedList)
+            {
+                ListaArticulos.Add(articulo);
+            }
+        }
+
+        private void OrdenarPorBrand()
+        {
+            var sortedList = ListaArticulos.OrderBy(a => a.Marca).ToList();
+            ListaArticulos.Clear();
+            foreach (var articulo in sortedList)
+            {
+                ListaArticulos.Add(articulo);
+            }
+        }
+
+
+
     }
 }

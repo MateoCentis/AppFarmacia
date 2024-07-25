@@ -4,9 +4,9 @@ namespace AppFarmacia.Views;
 
 public partial class PaginaArticulos : ContentPage
 {
-	public PaginaArticulos(PaginaArticulosViewModel viewModel)
-	{
-		InitializeComponent();
-		BindingContext = viewModel;
-	}
+    public PaginaArticulos(PaginaArticulosViewModel viewModel)
+    {
+        InitializeComponent();
+        BindingContext = viewModel;
+    }
 }

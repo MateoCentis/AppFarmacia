@@ -12,13 +12,13 @@ namespace AppFarmacia.Services
             this.httpClient = new HttpClient();
         }
 
-        public async Task<List<Articulo>>GetArticulos()
+        public async Task<List<Articulo>> GetArticulos()
         {
             if (this.articulos?.Count > 0)
             {
                 return articulos;
             }
-            var respuesta = await httpClient.GetAsync("https://localhost:7129/api/Articulos");
+            var respuesta = await httpClient.GetAsync("http://localhost:83/api/Articulos");
 
             if (respuesta.IsSuccessStatusCode)
             {

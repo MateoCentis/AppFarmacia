@@ -1,33 +1,73 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AppFarmacia.Views.PaginaArticulos"
-             xmlns:model="clr-namespace:AppFarmacia.Models"
-             Title="PaginaArticulos"
-             xmlns:viewModels ="clr-namespace:AppFarmacia.ViewModels"
-             x:DataType="viewModels:PaginaArticulosViewModel">
+             xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
+             Title="PaginaArticulosView">
+
+    <ContentPage.BindingContext>
+        <viewModels:PaginaArticulosViewModel/>
+    </ContentPage.BindingContext>
+
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.2*"/>
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Label Text="Row 0, Column 0"
-               HorizontalOptions="Center"
-               VerticalOptions="Center" 
-               Grid.Column="0"
-               Grid.Row="0"/>
 
-        <CollectionView ItemsSource="{Binding ListaArticulos}"
-                  Grid.Row="1">
+        <!-- Encabezados -->
+        <Grid Grid.Row="0" BackgroundColor="#D3D3D3" Margin="50,0,50,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Label Text="Nombre" FontSize="22" Grid.Column="0" HorizontalOptions="CenterAndExpand"
+                   VerticalOptions="CenterAndExpand">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OrdenarPorNombreCommand}" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label Text="Marca" FontSize="14" Grid.Column="1" HorizontalOptions="CenterAndExpand"
+                   VerticalOptions="CenterAndExpand">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OrdenarPorMarcaCommand}" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label Text="Descripción" FontSize="14" Grid.Column="2" HorizontalOptions="CenterAndExpand"
+                   VerticalOptions="CenterAndExpand">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OrdenarPorDescriptionCommand}" />
+                </Label.GestureRecognizers>
+            </Label>
+
+        </Grid>
+
+        <!-- CollectionView -->
+        <CollectionView x:Name="notesCollection" Grid.Row="1"
+                        ItemsSource="{Binding ListaArticulos}" Background="#E3EEFF"
+                        Margin="50,2,50,2">
+
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+            </CollectionView.ItemsLayout>
+
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="model:Articulo">
-                    <ViewCell>
-                        <StackLayout Padding="10">
-                            <Label Text="{Binding Nombre}" 
-                                   FontSize="20" 
-                                   TextColor="white"/>
-                        </StackLayout>
-                    </ViewCell>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Label Text="{Binding Nombre}" FontSize="22" Grid.Column="0" HorizontalOptions="CenterAndExpand"
+                               VerticalOptions="CenterAndExpand"/>
+                        <Label Text="{Binding Marca}" FontSize="14" Grid.Column="1" HorizontalOptions="CenterAndExpand"
+                               VerticalOptions="CenterAndExpand"/>
+                        <Label Text="{Binding Descripcion}" FontSize="14" Grid.Column="2" HorizontalOptions="CenterAndExpand"
+                               VerticalOptions="CenterAndExpand"/>
+                    </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
