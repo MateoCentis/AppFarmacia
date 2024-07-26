@@ -21,10 +21,9 @@ namespace AppFarmacia.Services
             var respuesta = await httpClient.GetAsync("http://localhost:83/api/Articulos");
 
             if (respuesta.IsSuccessStatusCode)
-            {
-                this.articulos = await respuesta.Content.ReadFromJsonAsync<List<Articulo>>();
-            }
-            return this.articulos;
+                this.articulos = await respuesta.Content.ReadFromJsonAsync<List<Articulo>>() ?? [];
+
+            return this.articulos!;
         }
     }
 }

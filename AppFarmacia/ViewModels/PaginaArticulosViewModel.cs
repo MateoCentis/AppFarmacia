@@ -10,7 +10,7 @@ namespace AppFarmacia.ViewModels
 {
     public partial class PaginaArticulosViewModel : ObservableObject
     {
-        public ObservableCollection<Articulo> ListaArticulos { get; set; } = new ObservableCollection<Articulo>();
+        public ObservableCollection<Articulo> ListaArticulos { get; set; } = [];
         ArticulosService articulosService;
 
         //Los IComman tengo entendido que se tienen que ejecutar a travez de un evento o boton
