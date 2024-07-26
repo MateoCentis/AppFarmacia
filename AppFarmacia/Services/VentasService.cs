@@ -6,7 +6,7 @@ namespace AppFarmacia.Services
     public class VentasService
     {
         private List<Venta>? Ventas = [];
-        private HttpClient httpClient;
+        private readonly HttpClient httpClient;
 
         public VentasService()
         {

@@ -2,7 +2,17 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
+             xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
              x:Class="AppFarmacia.Views.PaginaVentas"
              Title="Pagina Ventas">
+
+    <!-- Grilla de dos filas -> En la primera pongo botones y cosas y en la segunda la tabla-->
+    <Grid RowDefinitions="Auto,*">
+
+        <Button Text="Prueba" Clicked="Command" Margin="10"/>
+        
+        <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ListaVentas}"
+
+    </Grid>
 
 </ContentPage>

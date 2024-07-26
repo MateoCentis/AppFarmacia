@@ -5,7 +5,7 @@ namespace AppFarmacia.Services
     public class ArticulosService
     {
         List<Articulo>? articulos = [];
-        HttpClient httpClient;
+        private readonly HttpClient httpClient;
 
         public ArticulosService()
         {
