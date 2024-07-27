@@ -11,6 +11,7 @@ namespace AppFarmacia.ViewModels
     public partial class PaginaVentasViewModel : ObservableObject
     {
         public ObservableCollection<Venta> ListaVentas { get; set; } = [];
+        public Venta VentaSeleccionada { get; set; }        
         private readonly VentasService ventasService;
 
         public PaginaVentasViewModel()

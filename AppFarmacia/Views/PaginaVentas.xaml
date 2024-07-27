@@ -6,12 +6,24 @@
              x:Class="AppFarmacia.Views.PaginaVentas"
              Title="Pagina Ventas">
 
-    <!-- Grilla de dos filas -> En la primera pongo botones y cosas y en la segunda la tabla-->
+    <!-- Grilla de dos filas -> En la primera pongo botones y cosas y en la segunda la tabla -->
     <Grid RowDefinitions="Auto,*">
 
         <Button Text="Prueba" Clicked="Command" Margin="10"/>
         
-        <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ListaVentas}"
+        <!--- Configuraciones del datagrid -->
+        <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ListaVentas}" 
+                     SelectionMode="Single" SelectedItem="{Binding VentaSeleccionada}"
+                     RowHeight="70" HeaderHeight="50" PullToRefreshCommand="{Binding RecargarPaginaCommand}"
+                     IsRefreshing="{Binding ActualizandoPaginaCommand}">
+            <!-- Para cuando la página no tiene data para ver-->
+            <dg:DataGrid.NoDataView>
+                <Label Text="No existen ventas cargadas aún" HorizontalOptions="Center" VerticalOptions="Center"/>
+            </dg:DataGrid.NoDataView>
+            
+        </dg:DataGrid>
+                     
+                     
 
     </Grid>
 
