@@ -10,14 +10,30 @@ namespace AppFarmacia.ViewModels
 {
     public partial class PaginaVentasViewModel : ObservableObject
     {
-        public ObservableCollection<Venta> ListaVentas { get; set; } = [];
-        public Venta VentaSeleccionada { get; set; }        
+        public ObservableCollection<VentaMostrar> ListaVentas { get; set; } = [];
+        public VentaMostrar VentaSeleccionada { get; set; }
+        public ICommand RecargarPaginaCommand { get; }
+        public ICommand ActualizandoPaginaCommand { get; }
         private readonly VentasService ventasService;
 
         public PaginaVentasViewModel()
         {
             this.ventasService = new VentasService();
 
+            ObtenerVentas();
+
+            RecargarPaginaCommand = new Command(RecargarPagina);
+            ActualizandoPaginaCommand = new Command(ActualizandoPagina);
+
+        }
+
+        private void RecargarPagina()
+        {
+            throw new NotImplementedException();
+        }
+        private void ActualizandoPagina()
+        { 
+            throw new NotImplementedException(); 
         }
 
         async Task ObtenerVentas()
@@ -28,8 +44,8 @@ namespace AppFarmacia.ViewModels
                 if (ventas.Count != 0)
                     this.ListaVentas.Clear();
 
-                foreach (var articulo in ventas)
-                    this.ListaVentas.Add(articulo);
+                foreach (var venta in ventas)
+                    this.ListaVentas.Add(new VentaMostrar(venta));
             }
             catch (Exception ex)
             {

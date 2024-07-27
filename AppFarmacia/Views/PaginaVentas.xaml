@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
@@ -9,9 +8,9 @@
     <!-- Grilla de dos filas -> En la primera pongo botones y cosas y en la segunda la tabla -->
     <Grid RowDefinitions="Auto,*">
 
-        <Button Text="Prueba" Clicked="Command" Margin="10"/>
+        <Button Text="Prueba" Margin="10"/>
         
-        <!--- Configuraciones del datagrid -->
+        <!--- Configuraciones generales del datagrid -->
         <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ListaVentas}" 
                      SelectionMode="Single" SelectedItem="{Binding VentaSeleccionada}"
                      RowHeight="70" HeaderHeight="50" PullToRefreshCommand="{Binding RecargarPaginaCommand}"
@@ -20,10 +19,31 @@
             <dg:DataGrid.NoDataView>
                 <Label Text="No existen ventas cargadas aún" HorizontalOptions="Center" VerticalOptions="Center"/>
             </dg:DataGrid.NoDataView>
+
+            <!-- Acá dentro se definen las columnas de la tabla -->
+            <!-- Ver bien el tema de configurar bien las columnas con DataTemplate -->
+            <dg:DataGrid.Columns>
+                <dg:DataGridColumn Title="Id" PropertyName="Id" />
+                <dg:DataGridColumn Title="Fecha" PropertyName="Fecha"/>
+                <dg:DataGridColumn Title="Hora" PropertyName="Hora"/>
+                <dg:DataGridColumn Title="Monto total" PropertyName="MontoTotal"/>
+            </dg:DataGrid.Columns>
+
+            <!-- Configuración de colores para las filas, segun cuantos se ponen alternan-->
+            <dg:DataGrid.RowsBackgroundColorPalette>
+                <dg:PaletteCollection>
+                    <Color>#F2F2F2</Color>
+                    <Color>#FFFFFF</Color>
+                </dg:PaletteCollection>
+            </dg:DataGrid.RowsBackgroundColorPalette>
             
+            <!-- Esto sirve para darle a determinadas celdas colores especiales bajo ciertas condiciones-->
+            <dg:DataGrid.Resources>
+                <ResourceDictionary>
+                    <!--<conv:StreakToColorConverter x:Key="StreakToColorConverter"/>-->
+                </ResourceDictionary>
+            </dg:DataGrid.Resources>
         </dg:DataGrid>
-                     
-                     
 
     </Grid>
 

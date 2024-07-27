@@ -18,9 +18,12 @@ namespace AppFarmacia
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            builder.Services.AddSingleton<PaginaVentas>();
             builder.Services.AddSingleton<PaginaArticulos>();
-            builder.Services.AddSingleton<ArticulosService>();
+            builder.Services.AddSingleton<PaginaVentasViewModel>();
             builder.Services.AddSingleton<PaginaArticulosViewModel>();
+            builder.Services.AddSingleton<VentasService>();
+            builder.Services.AddSingleton<ArticulosService>();
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif

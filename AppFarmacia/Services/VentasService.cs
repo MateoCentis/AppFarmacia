@@ -22,7 +22,7 @@ namespace AppFarmacia.Services
             }
 
             // Obtengo respuesta
-            var respuesta = await httpClient.GetAsync("http://localhost:83/api/Ventas");
+            var respuesta = await httpClient.GetAsync("http://192.168.1.7:83/api/Ventas");
 
             // Si la respuesta es exitosa
             if (respuesta.IsSuccessStatusCode)
