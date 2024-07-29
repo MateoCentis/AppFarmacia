@@ -1,7 +1,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="AppFarmacia.Views.PaginaArticulos"
+             xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
              xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
+             x:Class="AppFarmacia.Views.PaginaArticulos"
              Title="PaginaArticulosView">
 
     <Grid>
@@ -10,62 +11,40 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Encabezados -->
-        <Grid Grid.Row="0" BackgroundColor="#D3D3D3" Margin="50,0,50,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+        <Label Text="Artículos" HorizontalTextAlignment="Center"/>
 
-            <Label Text="Nombre" FontSize="22" Grid.Column="0" HorizontalOptions="CenterAndExpand"
-                   VerticalOptions="CenterAndExpand">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding OrdenarPorNombreCommand}" />
-                </Label.GestureRecognizers>
-            </Label>
-            <Label Text="Marca" FontSize="14" Grid.Column="1" HorizontalOptions="CenterAndExpand"
-                   VerticalOptions="CenterAndExpand">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding OrdenarPorMarcaCommand}" />
-                </Label.GestureRecognizers>
-            </Label>
-            <Label Text="Descripción" FontSize="14" Grid.Column="2" HorizontalOptions="CenterAndExpand"
-                   VerticalOptions="CenterAndExpand">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding OrdenarPorDescriptionCommand}" />
-                </Label.GestureRecognizers>
-            </Label>
+        <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ListaArticulos}" 
+                     SelectionMode="Single" SelectedItem="{Binding ArticuloSeleccionado}"
+                     RowHeight="50" HeaderHeight="60"  BorderColor="#DBDBDB"
+                     HeaderBackground="#E7F1FF">
+            <!-- Para cuando la página no tiene data para ver-->
+            <dg:DataGrid.NoDataView>
+                <Label Text="No existen artículos cargados aún" HorizontalOptions="Center" VerticalOptions="Center"/>
+            </dg:DataGrid.NoDataView>
 
-        </Grid>
+            <!-- Acá dentro se definen las columnas de la tabla -->
+            <!-- Ver bien el tema de configurar bien las columnas con DataTemplate -->
+            <dg:DataGrid.Columns>
+                <dg:DataGridColumn Title="Id" PropertyName="IdArticulo" />
+                <dg:DataGridColumn Title="Nombre" PropertyName="Nombre"/>
+                <dg:DataGridColumn Title="Marca" PropertyName="Marca"/>
+                <dg:DataGridColumn Title="Descripción" PropertyName="Descripcion"/>
+            </dg:DataGrid.Columns>
 
-        <!-- CollectionView -->
-        <CollectionView x:Name="notesCollection" Grid.Row="1"
-                        ItemsSource="{Binding ListaArticulos}" Background="#E3EEFF"
-                        Margin="50,2,50,2">
+            <!-- Configuración de colores para las filas, segun cuantos se ponen alternan-->
+            <dg:DataGrid.RowsBackgroundColorPalette>
+                <dg:PaletteCollection>
+                    <Color>#F2F2F2</Color>
+                    <Color>#FFFFFF</Color>
+                </dg:PaletteCollection>
+            </dg:DataGrid.RowsBackgroundColorPalette>
 
-            <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
-            </CollectionView.ItemsLayout>
-
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="2*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
-                        <Label Text="{Binding Nombre}" FontSize="22" Grid.Column="0" HorizontalOptions="CenterAndExpand"
-                               VerticalOptions="CenterAndExpand"/>
-                        <Label Text="{Binding Marca}" FontSize="14" Grid.Column="1" HorizontalOptions="CenterAndExpand"
-                               VerticalOptions="CenterAndExpand"/>
-                        <Label Text="{Binding Descripcion}" FontSize="14" Grid.Column="2" HorizontalOptions="CenterAndExpand"
-                               VerticalOptions="CenterAndExpand"/>
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+            <!-- Esto sirve para darle a determinadas celdas colores especiales bajo ciertas condiciones-->
+            <dg:DataGrid.Resources>
+                <ResourceDictionary>
+                    <!--<conv:StreakToColorConverter x:Key="StreakToColorConverter"/>-->
+                </ResourceDictionary>
+            </dg:DataGrid.Resources>
+        </dg:DataGrid>
     </Grid>
 </ContentPage>

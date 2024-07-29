@@ -19,7 +19,7 @@
     <!-- Acá un logo/información (shell content?) o qué -->
     <Shell.FlyoutFooter>
         <VerticalStackLayout>
-            <Label Text="Footer" HorizontalTextAlignment="Center"/>
+            <Label Text="Hola Matuuuuu" HorizontalTextAlignment="Center"/>
         </VerticalStackLayout>
     </Shell.FlyoutFooter>
     

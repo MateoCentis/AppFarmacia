@@ -12,7 +12,7 @@ namespace AppFarmacia.ViewModels
     {
         public ObservableCollection<Articulo> ListaArticulos { get; set; } = [];
         private readonly ArticulosService articulosService;
-
+        public Articulo ArticuloSeleccionado;
         //Los ICommand se ejecutan a través de un evento de un controlador del front
         public ICommand ObtenerArticulosCommand { get; private set; }
         public ICommand OrdenarPorNombreCommand { get; }
