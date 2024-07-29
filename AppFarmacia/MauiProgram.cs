@@ -20,10 +20,15 @@ namespace AppFarmacia
 
             builder.Services.AddSingleton<PaginaVentas>();
             builder.Services.AddSingleton<PaginaArticulos>();
+            builder.Services.AddTransient<PaginaDetalleVenta>();
+
             builder.Services.AddSingleton<PaginaVentasViewModel>();
             builder.Services.AddSingleton<PaginaArticulosViewModel>();
+            builder.Services.AddTransient<PaginaDetalleVentaViewModel>();
+
             builder.Services.AddSingleton<VentasService>();
             builder.Services.AddSingleton<ArticulosService>();
+            builder.Services.AddSingleton<ArticulosFinalesService>();
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif

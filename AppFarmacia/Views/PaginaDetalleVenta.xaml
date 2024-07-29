@@ -1,36 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
              xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
-             x:Class="AppFarmacia.Views.PaginaVentas"
-             Title="Pagina Ventas">
+             xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
+             x:Class="AppFarmacia.Views.PaginaDetalleVenta"
+             Title="Pagina Detalle de Venta">
 
-    <!-- Grilla de dos filas -> En la primera pongo botones y cosas y en la segunda la tabla -->
     <Grid RowDefinitions="Auto,*">
+        <Label Text="Venta"/>
 
-        <HorizontalStackLayout HorizontalOptions="Center">
-            <Button Text="Ver Detalle" Margin="10" Command="{Binding VerDetalleCommand}" />
-            
-        </HorizontalStackLayout>
-        
-        <!--- Configuraciones generales del datagrid -->
-        <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ListaVentas}" 
-                     SelectionMode="Single" SelectedItem="{Binding VentaSeleccionada}"
-                     RowHeight="50" HeaderHeight="60" PullToRefreshCommand="{Binding RecargarPaginaCommand}"
-                     IsRefreshing="{Binding ActualizandoPaginaCommand}" BorderColor="#DBDBDB"
-                     HeaderBackground="#E7F1FF">
+        <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ArticulosEnVenta}" 
+              SelectionMode="Single" RowHeight="50" HeaderHeight="60" BorderColor="#DBDBDB"
+              HeaderBackground="#E7F1FF">
             <!-- Para cuando la página no tiene data para ver-->
             <dg:DataGrid.NoDataView>
-                <Label Text="No existen ventas cargadas aún" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Label Text="Esta venta no tiene detalles" HorizontalOptions="Center" VerticalOptions="Center"/>
             </dg:DataGrid.NoDataView>
 
             <!-- Acá dentro se definen las columnas de la tabla -->
             <!-- Ver bien el tema de configurar bien las columnas con DataTemplate -->
             <dg:DataGrid.Columns>
-                <dg:DataGridColumn Title="Id" PropertyName="Id" />
-                <dg:DataGridColumn Title="Fecha" PropertyName="Fecha"/>
-                <dg:DataGridColumn Title="Hora" PropertyName="Hora"/>
-                <dg:DataGridColumn Title="Monto total" PropertyName="MontoTotal"/>
+                <dg:DataGridColumn Title="Id Artículo" PropertyName="IdArticulo" />
+                <dg:DataGridColumn Title="Nombre" PropertyName="NombreArticulo"/>
+                <dg:DataGridColumn Title="Cantidad" PropertyName="Cantidad"/>
+                <dg:DataGridColumn Title="Precio" PropertyName="Precio"/>
+                <dg:DataGridColumn Title="Monto" PropertyName="Monto"/>
             </dg:DataGrid.Columns>
 
             <!-- Configuración de colores para las filas, segun cuantos se ponen alternan-->
@@ -40,7 +34,7 @@
                     <Color>#FFFFFF</Color>
                 </dg:PaletteCollection>
             </dg:DataGrid.RowsBackgroundColorPalette>
-            
+
             <!-- Esto sirve para darle a determinadas celdas colores especiales bajo ciertas condiciones-->
             <dg:DataGrid.Resources>
                 <ResourceDictionary>
@@ -48,7 +42,5 @@
                 </ResourceDictionary>
             </dg:DataGrid.Resources>
         </dg:DataGrid>
-
     </Grid>
-
 </ContentPage>

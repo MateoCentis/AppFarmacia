@@ -25,5 +25,25 @@ namespace AppFarmacia.Services
 
             return this.articulos!;
         }
+
+        public async Task<Articulo?> GetArticuloPorId(int id)
+        {
+            Articulo? articulo = this.articulos.FirstOrDefault(a => a.IdArticulo == id);
+            if ( articulo != null )
+            {
+                return articulo;
+            }
+
+            var respuesta = await httpClient.GetAsync($"http://localhost:83/api/Articulos/{id}");
+
+            if (respuesta.IsSuccessStatusCode)
+            {
+                articulo = await respuesta.Content.ReadFromJsonAsync<Articulo>();
+                return articulo;
+            }
+
+            return null;
+        }
+
     }
 }

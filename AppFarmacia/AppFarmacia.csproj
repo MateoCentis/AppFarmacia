@@ -78,9 +78,17 @@
 	  <MauiXaml Update="Views\PaginaArticulos.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\PaginaDetalleVenta.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\PaginaVentas.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiAsset Include="Resources\AppIcon\appicon.svg" />
+	  <MauiAsset Include="Resources\AppIcon\appiconfg.svg" />
 	</ItemGroup>
 
 </Project>

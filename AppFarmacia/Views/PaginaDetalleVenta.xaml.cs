@@ -1,14 +1,14 @@
 using AppFarmacia.ViewModels;
 namespace AppFarmacia.Views;
 
-public partial class PaginaVentas : ContentPage
+public partial class PaginaDetalleVenta : ContentPage
 {
-	private readonly PaginaVentasViewModel viewModel;
-	public PaginaVentas(PaginaVentasViewModel viewModel)
+	private readonly PaginaDetalleVentaViewModel viewModel;
+	public PaginaDetalleVenta(PaginaDetalleVentaViewModel viewModel)
 	{
 		InitializeComponent();
-		this.viewModel = viewModel;
 		BindingContext = viewModel;
+		this.viewModel = viewModel;
 	}
 
     protected override async void OnAppearing()
@@ -16,7 +16,7 @@ public partial class PaginaVentas : ContentPage
         base.OnAppearing();
         if (viewModel != null)
         {
-            await this.viewModel.ObtenerVentas();
+            await this.viewModel.ObtenerDetalles();
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Windows.Input;
 using AppFarmacia.Models;
 using AppFarmacia.Services;
+using AppFarmacia.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -14,16 +15,35 @@ namespace AppFarmacia.ViewModels
         public VentaMostrar VentaSeleccionada { get; set; }
         public ICommand RecargarPaginaCommand { get; }
         public ICommand ActualizandoPaginaCommand { get; }
+        public IAsyncRelayCommand VerDetalleCommand { get; }
         private readonly VentasService ventasService;
 
         public PaginaVentasViewModel()
         {
             this.ventasService = new VentasService();
-
-            ObtenerVentas();
+            this.VentaSeleccionada = new VentaMostrar(new Venta());
 
             RecargarPaginaCommand = new Command(RecargarPagina);
             ActualizandoPaginaCommand = new Command(ActualizandoPagina);
+            VerDetalleCommand = new AsyncRelayCommand(VerDetalle);
+
+        }
+
+        async Task VerDetalle()
+        {
+            if (VentaSeleccionada != null)
+            {
+                var parametroNavigation = new Dictionary<string, object>
+                {
+                    {"ventaMostrar",this.VentaSeleccionada}
+                };
+
+                await Shell.Current.GoToAsync(nameof(PaginaDetalleVenta),parametroNavigation);
+            }
+            else
+            {
+                await Shell.Current.DisplayAlert("Error!", "No se ha seleccionado ninguna venta.", "OK");
+            }
 
         }
 
@@ -31,12 +51,13 @@ namespace AppFarmacia.ViewModels
         {
             throw new NotImplementedException();
         }
+
         private void ActualizandoPagina()
         { 
             throw new NotImplementedException(); 
         }
 
-        async Task ObtenerVentas()
+        public async Task ObtenerVentas()
         {
             try
             {
