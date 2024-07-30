@@ -22,7 +22,7 @@ namespace AppFarmacia.Services
             }
 
             // Obtengo respuesta           //Cambiar a localhost para usar en ambas PC's
-            var respuesta = await httpClient.GetAsync("http://192.168.1.7:83/api/Ventas");
+            var respuesta = await httpClient.GetAsync("http://LocalHost:83/api/Ventas");
 
             // Si la respuesta es exitosa
             if (respuesta.IsSuccessStatusCode)

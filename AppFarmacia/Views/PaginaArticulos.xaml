@@ -8,6 +8,7 @@
         <HorizontalStackLayout HorizontalOptions="Center" Margin="0,5,0,5">
             <SearchBar Text="{Binding TextoBusqueda}" Placeholder="Buscar artículo..." Margin="0,0,0,5" HorizontalOptions="CenterAndExpand"
                        WidthRequest="400"/>
+            <Picker Title="Selecciona una opción" ItemsSource="{Binding ListCategorias}" SelectedItem="{Binding CategoriaSeleccionada}" WidthRequest="210" Margin="40,0,5,5" />
         </HorizontalStackLayout>
 
         <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ListaArticulos}" 
@@ -24,7 +25,7 @@
             <dg:DataGrid.Columns>
                 <dg:DataGridColumn Title="Id" PropertyName="IdArticulo" />
                 <dg:DataGridColumn Title="Nombre" PropertyName="Nombre"/>
-                <dg:DataGridColumn Title="" PropertyName="Marca"/>
+                <dg:DataGridColumn Title="Marca" PropertyName="Marca"/>
                 <dg:DataGridColumn Title="Descripción" PropertyName="Descripcion"/>
             </dg:DataGrid.Columns>
 
