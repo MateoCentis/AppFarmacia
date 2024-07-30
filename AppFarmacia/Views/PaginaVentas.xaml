@@ -3,13 +3,13 @@
              xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
              xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
              x:Class="AppFarmacia.Views.PaginaVentas"
-             Title="Pagina Ventas">
+             NavigationPage.HasNavigationBar="False">
 
     <!-- Grilla de dos filas -> En la primera pongo botones y cosas y en la segunda la tabla -->
-    <Grid RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto,*, Auto" Padding="1">
 
-        <HorizontalStackLayout HorizontalOptions="Center">
-            <Button Text="Ver Detalle" Margin="10" Command="{Binding VerDetalleCommand}" />
+        <HorizontalStackLayout HorizontalOptions="Center" Margin="0,0,0,5">
+            <Button Text="Ver Detalle" Margin="5" Command="{Binding VerDetalleCommand}" />
             
         </HorizontalStackLayout>
         
@@ -18,7 +18,7 @@
                      SelectionMode="Single" SelectedItem="{Binding VentaSeleccionada}"
                      RowHeight="50" HeaderHeight="60" PullToRefreshCommand="{Binding RecargarPaginaCommand}"
                      IsRefreshing="{Binding ActualizandoPaginaCommand}" BorderColor="#DBDBDB"
-                     HeaderBackground="#E7F1FF">
+                     HeaderBackground="#E7F1FF" Margin="0,5,0,0" Padding="5">
             <!-- Para cuando la página no tiene data para ver-->
             <dg:DataGrid.NoDataView>
                 <Label Text="No existen ventas cargadas aún" HorizontalOptions="Center" VerticalOptions="Center"/>

@@ -58,6 +58,7 @@
 
 	<ItemGroup>
 	  <None Remove="Resources\Images\farmaciaaput.png" />
+	  <None Remove="Resources\Images\package.svg" />
 	  <None Remove="Resources\Images\pricetag.png" />
 	  <None Remove="Resources\Images\settings.png" />
 	  <None Remove="Resources\Images\shoppingcart.png" />
@@ -89,6 +90,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\PaginaDetalleVenta.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\PaginaPrediccionStock.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\PaginaVentas.xaml">

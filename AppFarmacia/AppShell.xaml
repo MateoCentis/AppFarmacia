@@ -5,14 +5,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:AppFarmacia.Views"
     Shell.FlyoutBehavior="Flyout"
-    Shell.TabBarIsVisible="True"
-    Title="AppFarmacia">
+    NavigationPage.HasNavigationBar="False"
+    Shell.TabBarIsVisible="True">
     
     <!-- Acá se pone una imagen (logo de la app?) y el nombre de la app o que -->
     <Shell.FlyoutHeader>
         <VerticalStackLayout>
-            <Image Source="farmaciaaput.png" WidthRequest="100"/>
-            <Label Text="App Farmacia" HorizontalTextAlignment="Center"/>
+            <Image Source="farmaciaaput.png"/>
+            <!--<Label Text="App Farmacia" HorizontalTextAlignment="Center"/>-->
         </VerticalStackLayout>
     </Shell.FlyoutHeader>
 
@@ -36,11 +36,17 @@
         ContentTemplate="{DataTemplate local:PaginaVentas}"
         Route="PaginaVentas"
             Icon="shoppingcart.png"/>
-        
+
+        <ShellContent
+            Title="Predicción de stock"
+            ContentTemplate="{DataTemplate local:PaginaPrediccionStock}"
+            Route="PaginaPrediccionStock"
+            Icon="package.svg"/>
+
         <ShellContent
             Title="Configuración"
             ContentTemplate="{DataTemplate local:PaginaConfiguracion}"
-            Route="Configuracion"
+            Route="PaginaConfiguracion"
             Icon="settings.png"/>
 
     </FlyoutItem>

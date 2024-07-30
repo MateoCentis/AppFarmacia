@@ -13,11 +13,31 @@ namespace AppFarmacia.ViewModels
         public ObservableCollection<Articulo> ListaArticulos { get; set; } = [];
         private readonly ArticulosService articulosService;
         public Articulo ArticuloSeleccionado;
+        private string textoBusqueda;
+
+        public string TextoBusqueda
+        {
+            get => textoBusqueda;
+            set
+            {
+                textoBusqueda = value;
+                OnPropertyChanged();
+                if (textoBusqueda.Length > 0)
+                {
+                    BusquedaArticuloCommand.Execute(null);
+                }
+                else
+                {
+                    Task.Run(async () => await ObtenerArticulos());
+                }
+            }
+        }
         //Los ICommand se ejecutan a través de un evento de un controlador del front
         public ICommand ObtenerArticulosCommand { get; private set; }
         public ICommand OrdenarPorNombreCommand { get; }
         public ICommand OrdenarPorDescriptionCommand { get; }
         public ICommand OrdenarPorMarcaCommand { get; }
+        public ICommand BusquedaArticuloCommand { get; }
 
         public PaginaArticulosViewModel()
         {
@@ -29,6 +49,7 @@ namespace AppFarmacia.ViewModels
             OrdenarPorNombreCommand = new Command(OrdenarPorNombre);
             OrdenarPorDescriptionCommand = new Command(OrdenarPorDescription);
             OrdenarPorMarcaCommand = new Command(OrdenarPorBrand);
+            BusquedaArticuloCommand = new Command(BusquedaArticulo);
 
         }
 
@@ -48,6 +69,21 @@ namespace AppFarmacia.ViewModels
             {
                 Debug.WriteLine($"Unable to get articles: {ex.Message}");
                 await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
+            }
+        }
+
+        private void BusquedaArticulo()
+        {
+            var articulosEncontrados = new ObservableCollection<Articulo>(ListaArticulos.
+                Where(encontrado => !string.IsNullOrWhiteSpace(encontrado.Nombre) && encontrado.Nombre.Contains(TextoBusqueda)) ?? []);
+
+            if (articulosEncontrados.Count() > 0)
+            {
+                ListaArticulos.Clear();
+                foreach (var articulo in articulosEncontrados)
+                {
+                    ListaArticulos.Add(articulo);
+                }
             }
         }
 

@@ -2,16 +2,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
              xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
-             x:Class="AppFarmacia.Views.PaginaArticulos"
-             Title="PaginaArticulosView">
+             x:Class="AppFarmacia.Views.PaginaArticulos">
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
-        <Label Text="Artículos" HorizontalTextAlignment="Center"/>
+    <Grid RowDefinitions="Auto,*, Auto">
+        <HorizontalStackLayout HorizontalOptions="Center" Margin="0,5,0,5">
+            <SearchBar Text="{Binding TextoBusqueda}" Placeholder="Buscar artículo..." Margin="0,0,0,5" HorizontalOptions="CenterAndExpand"
+                       WidthRequest="400"/>
+        </HorizontalStackLayout>
 
         <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ListaArticulos}" 
                      SelectionMode="Single" SelectedItem="{Binding ArticuloSeleccionado}"
@@ -27,7 +24,7 @@
             <dg:DataGrid.Columns>
                 <dg:DataGridColumn Title="Id" PropertyName="IdArticulo" />
                 <dg:DataGridColumn Title="Nombre" PropertyName="Nombre"/>
-                <dg:DataGridColumn Title="Marca" PropertyName="Marca"/>
+                <dg:DataGridColumn Title="" PropertyName="Marca"/>
                 <dg:DataGridColumn Title="Descripción" PropertyName="Descripcion"/>
             </dg:DataGrid.Columns>
 
