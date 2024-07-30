@@ -12,9 +12,8 @@ namespace AppFarmacia.ViewModels
     {
         public ObservableCollection<Articulo> ListaArticulos { get; set; } = [];
         private readonly ArticulosService articulosService;
-        public Articulo ArticuloSeleccionado;
+        public Articulo ArticuloSeleccionado;//Sirve para implementar luego otras cosas
         private string textoBusqueda;
-
         public string TextoBusqueda
         {
             get => textoBusqueda;
@@ -42,15 +41,12 @@ namespace AppFarmacia.ViewModels
         public PaginaArticulosViewModel()
         {
             this.articulosService = new ArticulosService();
-
-            //ObtenerArticulosCommand = new AsyncRelayCommand(ObtenerArticulos); No uso esto porque nunca se estaria ejecutando el comando ObtenerArticulosCommand, por lo tanto no se ejecuta ObtenerArticulos
-            ObtenerArticulos(); //Con esto me aseguro que se ejecuta ObtenerArticulos. Lo podemos redefinir o sino lo dejamos asi
-
-            OrdenarPorNombreCommand = new Command(OrdenarPorNombre);
-            OrdenarPorDescriptionCommand = new Command(OrdenarPorDescription);
-            OrdenarPorMarcaCommand = new Command(OrdenarPorBrand);
+            this.textoBusqueda = string.Empty;
+            ObtenerArticulosCommand = new Command(async () => await ObtenerArticulos());
             BusquedaArticuloCommand = new Command(BusquedaArticulo);
 
+            // Carga inicial de los artículos
+            Task.Run(async () => await ObtenerArticulos());
         }
 
 
@@ -59,6 +55,7 @@ namespace AppFarmacia.ViewModels
             try
             {
                 var articulos = await articulosService.GetArticulos();
+                // Si la cantidad de artículos es igual distinta de cero => limpio
                 if (articulos.Count != 0)
                     this.ListaArticulos.Clear();
 
@@ -74,50 +71,17 @@ namespace AppFarmacia.ViewModels
 
         private void BusquedaArticulo()
         {
-            var articulosEncontrados = new ObservableCollection<Articulo>(ListaArticulos.
-                Where(encontrado => !string.IsNullOrWhiteSpace(encontrado.Nombre) && encontrado.Nombre.Contains(TextoBusqueda)) ?? []);
+            List<Articulo> articulosEncontrados = new ObservableCollection<Articulo>(ListaArticulos.
+                Where(encontrado => !string.IsNullOrWhiteSpace(encontrado.Nombre) &&
+                encontrado.Nombre.Contains(TextoBusqueda))).ToList();
 
-            if (articulosEncontrados.Count() > 0)
-            {
-                ListaArticulos.Clear();
-                foreach (var articulo in articulosEncontrados)
-                {
-                    ListaArticulos.Add(articulo);
-                }
-            }
-        }
-
-        private void OrdenarPorNombre()
-        {
-            var sortedList = ListaArticulos.OrderBy(a => a.Nombre).ToList();
+            //Limpia la observableCollection y agrega los encontrados
             ListaArticulos.Clear();
-            foreach (var articulo in sortedList)
+            foreach (var articulo in articulosEncontrados)
             {
                 ListaArticulos.Add(articulo);
             }
         }
-
-        private void OrdenarPorDescription()
-        {
-            var sortedList = ListaArticulos.OrderBy(a => a.Descripcion).ToList();
-            ListaArticulos.Clear();
-            foreach (var articulo in sortedList)
-            {
-                ListaArticulos.Add(articulo);
-            }
-        }
-
-        private void OrdenarPorBrand()
-        {
-            var sortedList = ListaArticulos.OrderBy(a => a.Marca).ToList();
-            ListaArticulos.Clear();
-            foreach (var articulo in sortedList)
-            {
-                ListaArticulos.Add(articulo);
-            }
-        }
-
-
 
     }
 }

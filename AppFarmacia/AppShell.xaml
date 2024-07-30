@@ -41,7 +41,7 @@
             Title="Predicción de stock"
             ContentTemplate="{DataTemplate local:PaginaPrediccionStock}"
             Route="PaginaPrediccionStock"
-            Icon="package.svg"/>
+            Icon="calculator.png"/>
 
         <ShellContent
             Title="Configuración"

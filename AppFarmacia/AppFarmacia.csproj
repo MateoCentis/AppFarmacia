@@ -57,6 +57,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\calculator.png" />
 	  <None Remove="Resources\Images\farmaciaaput.png" />
 	  <None Remove="Resources\Images\package.svg" />
 	  <None Remove="Resources\Images\pricetag.png" />
