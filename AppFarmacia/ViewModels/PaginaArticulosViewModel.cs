@@ -10,22 +10,18 @@ namespace AppFarmacia.ViewModels
 {
     public partial class PaginaArticulosViewModel : ObservableObject
     {
-        public ObservableCollection<Articulo> ListaArticulos { get; set; } = [];
+        private ObservableCollection<Articulo> _listaArticulos;
         private readonly ArticulosService articulosService;
         private readonly CategoriasService categoriasService;
         public Articulo? ArticuloSeleccionado;//Sirve para implementar luego otras cosas
         private Categoria? _categoriaSeleccionada;
-        public ObservableCollection<Categoria> ListCategorias { get; set; } = [];
+        public ObservableCollection<Categoria> ListCategorias { get; set; } = new ObservableCollection<Categoria>();
         private string _textoBusqueda;
-        
+
         //Los ICommand se ejecutan a través de un evento de un controlador del front
         public ICommand ObtenerArticulosCommand { get; private set; }
         public ICommand ObtenerCategoriasCommand { get; private set; }
-        public ICommand? OrdenarPorNombreCommand { get; }
-        public ICommand? OrdenarPorDescriptionCommand { get; }
-        public ICommand? OrdenarPorMarcaCommand { get; }
-        public ICommand BusquedaArticuloTextoCommand { get; }
-        public ICommand BusquedaArticuloCategoriaCommand { get; }
+        public ICommand FiltrarCommand { get; }
 
         public PaginaArticulosViewModel()
         {
@@ -34,8 +30,7 @@ namespace AppFarmacia.ViewModels
             this._textoBusqueda = string.Empty;
             ObtenerArticulosCommand = new Command(async () => await ObtenerArticulos());
             ObtenerCategoriasCommand = new Command(async () => await ObtenerCategorias());
-            BusquedaArticuloTextoCommand = new Command(BusquedaArticuloTexto);
-            BusquedaArticuloCategoriaCommand = new Command(BusquedaArticuloCategoria);
+            FiltrarCommand = new Command(FiltrarArticulos);
 
             // Carga inicial de los artículos
             Task.Run(async () => await ObtenerArticulos());
@@ -49,14 +44,6 @@ namespace AppFarmacia.ViewModels
             {
                 _textoBusqueda = value;
                 OnPropertyChanged();
-                if (_textoBusqueda.Length > 0)
-                {
-                    BusquedaArticuloTextoCommand.Execute(null);
-                }
-                else
-                {
-                    Task.Run(async () => await ObtenerArticulos());
-                }
             }
         }
 
@@ -67,20 +54,19 @@ namespace AppFarmacia.ViewModels
             {
                 _categoriaSeleccionada = value;
                 OnPropertyChanged();
+            }
+        }
 
-                if (CategoriaSeleccionada != null)
+        public ObservableCollection<Articulo> ListaArticulos
+        {
+            get => _listaArticulos;
+            set
+            {
+                if (_listaArticulos != value)
                 {
-                    if (CategoriaSeleccionada.Nombre != "Ninguna")
-                    {
-                        BusquedaArticuloCategoriaCommand.Execute(null);
-
-                    }
-                    else
-                    {
-                        Task.Run(async () => await ObtenerArticulos());
-                    }
+                    _listaArticulos = value;
+                    OnPropertyChanged();
                 }
-                
             }
         }
 
@@ -89,12 +75,13 @@ namespace AppFarmacia.ViewModels
             try
             {
                 var articulos = await articulosService.GetArticulos();
+                this.ListaArticulos = new ObservableCollection<Articulo>(articulos); // ESTO SE PUEDE HACER YA QUE TENGO _listaArticulos y ListaArticulos
                 // Si la cantidad de artículos es igual distinta de cero => limpio
-                if (articulos.Count != 0)
-                    this.ListaArticulos.Clear();
+                //if (articulos.Count != 0)
+                    //this.ListaArticulos.Clear();
 
-                foreach (var articulo in articulos)
-                    this.ListaArticulos.Add(articulo);
+                //foreach (var articulo in articulos)
+                    //this.ListaArticulos.Add(articulo);
             }
             catch (Exception ex)
             {
@@ -129,36 +116,36 @@ namespace AppFarmacia.ViewModels
             }
         }
 
-        private void BusquedaArticuloTexto()
+        private void FiltrarArticulos()
         {
-            List<Articulo> articulosEncontrados = new ObservableCollection<Articulo>(ListaArticulos.
-                Where(encontrado => !string.IsNullOrWhiteSpace(encontrado.Nombre) &&
-                encontrado.Nombre.Contains(TextoBusqueda))).ToList();
 
-            //Limpia la observableCollection y agrega los encontrados
-            ListaArticulos.Clear();
-            foreach (var articulo in articulosEncontrados)
+            Task.Run(async () => await ObtenerArticulos()); // CADA VEZ QUE SE APRETA FILTRAR SE HACE A PARTIR DE TODOS LOS ARTICULOS, PARA NO HACER OTRO GET LO MEJOR ES TENER UN VECTOR AUXILIAR
+
+            var articulosFiltrados = ListaArticulos.AsEnumerable();
+
+            if (!string.IsNullOrWhiteSpace(TextoBusqueda))
             {
-                ListaArticulos.Add(articulo);
+                articulosFiltrados = articulosFiltrados.Where(a => a.Nombre.Contains(TextoBusqueda)).ToList();
             }
-        }
-
-        private void BusquedaArticuloCategoria()
-        {
-            if (CategoriaSeleccionada != null)
+            else
             {
-                List<Articulo> articulosEncontrados = new ObservableCollection<Articulo>(ListaArticulos.
-                            Where(encontrado => !string.IsNullOrWhiteSpace(encontrado.Nombre) &&
-                            encontrado.Nombre.Contains(TextoBusqueda) && encontrado.IdCategoria == CategoriaSeleccionada.IdCategoria)).ToList();
-
-                //Limpia la observableCollection y agrega los encontrados
-                ListaArticulos.Clear();
-                foreach (var articulo in articulosEncontrados)
+                if (CategoriaSeleccionada != null && CategoriaSeleccionada.Nombre != "Ninguna")
                 {
-                    ListaArticulos.Add(articulo);
+                    articulosFiltrados = articulosFiltrados.Where(a => a.IdCategoria == CategoriaSeleccionada.IdCategoria);
+                }
+                else
+                {
+                    articulosFiltrados = new Collection<Articulo>();
                 }
             }
-        }
+            this.ListaArticulos = new ObservableCollection<Articulo>(articulosFiltrados);
 
+            //Limpia la observableCollection y agrega los encontrados
+            //ListaArticulos.Clear();
+            //foreach (var articulo in articulosFiltrados)
+            //{
+            //    ListaArticulos.Add(articulo);
+            //}
+        }
     }
 }
