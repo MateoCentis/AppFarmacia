@@ -10,13 +10,15 @@ namespace AppFarmacia.ViewModels
 {
     public partial class PaginaArticulosViewModel : ObservableObject
     {
-        private ObservableCollection<Articulo> _listaArticulos;
-        private ObservableCollection<Articulo> _listaArticulosCompleta;
         private readonly ArticulosService articulosService;
         private readonly CategoriasService categoriasService;
+
         public Articulo? ArticuloSeleccionado;//Sirve para implementar luego otras cosas
+
+        private ObservableCollection<Articulo> _listaArticulos;
+        private ObservableCollection<Articulo> _listaArticulosCompleta;
         private Categoria? _categoriaSeleccionada;
-        public ObservableCollection<Categoria> ListCategorias { get; set; } = new ObservableCollection<Categoria>();
+        private ObservableCollection<Categoria> _listCategorias;
         private string _textoBusqueda;
 
         //Los ICommand se ejecutan a través de un evento de un controlador del front
@@ -30,6 +32,9 @@ namespace AppFarmacia.ViewModels
             this.categoriasService = new CategoriasService();
             this._textoBusqueda = string.Empty;
             this._listaArticulos = [];
+            this._listaArticulosCompleta = [];
+            this._listCategorias = [];
+
             ObtenerArticulosCommand = new Command(async () => await ObtenerArticulos());
             ObtenerCategoriasCommand = new Command(async () => await ObtenerCategorias());
             FiltrarCommand = new Command(FiltrarArticulos);
@@ -85,6 +90,19 @@ namespace AppFarmacia.ViewModels
             }
         }
 
+        public ObservableCollection<Categoria> ListCategorias
+        {
+            get => _listCategorias;
+            set
+            {
+                if (_listCategorias != value)
+                {
+                    _listCategorias = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         async Task ObtenerArticulos()
         {
             try
@@ -110,16 +128,11 @@ namespace AppFarmacia.ViewModels
             try
             {
                 var categorias = await categoriasService.GetCategorias();
-                // Si la cantidad de artículos es igual distinta de cero => limpio
-                if (categorias.Count != 0)
-                    this.ListCategorias.Clear();
 
-                // Agregar la opción "Ninguna"
+                this.ListCategorias = new ObservableCollection<Categoria>(categorias);
+
                 var ningunaCategoria = new Categoria { Nombre = "Ninguna" };
-                ListCategorias.Add(ningunaCategoria);
-
-                foreach (var categoria in categorias)
-                    ListCategorias.Add(categoria);
+                ListCategorias.Insert(0,ningunaCategoria);
 
                 // Establecer "Ninguna" como la opción seleccionada por defecto
                 CategoriaSeleccionada = ningunaCategoria;

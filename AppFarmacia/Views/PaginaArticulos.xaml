@@ -4,12 +4,19 @@
              xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
              x:Class="AppFarmacia.Views.PaginaArticulos">
 
+    <!--
+    Esto puede solucionar varios problemas, HABLARLO
+    <ContentPage.BindingContext>
+        <viewModels:PaginaArticulosViewModel/>
+    </ContentPage.BindingContext>
+    -->
+
     <Grid RowDefinitions="Auto,*, Auto">
         <HorizontalStackLayout HorizontalOptions="Center" Margin="0,5,0,5">
             <SearchBar Text="{Binding TextoBusqueda}" Placeholder="Buscar artículo..." Margin="0,0,0,5" HorizontalOptions="CenterAndExpand"
                        WidthRequest="400"/>
             <Picker Title="Selecciona una opción" ItemsSource="{Binding ListCategorias}" SelectedItem="{Binding CategoriaSeleccionada}" WidthRequest="210" Margin="40,0,5,5" />
-            <Button Text="Filtrar" Command="{Binding FiltrarCommand}" WidthRequest="100" Margin="5,0,0,5" />
+            <Button Text="Filtrar" Command="{Binding FiltrarCommand}" WidthRequest="100" Margin="5,0,0,5"/>
         </HorizontalStackLayout>
 
         <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ListaArticulos}" 
