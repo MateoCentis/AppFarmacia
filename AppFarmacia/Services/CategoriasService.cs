@@ -27,5 +27,23 @@ namespace AppFarmacia.Services
             return this.categorias!;
         }
 
+        public async Task<Categoria> GetCategoriaPorId(int id)
+        {
+            Categoria? categoria = this.categorias.FirstOrDefault(a => a.IdCategoria == id);
+            if (categoria != null)
+            {
+                return categoria;
+            }
+
+            var respuesta = await httpClient.GetAsync($"http://localhost:83/api/Categorias/{id}");
+
+            if (respuesta.IsSuccessStatusCode)
+            {
+                categoria = await respuesta.Content.ReadFromJsonAsync<Categoria>();
+                return categoria;
+            }
+
+            return null;
+        }
     }
 }
