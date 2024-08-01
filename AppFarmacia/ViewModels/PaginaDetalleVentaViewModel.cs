@@ -15,21 +15,16 @@ namespace AppFarmacia.ViewModels
     public partial class PaginaDetalleVentaViewModel : ObservableObject
     {
         [ObservableProperty]
-        VentaMostrar ventaMostrar;
+        private VentaMostrar? ventaMostrar;
         
         public ObservableCollection<ArticuloEnVentaMostrar> ArticulosEnVenta { get; set; } = [];
         //public AsyncRelayCommand HaciaAtrasCommand { get; }
-
-        public PaginaDetalleVentaViewModel()
-        {
-
-        }
 
         public async Task ObtenerDetalles()
         {
             try
             {
-                var articulosDetalle = ventaMostrar?.ArticulosEnVenta ?? [];
+                var articulosDetalle = VentaMostrar?.ArticulosEnVenta ?? [];
                 foreach (var aev in articulosDetalle)
                 {
                     var articuloEnVentaMostrar = new ArticuloEnVentaMostrar();

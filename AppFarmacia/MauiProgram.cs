@@ -22,11 +22,13 @@ namespace AppFarmacia
             builder.Services.AddSingleton<PaginaVentas>();
             builder.Services.AddSingleton<PaginaArticulos>();
             builder.Services.AddTransient<PaginaDetalleVenta>();
+            builder.Services.AddTransient<PaginaArticuloFinal>();
 
             //ViewModels
             builder.Services.AddSingleton<PaginaVentasViewModel>();
             builder.Services.AddSingleton<PaginaArticulosViewModel>();
             builder.Services.AddTransient<PaginaDetalleVentaViewModel>();
+            builder.Services.AddTransient<PaginaArticuloFinalViewModel>();
 
             //Servicios
             builder.Services.AddSingleton<VentasService>();

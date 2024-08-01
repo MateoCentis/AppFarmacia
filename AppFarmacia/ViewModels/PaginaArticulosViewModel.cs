@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Windows.Input;
 using AppFarmacia.Models;
 using AppFarmacia.Services;
+using AppFarmacia.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -13,10 +14,11 @@ namespace AppFarmacia.ViewModels
         private readonly ArticulosService articulosService;
         private readonly CategoriasService categoriasService;
 
-        public Articulo? ArticuloSeleccionado;//Sirve para implementar luego otras cosas
+        [ObservableProperty]
+        private ArticuloMostrar articuloSeleccionado;//Sirve para implementar luego otras cosas
 
-        private ObservableCollection<Articulo> _listaArticulos;
-        private ObservableCollection<Articulo> _listaArticulosCompleta;
+        private ObservableCollection<ArticuloMostrar> _listaArticulos;
+        private ObservableCollection<ArticuloMostrar> _listaArticulosCompleta;
         private Categoria? _categoriaSeleccionada;
         private ObservableCollection<Categoria> _listCategorias;
         private string _textoBusqueda;
@@ -64,7 +66,7 @@ namespace AppFarmacia.ViewModels
             }
         }
 
-        public ObservableCollection<Articulo> ListaArticulos
+        public ObservableCollection<ArticuloMostrar> ListaArticulos
         {
             get => _listaArticulos;
             set
@@ -77,7 +79,7 @@ namespace AppFarmacia.ViewModels
             }
         }
 
-        public ObservableCollection<Articulo> ListaArticulosCompleta
+        public ObservableCollection<ArticuloMostrar> ListaArticulosCompleta
         {
             get => _listaArticulosCompleta;
             set
@@ -108,7 +110,15 @@ namespace AppFarmacia.ViewModels
             try
             {
                 var articulos = await articulosService.GetArticulos();
-                this.ListaArticulosCompleta = new ObservableCollection<Articulo>(articulos); // ESTO SE PUEDE HACER YA QUE TENGO _listaArticulos y ListaArticulos
+                //Hay que hacer si o si el foreach acá xd
+
+                //this.ListaArticulosCompleta = new ObservableCollection<ArticuloMostrar>(articulos); // ESTO SE PUEDE HACER YA QUE TENGO _listaArticulos y ListaArticulos
+                foreach (Articulo articulo in articulos)
+                {
+                    var articuloMostrar = new ArticuloMostrar();
+                    await articuloMostrar.InicializarAsync(articulo);
+                    this.ListaArticulosCompleta.Add(articuloMostrar);
+                }
                 // Si la cantidad de artículos es igual distinta de cero => limpio
                 //if (articulos.Count != 0)
                     //this.ListaArticulos.Clear();
@@ -154,12 +164,12 @@ namespace AppFarmacia.ViewModels
             }
             
             if (CategoriaSeleccionada != null && CategoriaSeleccionada.Nombre != "Ninguna")
-            {
+            { 
                 articulosFiltrados = articulosFiltrados.Where(a => a.IdCategoria == CategoriaSeleccionada.IdCategoria).ToList();
             }
 
 
-            this.ListaArticulos = new ObservableCollection<Articulo>(articulosFiltrados);
+            this.ListaArticulos = new ObservableCollection<ArticuloMostrar>(articulosFiltrados);
 
             //Limpia la observableCollection y agrega los encontrados
             //ListaArticulos.Clear();
@@ -167,6 +177,24 @@ namespace AppFarmacia.ViewModels
             //{
             //    ListaArticulos.Add(articulo);
             //}
+        }
+
+        [RelayCommand]
+        async Task VerArticulo()
+        {
+            if (ArticuloSeleccionado != null)
+            {
+                var parametroNavigation = new Dictionary<string, object>
+                {
+                    {"ArticuloAMostrar",ArticuloSeleccionado}
+                };
+
+                await Shell.Current.GoToAsync(nameof(PaginaArticuloFinal), parametroNavigation);
+            }
+            else
+            {
+                await Shell.Current.DisplayAlert("Error!", "No se ha seleccionado ningun artículo.", "OK");
+            }
         }
     }
 }

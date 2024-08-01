@@ -4,19 +4,19 @@
              xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
              x:Class="AppFarmacia.Views.PaginaArticulos">
 
-    <!--
-    Esto puede solucionar varios problemas, HABLARLO
+    
     <ContentPage.BindingContext>
         <viewModels:PaginaArticulosViewModel/>
     </ContentPage.BindingContext>
-    -->
+    
 
     <Grid RowDefinitions="Auto,*, Auto">
         <HorizontalStackLayout HorizontalOptions="Center" Margin="0,5,0,5">
             <SearchBar Text="{Binding TextoBusqueda}" Placeholder="Buscar artículo..." Margin="0,0,0,5" HorizontalOptions="CenterAndExpand"
-                       WidthRequest="400"/>
+                       WidthRequest="400" HeightRequest="40" SearchButtonPressed="OnSearchButtonPressed" VerticalOptions="Center"/>
             <Picker Title="Selecciona una opción" ItemsSource="{Binding ListCategorias}" SelectedItem="{Binding CategoriaSeleccionada}" WidthRequest="210" Margin="40,0,5,5" />
             <Button Text="Filtrar" Command="{Binding FiltrarCommand}" WidthRequest="100" Margin="5,0,0,5"/>
+            <Button Text="Ver Artículo" Command="{Binding VerArticuloCommand}" VerticalOptions="Center" Margin="5,0,0,5"/>
         </HorizontalStackLayout>
 
         <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ListaArticulos}" 
@@ -34,6 +34,8 @@
                 <dg:DataGridColumn Title="Id" PropertyName="IdArticulo" />
                 <dg:DataGridColumn Title="Nombre" PropertyName="Nombre"/>
                 <dg:DataGridColumn Title="Marca" PropertyName="Marca"/>
+                <dg:DataGridColumn Title="Categoría" PropertyName="Categoria"/>
+                <dg:DataGridColumn Title="Precio" PropertyName="PrecioActual"/>
                 <dg:DataGridColumn Title="Descripción" PropertyName="Descripcion"/>
             </dg:DataGrid.Columns>
 
