@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AppFarmaciaWebAPI.Models;
-using AppFarmaciaWebAPI.ModelsDTO;
 using AutoMapper;
+using AppFarmaciaWebAPI.ModelsDTO;
 
 namespace AppFarmaciaWebAPI.Controllers
 {
@@ -17,6 +12,7 @@ namespace AppFarmaciaWebAPI.Controllers
     {
         private readonly FarmaciaDbContext _context;
         private readonly IMapper _mapper;
+
         public PreciosController(IMapper mapper, FarmaciaDbContext context)
         {
             _context = context;
@@ -27,10 +23,9 @@ namespace AppFarmaciaWebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PrecioDTO>>> GetPrecios()
         {
-            var precio = await _context.Precios.ToListAsync();
-            var precioDTO = _mapper.Map<IEnumerable<PrecioDTO>>(precio);
-            return Ok(precioDTO);
-
+            var precios = await _context.Precios.ToListAsync();
+            var preciosDTO = _mapper.Map<IEnumerable<PrecioDTO>>(precios);
+            return Ok(preciosDTO);
         }
 
         // GET: api/Precio/5
@@ -43,26 +38,27 @@ namespace AppFarmaciaWebAPI.Controllers
             {
                 return NotFound();
             }
+
             var precioDTO = _mapper.Map<PrecioDTO>(precio);
             return Ok(precioDTO);
         }
 
         // PUT: api/Precio/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> EditPrecio(int id, [FromBody] PrecioDTO precioDTO)
         {
             if (id != precioDTO.IdPrecio)
             {
-                return BadRequest("El ID del precio no se encuentra en la base de datos");
+                return BadRequest("El ID del precio no se encuentra en la base de datos.");
             }
-            //Se cambian solo fecha y valor
+
             var precioExistente = await _context.Precios.FindAsync(id);
             if (precioExistente == null)
             {
                 return NotFound($"No se encontró un precio con el ID {id}.");
             }
 
+            // Actualizar solo los campos relevantes
             precioExistente.Fecha = precioDTO.Fecha;
             precioExistente.Valor = precioDTO.Valor;
 
@@ -88,11 +84,11 @@ namespace AppFarmaciaWebAPI.Controllers
         }
 
         // POST: api/Precio
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<PrecioDTO>> PostPrecio(PrecioDTO precioDTO)
+        public async Task<ActionResult<PrecioDTO>> PostPrecio([FromBody] PrecioDTO precioDTO)
         {
             var precio = _mapper.Map<Precio>(precioDTO);
+
             _context.Precios.Add(precio);
             try
             {
@@ -109,6 +105,7 @@ namespace AppFarmaciaWebAPI.Controllers
                     throw;
                 }
             }
+
             var createdPrecioDTO = _mapper.Map<PrecioDTO>(precio);
 
             return CreatedAtAction(nameof(GetPrecio), new { id = createdPrecioDTO.IdPrecio }, createdPrecioDTO);

@@ -10,24 +10,17 @@ namespace AppFarmaciaWebAPI.Mapping
         {
             // Mapeo entre Articulo y ArticuloDTO
             CreateMap<Articulo, ArticuloDTO>()
-                .ForMember(dest => dest.ArticulosFinalesDTO, opt => opt.MapFrom(src => src.ArticulosFinales))
-                .ForMember(dest => dest.PreciosDTO, opt => opt.MapFrom(src => src.Precios));
+                .ForMember(dest => dest.PreciosDTO, opt => opt.MapFrom(src => src.Precios))
+                .ForMember(dest => dest.VencimientosDTO, opt => opt.MapFrom(src => src.Vencimientos));
+            // Eliminado ArticulosFinalesDTO
 
             CreateMap<ArticuloDTO, Articulo>()
-                .ForMember(dest => dest.ArticulosFinales, opt => opt.MapFrom(src => src.ArticulosFinalesDTO))
-                .ForMember(dest => dest.Precios, opt => opt.MapFrom(src => src.PreciosDTO));
+                .ForMember(dest => dest.Precios, opt => opt.MapFrom(src => src.PreciosDTO))
+                .ForMember(dest => dest.Vencimientos, opt => opt.MapFrom(src => src.VencimientosDTO));
+            // Eliminado ArticulosFinalesDTO
 
             // Mapeo entre ArticuloEnVenta y ArticuloEnVentaDTO
             CreateMap<ArticuloEnVenta, ArticuloEnVentaDTO>().ReverseMap();
-
-            // Mapeo entre ArticuloFinal y ArticuloFinalDTO
-            CreateMap<ArticuloFinal, ArticuloFinalDTO>()
-                .ForMember(dest => dest.Stocks, opt => opt.MapFrom(src => src.Stocks))
-                .ForMember(dest => dest.ArticulosEnVenta, opt => opt.MapFrom(src => src.ArticuloEnVenta));
-
-            CreateMap<ArticuloFinalDTO, ArticuloFinal>()
-                .ForMember(dest => dest.Stocks, opt => opt.MapFrom(src => src.Stocks))
-                .ForMember(dest => dest.ArticuloEnVenta, opt => opt.MapFrom(src => src.ArticulosEnVenta));
 
             // Mapeo entre Categoria y CategoriaDTO
             CreateMap<Categoria, CategoriaDTO>()
@@ -51,6 +44,9 @@ namespace AppFarmaciaWebAPI.Mapping
 
             // Mapeo entre Usuario y UsuarioDTO
             CreateMap<Usuario, UsuarioDTO>().ReverseMap();
+
+            // Mapeo entre Vencimiento y VencimientoDTO
+            CreateMap<Vencimiento, VencimientoDTO>().ReverseMap();
 
             // Mapeo entre Venta y VentaDTO
             CreateMap<Venta, VentaDTO>()

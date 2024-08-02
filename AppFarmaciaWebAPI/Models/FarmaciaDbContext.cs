@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace AppFarmaciaWebAPI.Models;
 
@@ -17,8 +19,6 @@ public partial class FarmaciaDbContext : DbContext
 
     public virtual DbSet<ArticuloEnVenta> ArticulosEnVenta { get; set; }
 
-    public virtual DbSet<ArticuloFinal> ArticulosFinales { get; set; }
-
     public virtual DbSet<Categoria> Categorias { get; set; }
 
     public virtual DbSet<Precio> Precios { get; set; }
@@ -28,6 +28,8 @@ public partial class FarmaciaDbContext : DbContext
     public virtual DbSet<Stock> Stocks { get; set; }
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
+
+    public virtual DbSet<Vencimiento> Vencimientos { get; set; }
 
     public virtual DbSet<Venta> Ventas { get; set; }
 
@@ -39,6 +41,10 @@ public partial class FarmaciaDbContext : DbContext
 
             entity.ToTable("ARTICULO");
 
+            entity.Property(e => e.Codigo)
+                .HasMaxLength(15)
+                .IsUnicode(false)
+                .IsFixedLength();
             entity.Property(e => e.Descripcion).IsUnicode(false);
             entity.Property(e => e.Marca)
                 .HasMaxLength(50)
@@ -60,27 +66,15 @@ public partial class FarmaciaDbContext : DbContext
 
             entity.Property(e => e.Precio).HasColumnType("decimal(16, 2)");
 
-            entity.HasOne(d => d.IdArticuloFinalNavigation).WithMany(p => p.ArticuloEnVenta)
-                .HasForeignKey(d => d.IdArticuloFinal)
+            entity.HasOne(d => d.IdArticuloNavigation).WithMany(p => p.ArticuloEnVenta)
+                .HasForeignKey(d => d.IdArticulo)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ARTICULO_EN_VENTA_ARTICULO_FINAL");
+                .HasConstraintName("FK_ARTICULO_EN_VENTA_ARTICULO");
 
             entity.HasOne(d => d.IdVentaNavigation).WithMany(p => p.ArticuloEnVenta)
                 .HasForeignKey(d => d.IdVenta)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ARTICULO_EN_VENTA_VENTA");
-        });
-
-        modelBuilder.Entity<ArticuloFinal>(entity =>
-        {
-            entity.HasKey(e => e.IdArticuloFinal);
-
-            entity.ToTable("ARTICULO_FINAL");
-
-            entity.HasOne(d => d.IdArticuloNavigation).WithMany(p => p.ArticulosFinales)
-                .HasForeignKey(d => d.IdArticulo)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ARTICULO_FINAL_ARTICULO");
         });
 
         modelBuilder.Entity<Categoria>(entity =>
@@ -130,10 +124,10 @@ public partial class FarmaciaDbContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
 
-            entity.HasOne(d => d.IdArticuloFinalNavigation).WithMany(p => p.Stocks)
-                .HasForeignKey(d => d.IdArticuloFinal)
+            entity.HasOne(d => d.IdArticuloNavigation).WithMany(p => p.Stocks)
+                .HasForeignKey(d => d.IdArticulo)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_STOCK_ARTICULO_FINAL");
+                .HasConstraintName("FK_STOCK_ARTICULO");
         });
 
         modelBuilder.Entity<Usuario>(entity =>
@@ -153,6 +147,17 @@ public partial class FarmaciaDbContext : DbContext
                 .HasForeignKey(d => d.IdPrivilegio)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_USUARIO_PRIVILEGIO");
+        });
+
+        modelBuilder.Entity<Vencimiento>(entity =>
+        {
+            entity.HasKey(e => e.IdVencimiento);
+
+            entity.ToTable("VENCIMIENTO");
+
+            entity.HasOne(d => d.IdArticuloNavigation).WithMany(p => p.Vencimientos)
+                .HasForeignKey(d => d.IdArticulo)
+                .HasConstraintName("FK_VENCIMIENTO_ARTICULO");
         });
 
         modelBuilder.Entity<Venta>(entity =>

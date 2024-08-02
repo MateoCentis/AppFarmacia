@@ -1,4 +1,7 @@
-﻿namespace AppFarmaciaWebAPI.Models;
+﻿using System;
+using System.Collections.Generic;
+
+namespace AppFarmaciaWebAPI.Models;
 
 public partial class ArticuloEnVenta
 {
@@ -6,13 +9,13 @@ public partial class ArticuloEnVenta
 
     public int Cantidad { get; set; }
 
-    public int IdArticuloFinal { get; set; }
+    public int IdArticulo { get; set; }
 
     public int IdVenta { get; set; }
 
     public decimal Precio { get; set; }
 
-    public virtual ArticuloFinal IdArticuloFinalNavigation { get; set; } = null!;
+    public virtual Articulo IdArticuloNavigation { get; set; } = null!;
 
     public virtual Venta IdVentaNavigation { get; set; } = null!;
 }

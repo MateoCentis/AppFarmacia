@@ -4,7 +4,7 @@ using AppFarmaciaWebAPI.Models;
 using AutoMapper;
 using AppFarmaciaWebAPI.ModelsDTO;
 
-namespace AppFarmaciaWebAPI.Controllers  
+namespace AppFarmaciaWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -19,23 +19,21 @@ namespace AppFarmaciaWebAPI.Controllers
             _mapper = mapper;
         }
 
-        // GET'S---
-
-        // GET: api/Articulo
+        // GET: api/Articulos
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ArticuloDTO>>> GetArticulos()
         {
-            var articulo = await _context.Articulos.Where(a => a.Activo==true).ToListAsync();
-            var articuloDTO = _mapper.Map<IEnumerable<ArticuloDTO>>(articulo);
-            return Ok(articuloDTO);
+            // Acá cambié para que muestre todos, no solo los activos, de última del front sacamos los no activos
+            var articulos = await _context.Articulos.ToListAsync();
+            var articuloDTOs = _mapper.Map<IEnumerable<ArticuloDTO>>(articulos);
+            return Ok(articuloDTOs);
         }
 
-        // GET: api/Articulo/5
+        // GET: api/Articulos/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ArticuloDTO>> GetArticulo(int id)
         {
             var articulo = await _context.Articulos
-                .Where(a => a.Activo == true)
                 .FirstOrDefaultAsync(a => a.IdArticulo == id);
 
             if (articulo == null)
@@ -46,9 +44,7 @@ namespace AppFarmaciaWebAPI.Controllers
             return Ok(articuloDTO);
         }
 
-        // GET: api/Articulo/5/precios
-
-        // PUT: api/Articulo/5
+        // PUT: api/Articulos/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutArticulo(int id, ArticuloDTO articuloDTO)
         {
@@ -65,7 +61,6 @@ namespace AppFarmaciaWebAPI.Controllers
             }
 
             _mapper.Map(articuloDTO, articuloExistente);
-
 
             // Marcar la entidad como modificada
             _context.Entry(articuloExistente).State = EntityState.Modified;
@@ -88,8 +83,7 @@ namespace AppFarmaciaWebAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/Articulo
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // POST: api/Articulos
         [HttpPost]
         public async Task<ActionResult<ArticuloDTO>> AddArticulo(ArticuloDTO articuloDTO)
         {
@@ -112,29 +106,32 @@ namespace AppFarmaciaWebAPI.Controllers
                 }
             }
 
-            var createdarticuloDTO = _mapper.Map<ArticuloDTO>(articulo);
+            var createdArticuloDTO = _mapper.Map<ArticuloDTO>(articulo);
 
-            return CreatedAtAction(nameof(GetArticulo), new { id = createdarticuloDTO.IdArticulo }, createdarticuloDTO);
+            return CreatedAtAction(nameof(GetArticulo), new { id = createdArticuloDTO.IdArticulo }, createdArticuloDTO);
         }
 
-        // DELETE: api/Articulo/5
+        // DELETE: api/Articulos/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteArticulo(int id)
         {
-            var articulo = await _context.Articulos.FirstOrDefaultAsync(p => p.IdArticulo == id);
+            var articulo = await _context.Articulos
+                .Include(a => a.Precios)
+                .FirstOrDefaultAsync(a => a.IdArticulo == id);
+
             if (articulo == null)
             {
                 return NotFound($"No se encontró un articulo con el ID {id}.");
             }
 
-            // Verificar si hay usuarios asociados al articulo
-            if (articulo.ArticulosFinales.Any())
+            if (articulo.Stocks.Count > 0)
             {
-                return BadRequest("No se puede eliminar el articulo porque tiene usuarios asignados.");
+                return BadRequest("No se puede eliminar el articulo porque tiene stocks asignados.");
             }
-            if (articulo.Precios.Any())
+            // Verificar si el articulo tiene precios asociados
+            if (articulo.Precios.Count > 0)
             {
-                return BadRequest("No se puede eliminar el articulo porque tiene usuarios asignados.");
+                return BadRequest("No se puede eliminar el articulo porque tiene precios asignados.");
             }
 
             _context.Articulos.Remove(articulo);

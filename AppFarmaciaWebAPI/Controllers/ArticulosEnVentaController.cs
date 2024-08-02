@@ -24,7 +24,7 @@ namespace AppFarmaciaWebAPI.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/ArticuloEnVenta
+        // GET: api/ArticulosEnVenta
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ArticuloEnVentaDTO>>> GetArticulosEnVenta()
         {
@@ -33,7 +33,7 @@ namespace AppFarmaciaWebAPI.Controllers
             return Ok(articulosEnVentaDTO);
         }
 
-        // GET: api/ArticuloEnVenta/5
+        // GET: api/ArticulosEnVenta/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ArticuloEnVentaDTO>> GetArticuloEnVenta(int id)
         {
@@ -48,7 +48,7 @@ namespace AppFarmaciaWebAPI.Controllers
             return Ok(articuloEnVentaDTO);
         }
 
-        // PUT: api/ArticuloEnVenta/5
+        // PUT: api/ArticulosEnVenta/5
         [HttpPut("{id}")]
         public async Task<IActionResult> EditArticuloEnVenta(int id, [FromBody] ArticuloEnVentaDTO articuloEnVentaDTO)
         {
@@ -90,8 +90,7 @@ namespace AppFarmaciaWebAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/ArticuloEnVenta
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // POST: api/ArticulosEnVenta
         [HttpPost]
         public async Task<ActionResult<ArticuloEnVentaDTO>> PostArticuloEnVenta([FromBody] ArticuloEnVentaDTO articuloEnVentaDTO)
         {
@@ -119,7 +118,7 @@ namespace AppFarmaciaWebAPI.Controllers
             return CreatedAtAction(nameof(GetArticuloEnVenta), new { id = createdArticuloEnVentaDTO.IdArticuloVenta }, createdArticuloEnVentaDTO);
         }
 
-        // DELETE: api/ArticuloEnVenta/5
+        // DELETE: api/ArticulosEnVenta/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteArticuloEnVenta(int id)
         {

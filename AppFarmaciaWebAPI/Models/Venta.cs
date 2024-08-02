@@ -1,4 +1,7 @@
-﻿namespace AppFarmaciaWebAPI.Models;
+﻿using System;
+using System.Collections.Generic;
+
+namespace AppFarmaciaWebAPI.Models;
 
 public partial class Venta
 {

@@ -1,4 +1,7 @@
-﻿namespace AppFarmaciaWebAPI.Models;
+﻿using System;
+using System.Collections.Generic;
+
+namespace AppFarmaciaWebAPI.Models;
 
 public partial class Usuario
 {
@@ -10,5 +13,5 @@ public partial class Usuario
 
     public int IdPrivilegio { get; set; }
 
-    public virtual Privilegio? IdPrivilegioNavigation { get; set; }
+    public virtual Privilegio IdPrivilegioNavigation { get; set; } = null!;
 }
