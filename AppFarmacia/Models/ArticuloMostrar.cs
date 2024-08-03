@@ -13,7 +13,12 @@ namespace AppFarmacia.Models
         public string Categoria { get; set; }
         public decimal PrecioActual { get; set; }
         public DateOnly FechaUltimoPrecio { get; set; }
-        public ICollection<ArticuloFinal> ArticulosFinales { get; set; } = [];
+        public int Stock {  get; set; }
+
+        public ICollection<Vencimiento> Vencimientos { get; set; } = [];
+        public ICollection<Precio> Precios { get; set; } = [];
+        public ICollection<ArticuloEnVenta> ArticulosEnVenta { get; set; } = [];
+        public ICollection<Stock> Stocks { get; set; } = [];
 
         public ArticuloMostrar()
         {
@@ -25,12 +30,16 @@ namespace AppFarmacia.Models
 
         public async Task InicializarAsync(Articulo articulo)
         {
+            // Van derecho
             this.IdArticulo = articulo.IdArticulo;
             this.Nombre = articulo.Nombre;
             this.Marca = articulo.Marca ?? string.Empty;
             this.Descripcion = articulo.Descripcion ?? string.Empty;
-            this.ArticulosFinales = articulo.ArticulosFinales;
             this.IdCategoria = articulo.IdCategoria.Value;
+            this.ArticulosEnVenta = articulo.ArticulosEnVenta;
+            this.Stocks = articulo.Stocks;
+            this.Vencimientos = articulo.Vencimientos;
+            this.Precios = articulo.Precios;
 
             // Si tiene categoría
             if (articulo.IdCategoria.HasValue)
@@ -45,7 +54,7 @@ namespace AppFarmacia.Models
             if (articulo.Precios.Count > 0)//Si tiene algún precio
             {
                 //Acá no se como vendrán ordenados los precios, tomo el primero o el último? jsjs
-                Precio precio = articulo.Precios.Last();
+                Precio precio = articulo.Precios.First();
                 this.PrecioActual = precio.Valor;
                 this.FechaUltimoPrecio = precio.Fecha;
             }
@@ -54,6 +63,16 @@ namespace AppFarmacia.Models
             {
                 this.PrecioActual = 0m; // Precio predeterminado
                 this.FechaUltimoPrecio = DateOnly.FromDateTime(DateTime.MinValue); // Fecha predeterminada
+            }
+
+            if (Stocks.Count > 0)
+            {
+                Stock stock = Stocks.First();
+                this.Stock = stock.CantidadActual;
+            }
+            else
+            {
+                this.Stock = 0;
             }
         }
     }

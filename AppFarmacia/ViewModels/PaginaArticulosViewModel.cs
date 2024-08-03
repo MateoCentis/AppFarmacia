@@ -189,7 +189,7 @@ namespace AppFarmacia.ViewModels
                     {"ArticuloAMostrar",ArticuloSeleccionado}
                 };
 
-                await Shell.Current.GoToAsync(nameof(PaginaArticuloFinal), parametroNavigation);
+                await Shell.Current.GoToAsync(nameof(PaginaArticuloInformacion), parametroNavigation);
             }
             else
             {

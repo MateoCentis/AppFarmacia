@@ -11,12 +11,16 @@ namespace AppFarmaciaWebAPI.Mapping
             // Mapeo entre Articulo y ArticuloDTO
             CreateMap<Articulo, ArticuloDTO>()
                 .ForMember(dest => dest.PreciosDTO, opt => opt.MapFrom(src => src.Precios))
-                .ForMember(dest => dest.VencimientosDTO, opt => opt.MapFrom(src => src.Vencimientos));
-            // Eliminado ArticulosFinalesDTO
-
+                .ForMember(dest => dest.VencimientosDTO, opt => opt.MapFrom(src => src.Vencimientos))
+                .ForMember(dest => dest.StocksDTO, opt => opt.MapFrom(src => src.Stocks))
+                .ForMember(dest => dest.ArticulosEnVentaDTO, opt => opt.MapFrom(src => src.ArticulosEnVenta));
+            
             CreateMap<ArticuloDTO, Articulo>()
                 .ForMember(dest => dest.Precios, opt => opt.MapFrom(src => src.PreciosDTO))
-                .ForMember(dest => dest.Vencimientos, opt => opt.MapFrom(src => src.VencimientosDTO));
+                .ForMember(dest => dest.Vencimientos, opt => opt.MapFrom(src => src.VencimientosDTO))
+                .ForMember(dest => dest.Stocks, opt => opt.MapFrom(src => src.StocksDTO))
+                .ForMember(dest => dest.ArticulosEnVenta, opt => opt.MapFrom(src => src.ArticulosEnVentaDTO));
+                
             // Eliminado ArticulosFinalesDTO
 
             // Mapeo entre ArticuloEnVenta y ArticuloEnVentaDTO

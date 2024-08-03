@@ -16,7 +16,9 @@
         public int? IdCategoria { get; set; }
         public bool Activo { get; set; }
 
+        public ICollection<ArticuloEnVentaDTO> ArticulosEnVentaDTO { get; set; } = [];
         public ICollection<PrecioDTO> PreciosDTO { get; set; } = [];
         public ICollection<VencimientoDTO> VencimientosDTO { get; set; } = [];
+        public ICollection<StockDTO> StocksDTO { get; set; } = [];
     }
 }

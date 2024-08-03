@@ -19,9 +19,9 @@ public partial class Articulo
 
     public string? Codigo { get; set; }
 
-    public virtual ICollection<ArticuloEnVenta> ArticuloEnVenta { get; set; } = new List<ArticuloEnVenta>();
-
     public virtual Categoria? IdCategoriaNavigation { get; set; }
+
+    public virtual ICollection<ArticuloEnVenta> ArticulosEnVenta { get; set; } = new List<ArticuloEnVenta>();
 
     public virtual ICollection<Precio> Precios { get; set; } = new List<Precio>();
 

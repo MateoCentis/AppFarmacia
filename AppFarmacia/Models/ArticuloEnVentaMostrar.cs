@@ -17,15 +17,8 @@ namespace AppFarmacia.Models
 
         public async Task InicializarAsync(ArticuloEnVenta aev)
         {
-            // Obtener información de artículo, parándonos en artículo en venta
-
-            // De ArticuloVenta -> ArticuloFinal
-            ArticulosFinalesService articuloFinalService = new ArticulosFinalesService();
-            ArticuloFinal? articuloFinal = await articuloFinalService.GetArticuloPorId(aev.IdArticuloFinal);
-
-            // De ArticuloFinal -> Articulo
             ArticulosService articuloService = new ArticulosService();
-            Articulo? articulo = await articuloService.GetArticuloPorId(articuloFinal.IdArticulo);
+            Articulo? articulo = await articuloService.GetArticuloPorId(aev.IdArticulo);
 
             this.IdArticulo = articulo.IdArticulo;
             this.NombreArticulo = articulo.Nombre;

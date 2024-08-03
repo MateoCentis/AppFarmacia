@@ -9,7 +9,7 @@ namespace AppFarmacia
             InitializeComponent();
 
             Routing.RegisterRoute(nameof(PaginaDetalleVenta), typeof(PaginaDetalleVenta));
-            Routing.RegisterRoute(nameof(PaginaArticuloFinal), typeof(PaginaArticuloFinal));
+            Routing.RegisterRoute(nameof(PaginaArticuloInformacion), typeof(PaginaArticuloInformacion));
         }
     }
 }

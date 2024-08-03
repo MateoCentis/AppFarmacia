@@ -84,7 +84,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="Views\PaginaArticuloFinal.xaml">
+	  <MauiXaml Update="Views\PaginaArticuloInformacion.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\PaginaArticulos.xaml">

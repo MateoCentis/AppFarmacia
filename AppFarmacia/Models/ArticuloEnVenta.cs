@@ -10,8 +10,8 @@ namespace AppFarmacia.Models
         [JsonPropertyName("cantidad")]
         public int Cantidad { get; set; }
         
-        [JsonPropertyName("idArticuloFinal")]
-        public int IdArticuloFinal { get; set; }
+        [JsonPropertyName("idArticulo")]
+        public int IdArticulo { get; set; }
         
         [JsonPropertyName("idVenta")]
         public int IdVenta { get; set; }

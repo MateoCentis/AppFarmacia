@@ -1,0 +1,11 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
+             xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
+             x:Class="AppFarmacia.Views.PaginaArticuloInformacion">
+    
+    <ContentPage.BindingContext>
+        <viewModels:PaginaArticuloInformacionViewModel/>
+    </ContentPage.BindingContext>
+
+</ContentPage>
