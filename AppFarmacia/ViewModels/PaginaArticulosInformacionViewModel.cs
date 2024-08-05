@@ -18,6 +18,12 @@ namespace AppFarmacia.ViewModels
         {
         }
 
+        // TODO: Esta función debería devolver la demanda mensual del artículo dado un año determinado
+        // No la implemento porque me gustaría charlarlo con Lucas
+        private List<Decimal> ObtenerDemandaMensual(int year)
+        {
+            throw new NotImplementedException();
+        }
         //Esto se puede usar para otras cosas
         //public async Task ObtenerArticulosFinales()
         //{

@@ -2,10 +2,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
              xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
-             x:Class="AppFarmacia.Views.PaginaArticuloInformacion">
+             xmlns:micro="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+             x:Class="AppFarmacia.Views.PaginaArticuloInformacion"
+             Shell.NavBarIsVisible="False">
     
     <ContentPage.BindingContext>
         <viewModels:PaginaArticuloInformacionViewModel/>
     </ContentPage.BindingContext>
+
+    <Grid ColumnDefinitions="*,Auto">
+        <Grid RowDefinitions="*,Auto" Grid.Column="0">
+            <dg:DataGrid Style="{StaticResource TablaComun}" Grid.Row="0">
+                
+            </dg:DataGrid>
+
+            <dg:DataGrid Style="{StaticResource TablaComun}" Grid.Row="1">
+
+            </dg:DataGrid>
+        </Grid>
+        <VerticalStackLayout Grid.Column="1">
+            <!-- Definir para acá poder poner gráfico de demanda (además del de precio)-->
+            <micro:ChartView x:Name="chartView"/>
+        </VerticalStackLayout>
+    </Grid>
 
 </ContentPage>

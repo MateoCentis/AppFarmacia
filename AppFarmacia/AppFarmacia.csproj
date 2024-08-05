@@ -47,7 +47,6 @@
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
-		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
 
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
@@ -57,17 +56,35 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Resources\Images\calculator.png" />
+	  <None Remove="Resources\Images\alignjustify.svg" />
+	  <None Remove="Resources\Images\arrowleftcircle.svg" />
+	  <None Remove="Resources\Images\box.svg" />
+	  <None Remove="Resources\Images\calculator.svg" />
+	  <None Remove="Resources\Images\calculatorline.svg" />
 	  <None Remove="Resources\Images\farmaciaaput.png" />
-	  <None Remove="Resources\Images\package.svg" />
+	  <None Remove="Resources\Images\layers.svg" />
+	  <None Remove="Resources\Images\pluscircle.svg" />
 	  <None Remove="Resources\Images\pricetag.png" />
-	  <None Remove="Resources\Images\settings.png" />
-	  <None Remove="Resources\Images\shoppingcart.png" />
+	  <None Remove="Resources\Images\refresh.svg" />
+	  <None Remove="Resources\Images\save.svg" />
+	  <None Remove="Resources\Images\settings.svg" />
+	  <None Remove="Resources\Images\settingss.svg" />
+	  <None Remove="Resources\Images\shoppingbag.svg" />
+	  <None Remove="Resources\Images\shoppingcart.svg" />
+	  <None Remove="Resources\Images\sidebar.svg" />
+	  <None Remove="Resources\Images\tool.svg" />
+	  <None Remove="Resources\Images\user.svg" />
+	  <None Remove="Resources\Images\usercheck.svg" />
+	  <None Remove="Resources\Images\userminus.svg" />
+	  <None Remove="Resources\Images\userplus.svg" />
+	  <None Remove="Resources\Images\userx.svg" />
+	  <None Remove="Resources\Images\xcircle.svg" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="akgul.Maui.DataGrid" Version="4.0.4" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+		<PackageReference Include="Microcharts.Maui" Version="1.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
 		  <PrivateAssets>all</PrivateAssets>
@@ -84,6 +101,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Resources\Styles\MyStyles.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\PaginaArticuloInformacion.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

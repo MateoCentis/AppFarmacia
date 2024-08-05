@@ -16,12 +16,19 @@ namespace AppFarmacia.ViewModels
 
         [ObservableProperty]
         private ArticuloMostrar articuloSeleccionado;//Sirve para implementar luego otras cosas
+        
+        [ObservableProperty]
+        private int sizePagina;
+
+        [ObservableProperty]
+        private bool paginationEnabled;
 
         private ObservableCollection<ArticuloMostrar> _listaArticulos;
         private ObservableCollection<ArticuloMostrar> _listaArticulosCompleta;
         private Categoria? _categoriaSeleccionada;
         private ObservableCollection<Categoria> _listCategorias;
         private string _textoBusqueda;
+
 
         //Los ICommand se ejecutan a través de un evento de un controlador del front
         public ICommand ObtenerArticulosCommand { get; private set; }
@@ -36,6 +43,8 @@ namespace AppFarmacia.ViewModels
             this._listaArticulos = [];
             this._listaArticulosCompleta = [];
             this._listCategorias = [];
+            PaginationEnabled = true;
+            SizePagina = 20;
 
             ObtenerArticulosCommand = new Command(async () => await ObtenerArticulos());
             ObtenerCategoriasCommand = new Command(async () => await ObtenerCategorias());

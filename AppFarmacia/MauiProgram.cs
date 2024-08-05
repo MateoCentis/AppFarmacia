@@ -2,6 +2,7 @@
 using AppFarmacia.Services;
 using AppFarmacia.ViewModels;
 using AppFarmacia.Views;
+using Microcharts.Maui;
 
 namespace AppFarmacia
 {
@@ -12,6 +13,7 @@ namespace AppFarmacia
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMicrocharts()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

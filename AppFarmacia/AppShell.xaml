@@ -6,11 +6,12 @@
     xmlns:local="clr-namespace:AppFarmacia.Views"
     Shell.FlyoutBehavior="Flyout"
     NavigationPage.HasNavigationBar="False"
-    Shell.TabBarIsVisible="True">
-    
+    Shell.TabBarIsVisible="True"
+    FlyoutIcon="sidebar.png">
+
     <!-- Acá se pone una imagen (logo de la app?) y el nombre de la app o que -->
     <Shell.FlyoutHeader>
-        <VerticalStackLayout>
+        <VerticalStackLayout >
             <Image Source="farmaciaaput.png"/>
             <!--<Label Text="App Farmacia" HorizontalTextAlignment="Center"/>-->
         </VerticalStackLayout>
@@ -18,8 +19,8 @@
 
     <!-- Acá un logo/información (shell content?) o qué -->
     <Shell.FlyoutFooter>
-        <VerticalStackLayout>
-            <Label Text="Hola Matuuuuu" HorizontalTextAlignment="Center"/>
+        <VerticalStackLayout BackgroundColor="LightGray">
+            <Label Text="Versión 1.0" HorizontalTextAlignment="Center" HeightRequest="30" VerticalTextAlignment="Center"/>
         </VerticalStackLayout>
     </Shell.FlyoutFooter>
     
@@ -29,7 +30,7 @@
         Title="Artículos"
         ContentTemplate="{DataTemplate local:PaginaArticulos}"
         Route="PaginaArticulos"
-            Icon="pricetag.png"/>
+            Icon="box.png"/>
 
         <ShellContent
         Title="Ventas"

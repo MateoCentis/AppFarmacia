@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
+             x:Class="AppFarmacia.Resources.Styles.MyStyles">
+
+    
+    <Style TargetType="dg:DataGrid" x:Key="TablaComun">
+        <Setter Property="RowHeight" Value="40"/>
+        <Setter Property="HeaderHeight" Value="50"/>
+        <Setter Property="BorderColor" Value="#111827"/>
+        <Setter Property="BorderThickness" Value="0.5"/>
+        <Setter Property="HeaderBordersVisible" Value="True"/>
+        <Setter Property="ActiveRowColor" Value="DarkGray"/>
+        <Setter Property="HeaderBackground" Value="#E7F1FF"/>
+    </Style>
+    
+
+    <Style x:Key="BotonGeneral" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="White"/>
+        <Setter Property="BorderColor" Value="#D1D5DB"/>
+        <Setter Property="BorderWidth" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="FontFamily" Value="Inter var, ui-sans-serif, system-ui, -apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontAttributes" Value="Bold"/>
+        <Setter Property="TextColor" Value="#111827"/>
+        <Setter Property="HorizontalOptions" Value="Center"/>
+        <Setter Property="VerticalOptions" Value="Center"/>
+        <Setter Property="Shadow">
+            <Setter.Value>
+                <Shadow Brush="Black" Opacity="0.15" Offset="0,1" Radius="2"/>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="White"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#E7F1FF"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Focused">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="White"/>
+                            <Setter Property="BorderColor" Value="Transparent"/>
+                            <Setter Property="BorderWidth" Value="2"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+
+    <Style TargetType="ImageButton" x:Key="ImagenBotonGeneral">
+        <Setter Property="BackgroundColor" Value="White"/>
+        <Setter Property="BorderColor" Value="#D1D5DB"/>
+        <Setter Property="BorderWidth" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Shadow">
+            <Setter.Value>
+                <Shadow Brush="Black" Opacity="0.15" Offset="0,1" Radius="2"/>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="White"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#E7F1FF"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Focused">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="White"/>
+                            <Setter Property="BorderColor" Value="Transparent"/>
+                            <Setter Property="BorderWidth" Value="2"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+    <!-- SearchBar Style -->
+    <Style x:Key="BarraBusqueda" TargetType="SearchBar">
+        <Setter Property="CancelButtonColor" Value="Red"/>
+        <Setter Property="BackgroundColor" Value="White"/>
+        <Setter Property="FontFamily" Value="Inter var, ui-sans-serif, system-ui, -apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="TextColor" Value="#111827"/>
+        <Setter Property="PlaceholderColor" Value="Gray"/>
+        <Setter Property="WidthRequest" Value="300"/>
+        <Setter Property="VerticalOptions" Value="Center"/>
+        <Setter Property="Shadow">
+            <Setter.Value>
+                <Shadow Brush="Black" Opacity="0.15" Offset="0,1" Radius="2"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Picker Style -->
+    <Style x:Key="PickerEstilo" TargetType="Picker">
+        <Setter Property="BackgroundColor" Value="White"/>
+        <Setter Property="FontFamily" Value="Inter var, ui-sans-serif, system-ui, -apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="TextColor" Value="#111827"/>
+        <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
+        <Setter Property="VerticalOptions" Value="Center"/>
+        <Setter Property="Shadow">
+            <Setter.Value>
+                <Shadow Brush="Black" Opacity="0.15" Offset="0,1" Radius="2"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>
