@@ -4,63 +4,53 @@
              xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
              xmlns:micro="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
              x:Class="AppFarmacia.Views.PaginaArticuloInformacion"
-             Shell.NavBarIsVisible="False">
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
+             Shell.FlyoutBehavior="Disabled">
     
     <ContentPage.BindingContext>
         <viewModels:PaginaArticuloInformacionViewModel/>
     </ContentPage.BindingContext>
 
     <!-- Grilla de toda la pantalla-->
-    <Grid RowDefinitions="Auto,*">
-        
+    <Grid RowDefinitions="Auto,Auto,*">
+        <ImageButton Source="arrowleftcircle.png" VerticalOptions="Center" HorizontalOptions="Start" Command="{Binding HaciaAtrasCommand}"/>
         <!-- Grilla para las dos tablas-->
-        <Grid ColumnDefinitions="*,*" Grid.Row="0">
+        <Grid ColumnDefinitions="*,*" Grid.Row="1">
 
             <VerticalStackLayout Grid.Column="0">
-                <Label Text="Histórico de precios" Style="{StaticResource Headline}" FontAttributes="Bold" FontSize="Micro"/>
+                <Label Text="Histórico de precios" Style="{StaticResource TituloGrafico}"/>
                 <!-- Primera tabla - tabla de precios -->
                 <dg:DataGrid Style="{StaticResource TablaComun}" ItemsSource="{Binding PreciosArticulo}" Margin="0,0,0,0">
                     <dg:DataGrid.NoDataView>
-                        <Label Text="No existen precios cargados aún" HorizontalOptions="Center" VerticalOptions="Center" Style="{StaticResource Headline}"/>
+                        <Label Text="No existen precios cargados aún" Style="{StaticResource VistaSinData}"/>
                     </dg:DataGrid.NoDataView>
 
                     <dg:DataGrid.Columns>
                         <dg:DataGridColumn Title="Fecha" PropertyName="Fecha"/>
                         <dg:DataGridColumn Title="Precio" PropertyName="Valor"/>
                     </dg:DataGrid.Columns>
-
-                    <dg:DataGrid.RowsBackgroundColorPalette>
-                        <dg:PaletteCollection>
-                            <Color>#F2F2F2</Color>
-                            <Color>#FFFFFF</Color>
-                        </dg:PaletteCollection>
-                    </dg:DataGrid.RowsBackgroundColorPalette>
+                    
                 </dg:DataGrid>
             </VerticalStackLayout>
 
             <VerticalStackLayout Grid.Column="1">
-                <Label Text="Vencimientos" Style="{StaticResource Headline}" FontAttributes="Bold" FontSize="Micro"/>
+                <Label Text="Vencimientos" Style="{StaticResource TituloGrafico}"/>
                 <!-- Segunda tabla - tabla de vencimientos -->
                 <dg:DataGrid Style="{StaticResource TablaComun}" ItemsSource="{Binding VencimientosArticulo}" Margin="0,0,0,0">
                     <dg:DataGrid.NoDataView>
-                        <Label Text="No existen vencimientos cargados aún" HorizontalOptions="Center" VerticalOptions="Center" Style="{StaticResource Headline}"/>
+                        <Label Text="No existen vencimientos cargados aún" Style="{StaticResource VistaSinData}"/>
                     </dg:DataGrid.NoDataView>
 
                     <dg:DataGrid.Columns>
                         <dg:DataGridColumn Title="Fecha" PropertyName="Fecha"/>
                     </dg:DataGrid.Columns>
 
-                    <dg:DataGrid.RowsBackgroundColorPalette>
-                        <dg:PaletteCollection>
-                            <Color>#F2F2F2</Color>
-                            <Color>#FFFFFF</Color>
-                        </dg:PaletteCollection>
-                    </dg:DataGrid.RowsBackgroundColorPalette>
                 </dg:DataGrid>
             </VerticalStackLayout>
         </Grid>
-        <VerticalStackLayout Grid.Row="1">
-            <Label Text="Demanda mensual del artículo" Style="{StaticResource Headline}" FontAttributes="Bold"/>
+        <VerticalStackLayout Grid.Row="2">
+            <Label Text="{Binding NombreArticulo, StringFormat='Demanda mensual de {0}'}" Style="{StaticResource TituloGrafico}" FontSize="Medium"/>
             <micro:ChartView x:Name="chartView" HeightRequest="500"/>
         </VerticalStackLayout>
     </Grid>

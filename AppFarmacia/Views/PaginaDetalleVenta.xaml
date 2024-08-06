@@ -4,16 +4,22 @@
              xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
              xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
              x:Class="AppFarmacia.Views.PaginaDetalleVenta"
-             Shell.NavBarIsVisible="False">
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
+             Shell.FlyoutBehavior="Disabled">
 
+    <ContentPage.BindingContext>
+        <viewModels:PaginaDetalleVentaViewModel/>
+    </ContentPage.BindingContext>
+    
     <Grid RowDefinitions="Auto,*">
-        <Label Text="Venta"/>
+        <ImageButton Source="arrowleftcircle.png" VerticalOptions="Center" HorizontalOptions="Start" Command="{Binding HaciaAtrasCommand}"/>
 
         <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ArticulosEnVenta}" 
               SelectionMode="Single" Style="{StaticResource TablaComun}">
             <!-- Para cuando la página no tiene data para ver-->
             <dg:DataGrid.NoDataView>
-                <Label Text="Esta venta no tiene detalles" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Label Text="Esta venta no tiene detalles" Style="{StaticResource VistaSinData}"/>
             </dg:DataGrid.NoDataView>
 
             <!-- Acá dentro se definen las columnas de la tabla -->
@@ -26,20 +32,6 @@
                 <dg:DataGridColumn Title="Monto" PropertyName="Monto"/>
             </dg:DataGrid.Columns>
 
-            <!-- Configuración de colores para las filas, segun cuantos se ponen alternan-->
-            <dg:DataGrid.RowsBackgroundColorPalette>
-                <dg:PaletteCollection>
-                    <Color>#F2F2F2</Color>
-                    <Color>#FFFFFF</Color>
-                </dg:PaletteCollection>
-            </dg:DataGrid.RowsBackgroundColorPalette>
-
-            <!-- Esto sirve para darle a determinadas celdas colores especiales bajo ciertas condiciones-->
-            <dg:DataGrid.Resources>
-                <ResourceDictionary>
-                    <!--<conv:StreakToColorConverter x:Key="StreakToColorConverter"/>-->
-                </ResourceDictionary>
-            </dg:DataGrid.Resources>
         </dg:DataGrid>
     </Grid>
 </ContentPage>

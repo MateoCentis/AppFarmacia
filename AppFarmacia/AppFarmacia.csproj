@@ -56,8 +56,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Fonts\Lexend-Black.ttf" />
+	  <None Remove="Resources\Fonts\Lexend-Bold.ttf" />
+	  <None Remove="Resources\Fonts\Lexend-Medium.ttf" />
+	  <None Remove="Resources\Fonts\Lexend-Regular.ttf" />
+	  <None Remove="Resources\Fonts\times.ttf" />
+	  <None Remove="Resources\Fonts\timesbd.ttf" />
 	  <None Remove="Resources\Images\alignjustify.svg" />
 	  <None Remove="Resources\Images\arrowleftcircle.svg" />
+	  <None Remove="Resources\Images\barchart.svg" />
 	  <None Remove="Resources\Images\box.svg" />
 	  <None Remove="Resources\Images\calculator.svg" />
 	  <None Remove="Resources\Images\calculatorline.svg" />
@@ -115,6 +122,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\PaginaDetalleVenta.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\PaginaGraficos.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\PaginaPrediccionStock.xaml">

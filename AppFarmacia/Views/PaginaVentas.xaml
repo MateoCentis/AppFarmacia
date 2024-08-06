@@ -17,13 +17,11 @@
         <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ListaVentas}" 
                      SelectionMode="Single" SelectedItem="{Binding VentaSeleccionada}"
                      Style="{StaticResource TablaComun}" Margin="0,5,0,0" Padding="5">
-            <!-- Para cuando la página no tiene data para ver-->
+            
             <dg:DataGrid.NoDataView>
-                <Label Text="No existen ventas cargadas aún" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Label Text="No existen ventas cargadas aún" Style="{StaticResource VistaSinData}"/>
             </dg:DataGrid.NoDataView>
 
-            <!-- Acá dentro se definen las columnas de la tabla -->
-            <!-- Ver bien el tema de configurar bien las columnas con DataTemplate -->
             <dg:DataGrid.Columns>
                 <dg:DataGridColumn Title="Id" PropertyName="Id" />
                 <dg:DataGridColumn Title="Fecha" PropertyName="Fecha"/>
@@ -31,14 +29,6 @@
                 <dg:DataGridColumn Title="Monto total" PropertyName="MontoTotal"/>
             </dg:DataGrid.Columns>
 
-            <!-- Configuración de colores para las filas, segun cuantos se ponen alternan-->
-            <dg:DataGrid.RowsBackgroundColorPalette>
-                <dg:PaletteCollection>
-                    <Color>#F2F2F2</Color>
-                    <Color>#FFFFFF</Color>
-                </dg:PaletteCollection>
-            </dg:DataGrid.RowsBackgroundColorPalette>
-            
             <!-- Esto sirve para darle a determinadas celdas colores especiales bajo ciertas condiciones-->
             <dg:DataGrid.Resources>
                 <ResourceDictionary>

@@ -1,5 +1,6 @@
 ﻿using AppFarmacia.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 
 namespace AppFarmacia.ViewModels
@@ -61,6 +62,10 @@ namespace AppFarmacia.ViewModels
         //        await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
         //    }
         //}
-
+        [RelayCommand]
+        static async Task HaciaAtras()
+        {
+            await Shell.Current.GoToAsync("..");
+        }
     }
 }

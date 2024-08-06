@@ -4,6 +4,27 @@
              xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
              x:Class="AppFarmacia.Resources.Styles.MyStyles">
 
+    <!-- TODO futuro: Para agregarle compatibilidad con el modo oscuro agregarle a todos los estilos "AppThemeBinding"-->
+    
+    <Style TargetType="Label" x:Key="TituloGrafico">
+        <Setter Property="FontFamily" Value="LexendBold"/>
+        <Setter Property="FontSize" Value="Micro"/>
+        <Setter Property="FontAttributes" Value="Bold"/>
+        <Setter Property="TextColor" Value="#111827"/>
+        <Setter Property="HorizontalOptions" Value="Center"/>
+        <Setter Property="VerticalOptions" Value="Center"/>
+    </Style>
+    
+    <Style TargetType="Label" x:Key="VistaSinData">
+        <Setter Property="FontFamily" Value="Inter var, ui-sans-serif, system-ui, -apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'"/>
+        <Setter Property="FontSize" Value="Medium"/>
+        <Setter Property="TextColor" Value="#111827"/>
+        <Setter Property="HorizontalOptions" Value="Center"/>
+        <Setter Property="HorizontalTextAlignment" Value="Center" />
+        <Setter Property="VerticalOptions" Value="Center"/>
+        <Setter Property="VerticalTextAlignment" Value="Center"/>
+    </Style>
+    
     
     <Style TargetType="dg:DataGrid" x:Key="TablaComun">
         <Setter Property="RowHeight" Value="40"/>
@@ -12,7 +33,16 @@
         <Setter Property="BorderThickness" Value="0.5"/>
         <Setter Property="HeaderBordersVisible" Value="True"/>
         <Setter Property="ActiveRowColor" Value="DarkGray"/>
+        <Setter Property="FontFamily" Value="Inter var, ui-sans-serif, system-ui, -apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'"/>
         <Setter Property="HeaderBackground" Value="#E7F1FF"/>
+        <Setter Property="RowsBackgroundColorPalette">
+            <Setter.Value>
+                <dg:PaletteCollection>
+                    <Color>#F2F2F2</Color>
+                    <Color>#FFFFFF</Color>
+                </dg:PaletteCollection>
+            </Setter.Value>
+        </Setter>
     </Style>
     
 
@@ -91,7 +121,7 @@
             </VisualStateGroupList>
         </Setter>
     </Style>
-    <!-- SearchBar Style -->
+    
     <Style x:Key="BarraBusqueda" TargetType="SearchBar">
         <Setter Property="CancelButtonColor" Value="Red"/>
         <Setter Property="BackgroundColor" Value="White"/>
@@ -108,7 +138,6 @@
         </Setter>
     </Style>
 
-    <!-- Picker Style -->
     <Style x:Key="PickerEstilo" TargetType="Picker">
         <Setter Property="BackgroundColor" Value="White"/>
         <Setter Property="FontFamily" Value="Inter var, ui-sans-serif, system-ui, -apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'"/>

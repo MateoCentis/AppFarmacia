@@ -20,6 +20,13 @@ namespace AppFarmacia
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                    fonts.AddFont("times.ttf", "TimesNewRoman");
+                    fonts.AddFont("timesbd.ttf", "TimesNewRomanBold");
+                    fonts.AddFont("Lexend-Regular.ttf", "LexendRegular");
+                    fonts.AddFont("Lexend-Black.ttf", "LexendBlack");
+                    fonts.AddFont("Lexend-Bold.ttf", "LexendBold");
+                    fonts.AddFont("Lexend-Medium.ttf", "LexendMedium");
+
                 });
 
             //Views
@@ -27,6 +34,9 @@ namespace AppFarmacia
             builder.Services.AddSingleton<PaginaArticulos>();
             builder.Services.AddTransient<PaginaDetalleVenta>();
             builder.Services.AddTransient<PaginaArticuloInformacion>();
+            builder.Services.AddSingleton<PaginaGraficos>();
+            builder.Services.AddSingleton<PaginaPrediccionStock>();
+            builder.Services.AddSingleton<PaginaConfiguracion>();
 
             //ViewModels
             builder.Services.AddSingleton<PaginaVentasViewModel>();

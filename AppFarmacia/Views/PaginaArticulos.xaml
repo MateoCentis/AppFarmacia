@@ -15,13 +15,13 @@
         <HorizontalStackLayout>
             <SearchBar Text="{Binding TextoBusqueda}" Placeholder="Buscar..." 
                  SearchButtonPressed="OnSearchButtonPressed" VerticalOptions="Center" Style="{StaticResource BarraBusqueda}"
-                       WidthRequest="500" Margin="10,0,10,0"/>
+                       WidthRequest="550" Margin="10,0,0,0"/>
             
             <Picker Title="Selecciona una categoría" ItemsSource="{Binding ListCategorias}" SelectedItem="{Binding CategoriaSeleccionada}" 
-                    WidthRequest="180" Margin="30,0,5,15" HeightRequest="60" VerticalTextAlignment="Center" HorizontalTextAlignment="Start"/>
+                    WidthRequest="180" Margin="80,0,5,15" HeightRequest="60" VerticalTextAlignment="Center" HorizontalTextAlignment="Start"/>
 
-            <Button Text="Filtrar" Command="{Binding FiltrarCommand}" Style="{StaticResource BotonGeneral}" Margin="0,0,15,0"/>
-            <Button Text="Ver Artículo" Command="{Binding VerArticuloCommand}"  Style="{StaticResource BotonGeneral}" Margin="30,0,0,0"/>
+            <Button Text="Filtrar" Command="{Binding FiltrarCommand}" Style="{StaticResource BotonGeneral}" Margin="0,0,80,0"/>
+            <Button Text="Ver Artículo" Command="{Binding VerArticuloCommand}"  Style="{StaticResource BotonGeneral}" Margin="0,0,0,0"/>
             <!--<ImageButton Command="{Binding ObtenerArticulosCommand}" Style="{StaticResource ImagenBotonGeneral}" 
                     Margin="0,0,0,0" Source="refresh.png" HeightRequest="40" Scale="0.5"/>-->
         </HorizontalStackLayout>
@@ -31,7 +31,7 @@
                      PaginationEnabled="{Binding PaginationEnabled}" PageSize="{Binding SizePagina}" Style="{StaticResource TablaComun}">
             <!-- Para cuando la página no tiene data para ver-->
             <dg:DataGrid.NoDataView>
-                <Label Text="No existen artículos cargados aún" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Label Text="No existen artículos cargados aún" Style="{StaticResource VistaSinData}"/>
             </dg:DataGrid.NoDataView>
 
             <!-- Acá dentro se definen las columnas de la tabla -->
@@ -47,15 +47,7 @@
                 <dg:DataGridColumn Title="Descripción" PropertyName="Descripcion"/>
             </dg:DataGrid.Columns>
 
-            <!-- Configuración de colores para las filas, segun cuantos se ponen alternan-->
-            <dg:DataGrid.RowsBackgroundColorPalette>
-                <dg:PaletteCollection>
-                    <Color>#F2F2F2</Color>
-                    <Color>#FFFFFF</Color>
-                </dg:PaletteCollection>
-            </dg:DataGrid.RowsBackgroundColorPalette>
-
-            <!-- Esto sirve para darle a determinadas celdas colores especiales bajo ciertas condiciones-->
+            <!-- Esto sirve para darle a determinadas celdas colores especiales bajo ciertas condiciones -> usarlo para vencimientos -->
             <dg:DataGrid.Resources>
                 <ResourceDictionary>
                     <!--<conv:StreakToColorConverter x:Key="StreakToColorConverter"/>-->
