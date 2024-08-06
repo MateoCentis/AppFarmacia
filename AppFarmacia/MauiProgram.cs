@@ -3,6 +3,7 @@ using AppFarmacia.Services;
 using AppFarmacia.ViewModels;
 using AppFarmacia.Views;
 using Microcharts.Maui;
+using SkiaSharp.Views.Maui.Controls.Hosting;
 
 namespace AppFarmacia
 {
@@ -13,6 +14,7 @@ namespace AppFarmacia
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseSkiaSharp()
                 .UseMicrocharts()
                 .ConfigureFonts(fonts =>
                 {

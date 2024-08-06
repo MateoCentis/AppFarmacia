@@ -16,8 +16,7 @@
         <!--- Configuraciones generales del datagrid -->
         <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ListaVentas}" 
                      SelectionMode="Single" SelectedItem="{Binding VentaSeleccionada}"
-                     Style="{StaticResource TablaComun}" PullToRefreshCommand="{Binding RecargarPaginaCommand}"
-                     IsRefreshing="{Binding ActualizandoPaginaCommand}" Margin="0,5,0,0" Padding="5">
+                     Style="{StaticResource TablaComun}" Margin="0,5,0,0" Padding="5">
             <!-- Para cuando la página no tiene data para ver-->
             <dg:DataGrid.NoDataView>
                 <Label Text="No existen ventas cargadas aún" HorizontalOptions="Center" VerticalOptions="Center"/>

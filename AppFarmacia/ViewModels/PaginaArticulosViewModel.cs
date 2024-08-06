@@ -150,7 +150,7 @@ namespace AppFarmacia.ViewModels
 
                 this.ListCategorias = new ObservableCollection<Categoria>(categorias);
 
-                var ningunaCategoria = new Categoria { Nombre = "Ninguna" };
+                var ningunaCategoria = new Categoria { Nombre = "Todas" };//Acá estaría bueno cambiar a "Todas" porque me parece más intuitivo (también podría ser "Cualquiera")
                 ListCategorias.Insert(0,ningunaCategoria);
 
                 // Establecer "Ninguna" como la opción seleccionada por defecto
@@ -172,7 +172,7 @@ namespace AppFarmacia.ViewModels
                 articulosFiltrados = articulosFiltrados.Where(a => a.Nombre.Contains(TextoBusqueda)).ToList();
             }
             
-            if (CategoriaSeleccionada != null && CategoriaSeleccionada.Nombre != "Ninguna")
+            if (CategoriaSeleccionada != null && CategoriaSeleccionada.Nombre != "Todas")
             { 
                 articulosFiltrados = articulosFiltrados.Where(a => a.IdCategoria == CategoriaSeleccionada.IdCategoria).ToList();
             }
@@ -195,7 +195,7 @@ namespace AppFarmacia.ViewModels
             {
                 var parametroNavigation = new Dictionary<string, object>
                 {
-                    {"ArticuloAMostrar",ArticuloSeleccionado}
+                    {"articuloMostrar",this.ArticuloSeleccionado}
                 };
 
                 await Shell.Current.GoToAsync(nameof(PaginaArticuloInformacion), parametroNavigation);

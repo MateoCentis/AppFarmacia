@@ -13,8 +13,6 @@ namespace AppFarmacia.ViewModels
     {
         public ObservableCollection<VentaMostrar> ListaVentas { get; set; } = [];
         public VentaMostrar VentaSeleccionada { get; set; }
-        public ICommand RecargarPaginaCommand { get; }
-        public ICommand ActualizandoPaginaCommand { get; }
         public IAsyncRelayCommand VerDetalleCommand { get; }
         private readonly VentasService ventasService;
 
@@ -23,8 +21,6 @@ namespace AppFarmacia.ViewModels
             this.ventasService = new VentasService();
             this.VentaSeleccionada = new VentaMostrar(new Venta());
 
-            RecargarPaginaCommand = new Command(RecargarPagina);
-            ActualizandoPaginaCommand = new Command(ActualizandoPagina);
             VerDetalleCommand = new AsyncRelayCommand(VerDetalle);
 
         }
@@ -45,16 +41,6 @@ namespace AppFarmacia.ViewModels
                 await Shell.Current.DisplayAlert("Error!", "No se ha seleccionado ninguna venta.", "OK");
             }
 
-        }
-
-        private void RecargarPagina()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void ActualizandoPagina()
-        { 
-            throw new NotImplementedException(); 
         }
 
         public async Task ObtenerVentas()

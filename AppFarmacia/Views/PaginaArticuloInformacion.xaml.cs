@@ -13,7 +13,7 @@ public partial class PaginaArticuloInformacion : ContentPage
         };
     public PaginaArticuloInformacion(PaginaArticuloInformacionViewModel viewModel)
 	{
-		//Defino el gráfico acá porque no sabría como hacerlo con MVVM lo siento XD
+		//Defino el gráfico acá porque no se si se puede con MVVM lo siento XD
 		InitializeComponent();
 		BindingContext = viewModel;
 		this.viewModel = viewModel;
@@ -24,7 +24,7 @@ public partial class PaginaArticuloInformacion : ContentPage
 	private void CargarGrafico()
 	{
         //Definir las entries del gráfico
-        //var demandas = this.viewModel.ObtenerDemandaMensual();
+        //var demandas = this.viewModel.ObtenerDemandaMensual();//Así se deberían obtener las demandas mensuales pero no está implementado aún
         var demandas = new List<float> { 10, 30, 40, 50, 10, 20, 30, 90, 100, 120, 140, 150 };
         var entries = new List<ChartEntry>();
 
@@ -41,12 +41,27 @@ public partial class PaginaArticuloInformacion : ContentPage
 
 		//creo el tipo de chart
 		chartView.Chart = new LineChart
-		{
+		{   //Data
 			Entries = entries,
+			//Lineas
+			LineMode = LineMode.Straight,
+			LineSize = 8,
+			//Puntos
+			PointMode = PointMode.Square,
+			PointSize = 18,
+			//Labels
 			LabelTextSize = 24,
 			ValueLabelTextSize = 16,
-			LineSize = 8,
-			BackgroundColor = SKColor.Parse("FFFFFF")
+			LabelOrientation = Orientation.Horizontal,
+			ValueLabelOrientation = Orientation.Horizontal,
+			ValueLabelOption = ValueLabelOption.TopOfElement,
+			// Lineas
+			ShowYAxisLines = true,
+			ShowYAxisText = true,
+			YAxisPosition = Position.Left,
+			// Colores
+			EnableYFadeOutGradient = false,
+			BackgroundColor = SKColor.Parse("FFFFFF"),
 		};
 
 	}
