@@ -27,7 +27,7 @@
     <FlyoutItem Title="Flyout" FlyoutDisplayOptions="AsMultipleItems">
 
         <ShellContent
-            Title="Visualización de gráficos"
+            Title="Visualización"
             ContentTemplate="{DataTemplate local:PaginaGraficos}"
             Route="PaginaGraficos"
                 Icon="barchart.png"/>

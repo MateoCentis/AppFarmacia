@@ -1,4 +1,6 @@
 namespace AppFarmacia.Views;
+using Microcharts;
+using SkiaSharp;
 
 public partial class PaginaGraficos : ContentPage
 {
@@ -6,4 +8,9 @@ public partial class PaginaGraficos : ContentPage
 	{
 		InitializeComponent();
 	}
+
+    private void ScrollView_Scrolled(object sender, ScrolledEventArgs e)
+    {
+
+    }
 }

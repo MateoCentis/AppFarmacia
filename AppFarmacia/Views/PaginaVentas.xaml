@@ -5,6 +5,10 @@
              x:Class="AppFarmacia.Views.PaginaVentas"
              Shell.NavBarIsVisible="False">
 
+    <ContentPage.BindingContext>
+        <viewModels:PaginaVentasViewModel/>
+    </ContentPage.BindingContext>
+    
     <!-- Grilla de dos filas -> En la primera pongo botones y cosas y en la segunda la tabla -->
     <Grid RowDefinitions="Auto,*, Auto" Padding="1">
 
@@ -16,7 +20,8 @@
         <!--- Configuraciones generales del datagrid -->
         <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ListaVentas}" 
                      SelectionMode="Single" SelectedItem="{Binding VentaSeleccionada}"
-                     Style="{StaticResource TablaComun}" Margin="0,5,0,0" Padding="5">
+                     Style="{StaticResource TablaComun}" Margin="0,5,0,0" Padding="5"
+                     PaginationEnabled="{Binding PaginationEnabled}" PageSize="{Binding SizePagina}">
             
             <dg:DataGrid.NoDataView>
                 <Label Text="No existen ventas cargadas aún" Style="{StaticResource VistaSinData}"/>

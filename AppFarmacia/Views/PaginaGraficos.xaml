@@ -2,11 +2,38 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AppFarmacia.Views.PaginaGraficos"
+             xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
+             xmlns:micro="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
              Shell.NavBarIsVisible="False">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+
+    <ContentPage.BindingContext>
+        <viewModels:PaginaGraficosViewModel/>
+    </ContentPage.BindingContext>
+    
+    <ScrollView VerticalOptions="FillAndExpand" Orientation="Vertical" Scrolled="ScrollView_Scrolled">
+        <Grid RowDefinitions="*,*" ColumnDefinitions="*,*">
+            
+            <!-- Gráfico 1: -->
+            <VerticalStackLayout Grid.Row="0" Grid.Column="0">
+                <Label Text="Gráfico 1" Style="{StaticResource TituloGrafico}"/>
+            </VerticalStackLayout> 
+            
+            <!-- Gráfico 2: -->
+            <VerticalStackLayout Grid.Row="0" Grid.Column="1">
+                <Label Text="Gráfico 2" Style="{StaticResource TituloGrafico}"/>
+            </VerticalStackLayout>
+
+            <!-- Gráfico 3: -->
+            <VerticalStackLayout Grid.Row="1" Grid.Column="0">
+                <Label Text="Gráfico 3" Style="{StaticResource TituloGrafico}"/>
+            </VerticalStackLayout>
+            
+            <!-- Gráfico 4: -->
+            <VerticalStackLayout Grid.Row="1" Grid.Column="1">
+                <Label Text="Gráfico 4" Style="{StaticResource TituloGrafico}"/>
+            </VerticalStackLayout>
+
+
+        </Grid>
+    </ScrollView>
 </ContentPage>

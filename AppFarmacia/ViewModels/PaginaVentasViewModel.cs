@@ -16,10 +16,18 @@ namespace AppFarmacia.ViewModels
         public IAsyncRelayCommand VerDetalleCommand { get; }
         private readonly VentasService ventasService;
 
+        [ObservableProperty]
+        private int sizePagina;
+
+        [ObservableProperty]
+        private bool paginationEnabled;
+
         public PaginaVentasViewModel()
         {
             this.ventasService = new VentasService();
             this.VentaSeleccionada = new VentaMostrar(new Venta());
+            PaginationEnabled = true;
+            SizePagina = 20;
 
             VerDetalleCommand = new AsyncRelayCommand(VerDetalle);
 
