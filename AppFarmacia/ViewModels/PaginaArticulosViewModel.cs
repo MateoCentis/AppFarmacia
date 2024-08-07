@@ -4,6 +4,7 @@ using System.Windows.Input;
 using AppFarmacia.Models;
 using AppFarmacia.Services;
 using AppFarmacia.Views;
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -22,6 +23,9 @@ namespace AppFarmacia.ViewModels
 
         [ObservableProperty]
         private bool paginationEnabled;
+
+        [ObservableProperty]
+        private bool estaCargando;
 
         private ObservableCollection<ArticuloMostrar> _listaArticulos;
         private ObservableCollection<ArticuloMostrar> _listaArticulosCompleta;
@@ -118,6 +122,7 @@ namespace AppFarmacia.ViewModels
         {
             try
             {
+                this.EstaCargando = true;
                 var articulos = await articulosService.GetArticulos();
                 //Hay que hacer si o si el foreach acá xd
 
@@ -128,6 +133,7 @@ namespace AppFarmacia.ViewModels
                     await articuloMostrar.InicializarAsync(articulo);
                     this.ListaArticulosCompleta.Add(articuloMostrar);
                 }
+                this.EstaCargando = false;
                 // Si la cantidad de artículos es igual distinta de cero => limpio
                 //if (articulos.Count != 0)
                     //this.ListaArticulos.Clear();

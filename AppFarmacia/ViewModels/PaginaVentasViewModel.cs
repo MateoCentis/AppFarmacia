@@ -11,10 +11,16 @@ namespace AppFarmacia.ViewModels
 {
     public partial class PaginaVentasViewModel : ObservableObject
     {
-        public ObservableCollection<VentaMostrar> ListaVentas { get; set; } = [];
-        public VentaMostrar VentaSeleccionada { get; set; }
-        public IAsyncRelayCommand VerDetalleCommand { get; }
+        [ObservableProperty]
+        private ObservableCollection<VentaMostrar> listaVentas = [];
+        
+        [ObservableProperty]
+        private VentaMostrar ventaSeleccionada;
+
+        [ObservableProperty]
         private readonly VentasService ventasService;
+        //public VentaMostrar VentaSeleccionada { get; set; }
+        //public IAsyncRelayCommand VerDetalleCommand { get; }
 
         [ObservableProperty]
         private int sizePagina;
@@ -24,15 +30,16 @@ namespace AppFarmacia.ViewModels
 
         public PaginaVentasViewModel()
         {
-            this.ventasService = new VentasService();
+            this.VentasService = new VentasService();
             this.VentaSeleccionada = new VentaMostrar(new Venta());
-            PaginationEnabled = true;
-            SizePagina = 20;
+            this.PaginationEnabled = true;
+            this.SizePagina = 20;
 
-            VerDetalleCommand = new AsyncRelayCommand(VerDetalle);
+            //VerDetalleCommand = new AsyncRelayCommand(VerDetalle);
 
         }
 
+        [RelayCommand]
         async Task VerDetalle()
         {
             if (VentaSeleccionada != null)
@@ -50,21 +57,22 @@ namespace AppFarmacia.ViewModels
             }
 
         }
-
+        
         public async Task ObtenerVentas()
         {
             try
             {
-                var ventas = await ventasService.GetVentas();
+                var ventas = await this.VentasService.GetVentas();
                 if (ventas.Count != 0)
                     this.ListaVentas.Clear();
 
-                foreach (var venta in ventas)
+                // ¿Esto será lo que demora?
+                foreach (Venta venta in ventas)
                     this.ListaVentas.Add(new VentaMostrar(venta));
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Unable to get articles: {ex.Message}");
+                Debug.WriteLine($"No hay ventas: {ex.Message}");
                 await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
             }
         }

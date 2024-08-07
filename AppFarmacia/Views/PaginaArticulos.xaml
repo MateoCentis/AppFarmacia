@@ -28,7 +28,8 @@
 
         <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ListaArticulos}" 
                      SelectionMode="Single" SelectedItem="{Binding ArticuloSeleccionado}"
-                     PaginationEnabled="{Binding PaginationEnabled}" PageSize="{Binding SizePagina}" Style="{StaticResource TablaComun}">
+                     PaginationEnabled="{Binding PaginationEnabled}" PageSize="{Binding SizePagina}" Style="{StaticResource TablaComun}"
+                     IsRefreshing="{Binding EstaCargando}">
             <!-- Para cuando la página no tiene data para ver-->
             <dg:DataGrid.NoDataView>
                 <Label Text="No existen artículos cargados aún" Style="{StaticResource VistaSinData}"/>
