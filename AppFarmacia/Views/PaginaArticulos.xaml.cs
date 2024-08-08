@@ -12,7 +12,8 @@ public partial class PaginaArticulos : ContentPage
     {
         InitializeComponent();
         BindingContext = viewModel;
-        
+        viewModel = (PaginaArticulosViewModel)BindingContext;
+        viewModel.PropertyChanged += ViewModel_PropertyChanged;
     }
 
     //Código para el enter en la barra de búsqueda (es un evento no command)
@@ -22,6 +23,29 @@ public partial class PaginaArticulos : ContentPage
         if (vm != null && vm.FiltrarCommand.CanExecute(null))
         {
             vm.FiltrarCommand.Execute(null);
+        }
+    }
+
+    private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(PaginaArticulosViewModel.EstaCargando))
+        {
+            var viewModel = (PaginaArticulosViewModel)BindingContext;
+            if (viewModel.EstaCargando)
+            {
+                // Mostrar el popup
+                popupCarga = new PaginaSpinnerPopup();
+                this.ShowPopup(popupCarga);
+            }
+            else
+            {
+                // Asegúrate de que el popup no es nulo antes de cerrarlo
+                if (popupCarga != null)
+                {
+                    popupCarga.Close();
+                    popupCarga = null; // Resetear el popup a null después de cerrarlo
+                }
+            }
         }
     }
 

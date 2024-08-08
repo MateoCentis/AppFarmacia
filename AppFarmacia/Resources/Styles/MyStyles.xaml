@@ -14,23 +14,42 @@
         <Setter Property="HorizontalOptions" Value="Center"/>
         <Setter Property="VerticalOptions" Value="Center"/>
     </Style>
+
+    <Style TargetType="Label" x:Key="TituloTabla">
+        <Setter Property="FontFamily" Value="LexendBold"/>
+        <Setter Property="FontSize" Value="Micro"/>
+        <Setter Property="FontAttributes" Value="Bold"/>
+        <Setter Property="TextColor" Value="#111827"/>
+        <Setter Property="HorizontalOptions" Value="Center"/>
+        <Setter Property="VerticalOptions" Value="Center"/>
+        <Setter Property="Margin" Value="0,-5,0,5"/>
+    </Style>
     
     <Style TargetType="Label" x:Key="VistaSinData">
         <Setter Property="FontFamily" Value="Inter var, ui-sans-serif, system-ui, -apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'"/>
-        <Setter Property="FontSize" Value="Medium"/>
+        <Setter Property="FontSize" Value="Large"/>
         <Setter Property="TextColor" Value="#111827"/>
         <Setter Property="HorizontalOptions" Value="Center"/>
         <Setter Property="HorizontalTextAlignment" Value="Center" />
         <Setter Property="VerticalOptions" Value="Center"/>
         <Setter Property="VerticalTextAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="100"/>
     </Style>
-    
+
+    <Style TargetType="Frame" x:Key="FrameGrafico">
+        <Setter Property="BackgroundColor" Value="Transparent"/>
+        <Setter Property="BorderColor" Value="Gray"/>
+        <Setter Property="CornerRadius" Value="1"/>
+        <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
+        <Setter Property="VerticalOptions" Value="FillAndExpand"/>
+    </Style>
     
     <Style TargetType="dg:DataGrid" x:Key="TablaComun">
         <Setter Property="RowHeight" Value="40"/>
         <Setter Property="HeaderHeight" Value="50"/>
         <Setter Property="BorderColor" Value="#111827"/>
-        <Setter Property="BorderThickness" Value="0.5"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Margin" Value="10"/>
         <Setter Property="HeaderBordersVisible" Value="True"/>
         <Setter Property="ActiveRowColor" Value="DarkGray"/>
         <Setter Property="FontFamily" Value="Inter var, ui-sans-serif, system-ui, -apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'"/>
@@ -43,7 +62,16 @@
                 </dg:PaletteCollection>
             </Setter.Value>
         </Setter>
+        <Setter Property="PaginationStepperStyle">
+            <Setter.Value>
+                <Style TargetType="Stepper">
+                    <Setter Property="BackgroundColor" Value="#E7F1FF"/>
+                </Style>
+            </Setter.Value>
+        </Setter>
     </Style>
+
+
     
 
     <Style x:Key="BotonGeneral" TargetType="Button">

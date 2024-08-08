@@ -12,47 +12,51 @@
         <viewModels:PaginaArticuloInformacionViewModel/>
     </ContentPage.BindingContext>
 
-    <!-- Grilla de toda la pantalla-->
-    <Grid RowDefinitions="Auto,Auto,*">
-        <ImageButton Source="arrowleftcircle.png" VerticalOptions="Center" HorizontalOptions="Start" Command="{Binding HaciaAtrasCommand}"/>
-        <!-- Grilla para las dos tablas-->
-        <Grid ColumnDefinitions="*,*" Grid.Row="1">
+    <ScrollView VerticalOptions="FillAndExpand" Orientation="Vertical" Scrolled="ScrollView_Scrolled">
+        <!-- Grilla de toda la pantalla-->
+        <Grid RowDefinitions="Auto,Auto,*">
+            <ImageButton Source="arrowleftcircle.png" VerticalOptions="Center" HorizontalOptions="Start" Command="{Binding HaciaAtrasCommand}"/>
+            <!-- Grilla para las dos tablas-->
+            <Grid ColumnDefinitions="*,*" Grid.Row="1">
 
-            <VerticalStackLayout Grid.Column="0">
-                <Label Text="Histórico de precios" Style="{StaticResource TituloGrafico}"/>
-                <!-- Primera tabla - tabla de precios -->
-                <dg:DataGrid Style="{StaticResource TablaComun}" ItemsSource="{Binding PreciosArticulo}" Margin="0,0,0,0">
-                    <dg:DataGrid.NoDataView>
-                        <Label Text="No existen precios cargados aún" Style="{StaticResource VistaSinData}"/>
-                    </dg:DataGrid.NoDataView>
+                <VerticalStackLayout Grid.Column="0">
+                    <Label Text="Histórico de precios" Style="{StaticResource TituloTabla}"/>
+                    <!-- Primera tabla - tabla de precios -->
+                    <dg:DataGrid Style="{StaticResource TablaComun}" ItemsSource="{Binding PreciosArticulo}" >
+                        <dg:DataGrid.NoDataView>
+                            <Label Text="No existen precios cargados aún" Style="{StaticResource VistaSinData}" FontSize="Medium"/>
+                        </dg:DataGrid.NoDataView>
 
-                    <dg:DataGrid.Columns>
-                        <dg:DataGridColumn Title="Fecha" PropertyName="Fecha"/>
-                        <dg:DataGridColumn Title="Precio" PropertyName="Valor"/>
-                    </dg:DataGrid.Columns>
-                    
-                </dg:DataGrid>
-            </VerticalStackLayout>
+                        <dg:DataGrid.Columns>
+                            <dg:DataGridColumn Title="Fecha" PropertyName="Fecha"/>
+                            <dg:DataGridColumn Title="Precio" PropertyName="Valor"/>
+                        </dg:DataGrid.Columns>
 
-            <VerticalStackLayout Grid.Column="1">
-                <Label Text="Vencimientos" Style="{StaticResource TituloGrafico}"/>
-                <!-- Segunda tabla - tabla de vencimientos -->
-                <dg:DataGrid Style="{StaticResource TablaComun}" ItemsSource="{Binding VencimientosArticulo}" Margin="0,0,0,0">
-                    <dg:DataGrid.NoDataView>
-                        <Label Text="No existen vencimientos cargados aún" Style="{StaticResource VistaSinData}"/>
-                    </dg:DataGrid.NoDataView>
+                    </dg:DataGrid>
+                </VerticalStackLayout>
 
-                    <dg:DataGrid.Columns>
-                        <dg:DataGridColumn Title="Fecha" PropertyName="Fecha"/>
-                    </dg:DataGrid.Columns>
+                <VerticalStackLayout Grid.Column="1">
+                    <Label Text="Vencimientos" Style="{StaticResource TituloTabla}" />
+                    <!-- Segunda tabla - tabla de vencimientos -->
+                    <dg:DataGrid Style="{StaticResource TablaComun}" ItemsSource="{Binding VencimientosArticulo}" >
+                        <dg:DataGrid.NoDataView>
+                            <Label Text="No existen vencimientos cargados aún" Style="{StaticResource VistaSinData}" FontSize="Medium"/>
+                        </dg:DataGrid.NoDataView>
 
-                </dg:DataGrid>
-            </VerticalStackLayout>
+                        <dg:DataGrid.Columns>
+                            <dg:DataGridColumn Title="Fecha" PropertyName="Fecha"/>
+                        </dg:DataGrid.Columns>
+
+                    </dg:DataGrid>
+                </VerticalStackLayout>
+            </Grid>
+            <Frame Style="{StaticResource FrameGrafico}" Grid.Row="2" Margin="10,10,10,10">
+                <VerticalStackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"> 
+                    <Label Text="{Binding NombreArticulo, StringFormat='Demanda mensual de {0}'}" Style="{StaticResource TituloGrafico}" FontSize="Medium"/>
+                    <micro:ChartView x:Name="chartView" HeightRequest="500"/>
+                </VerticalStackLayout>
+            </Frame>
         </Grid>
-        <VerticalStackLayout Grid.Row="2">
-            <Label Text="{Binding NombreArticulo, StringFormat='Demanda mensual de {0}'}" Style="{StaticResource TituloGrafico}" FontSize="Medium"/>
-            <micro:ChartView x:Name="chartView" HeightRequest="500"/>
-        </VerticalStackLayout>
-    </Grid>
+    </ScrollView>
 
 </ContentPage>

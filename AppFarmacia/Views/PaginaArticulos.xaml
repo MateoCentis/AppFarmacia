@@ -28,11 +28,11 @@
 
         <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ListaArticulos}" 
                      SelectionMode="Single" SelectedItem="{Binding ArticuloSeleccionado}"
-                     PaginationEnabled="{Binding PaginationEnabled}" PageSize="{Binding SizePagina}" Style="{StaticResource TablaComun}"
-                     IsRefreshing="{Binding EstaCargando}">
+                     PaginationEnabled="{Binding PaginationEnabled}" PageSize="{Binding SizePagina, Mode=OneWay}" Style="{StaticResource TablaComun}"
+                     IsRefreshing="{Binding EstaCargando}" Margin="0">
             <!-- Para cuando la página no tiene data para ver-->
             <dg:DataGrid.NoDataView>
-                <Label Text="No existen artículos cargados aún" Style="{StaticResource VistaSinData}"/>
+                <Label Text="No hay artículos que cumplan con esos criterios" Style="{StaticResource VistaSinData}"/>
             </dg:DataGrid.NoDataView>
 
             <!-- Acá dentro se definen las columnas de la tabla -->
@@ -45,6 +45,7 @@
                 <dg:DataGridColumn Title="Categoría" PropertyName="Categoria"/>
                 <dg:DataGridColumn Title="Stock" PropertyName="Stock"/>
                 <dg:DataGridColumn Title="Precio" PropertyName="PrecioActual"/>
+                <dg:DataGridColumn Title="Vencimiento" PropertyName="FechaVencimientoMasCercano"/>
                 <dg:DataGridColumn Title="Descripción" PropertyName="Descripcion"/>
             </dg:DataGrid.Columns>
 

@@ -76,4 +76,10 @@ public partial class PaginaArticuloInformacion : ContentPage
 
         return colors[index % colors.Count];
     }
+
+    private void ScrollView_Scrolled(object sender, ScrolledEventArgs e)
+    {
+        //Por si se quiere implementar algo al scrollear y para que ande el scroll (?)
+    }
+
 }

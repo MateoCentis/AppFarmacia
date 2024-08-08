@@ -17,8 +17,7 @@ namespace AppFarmacia.ViewModels
         [ObservableProperty]
         private VentaMostrar ventaSeleccionada;
 
-        [ObservableProperty]
-        private readonly VentasService ventasService;
+        private readonly VentasService VentasService;
         //public VentaMostrar VentaSeleccionada { get; set; }
         //public IAsyncRelayCommand VerDetalleCommand { get; }
 
