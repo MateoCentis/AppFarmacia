@@ -21,8 +21,6 @@ namespace AppFarmaciaWebAPI.Mapping
                 .ForMember(dest => dest.Stocks, opt => opt.MapFrom(src => src.StocksDTO))
                 .ForMember(dest => dest.ArticulosEnVenta, opt => opt.MapFrom(src => src.ArticulosEnVentaDTO));
                 
-            // Eliminado ArticulosFinalesDTO
-
             // Mapeo entre ArticuloEnVenta y ArticuloEnVentaDTO
             CreateMap<ArticuloEnVenta, ArticuloEnVentaDTO>().ReverseMap();
 

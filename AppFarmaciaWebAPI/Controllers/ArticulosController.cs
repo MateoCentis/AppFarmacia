@@ -24,7 +24,13 @@ namespace AppFarmaciaWebAPI.Controllers
         public async Task<ActionResult<IEnumerable<ArticuloDTO>>> GetArticulos()
         {
             // Acá cambié para que muestre todos, no solo los activos, de última del front sacamos los no activos
-            var articulos = await _context.Articulos.ToListAsync();
+            var articulos = await _context.Articulos
+                 //.Include(a => a.Precios)
+                 //.Include(a => a.Vencimientos)
+                 //.Include(a => a.Stocks)
+                 //.Include(a => a.ArticulosEnVenta)
+                 .ToListAsync();
+
             var articuloDTOs = _mapper.Map<IEnumerable<ArticuloDTO>>(articulos);
             return Ok(articuloDTOs);
         }
@@ -34,6 +40,10 @@ namespace AppFarmaciaWebAPI.Controllers
         public async Task<ActionResult<ArticuloDTO>> GetArticulo(int id)
         {
             var articulo = await _context.Articulos
+                .Include(a => a.Precios)
+                .Include(a => a.Vencimientos)
+                .Include(a => a.Stocks)
+                .Include(a => a.ArticulosEnVenta)
                 .FirstOrDefaultAsync(a => a.IdArticulo == id);
 
             if (articulo == null)

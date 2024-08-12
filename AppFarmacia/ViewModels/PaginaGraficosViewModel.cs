@@ -12,10 +12,19 @@ namespace AppFarmacia.ViewModels
 {
     public partial class PaginaGraficosViewModel : ObservableObject
     {
+        // Lo que dijo Mati: 
+        //Aquí se podrían incluir gráficos de ventas en pesos con segmentos temporales(por día, por semana, por
+        //mes). Se pueden buscar distintas formas de evaluar las ventas:
+        //- Cantidad de tickets(hace referencia a cuanta gente ingresó y compró en la farmacia)
+        //- Cantidad de elementos por ticket promedio
+        //- Cantidad de unidades vendidas → Aquí es clave la categorización, sobre todo en lo referido a
+        //medicamentos, perfumería y dermocosmética
+        //Hay mucho más para profundizar, si quieren lo vemos juntos
+
         //¿Gráficos que se pueden mostrar? (para ver más gráficos hablarlo con Lucas)
-            //Lista de Articulos más vendidos de la farmacia?
-            //Lista de artículos con más stock de la farmacia?
-            //Horarios en los que más se vende diferenciando por día
+        //Lista de Articulos más vendidos de la farmacia?
+        //Lista de artículos con más stock de la farmacia?
+        //Horarios en los que más se vende diferenciando por día
 
         //Propiedades - Gráfico de Facturación mensual por ventas
         [ObservableProperty]

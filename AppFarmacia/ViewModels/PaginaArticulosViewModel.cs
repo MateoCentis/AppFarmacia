@@ -12,6 +12,7 @@ namespace AppFarmacia.ViewModels
 {
     public partial class PaginaArticulosViewModel : ObservableObject
     {
+        // Poner días de stock? => Necesidad para un día de funcionamiento = unidades vendidas en los últimos 30 días / 30
         private readonly ArticulosService articulosService;
         private readonly CategoriasService categoriasService;
 
@@ -124,6 +125,7 @@ namespace AppFarmacia.ViewModels
             {
                 this.EstaCargando = true;
                 var articulos = await articulosService.GetArticulos();
+
                 //Hay que hacer si o si el foreach acá xd
 
                 //this.ListaArticulosCompleta = new ObservableCollection<ArticuloMostrar>(articulos); // ESTO SE PUEDE HACER YA QUE TENGO _listaArticulos y ListaArticulos
