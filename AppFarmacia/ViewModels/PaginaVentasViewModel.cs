@@ -45,7 +45,7 @@ namespace AppFarmacia.ViewModels
             {
                 var parametroNavigation = new Dictionary<string, object>
                 {
-                    {"ventaMostrar",this.VentaSeleccionada}
+                    {"idVenta",this.VentaSeleccionada.Id}
                 };
 
                 await Shell.Current.GoToAsync(nameof(PaginaDetalleVenta),parametroNavigation);

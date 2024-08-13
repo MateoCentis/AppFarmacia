@@ -28,7 +28,7 @@ namespace AppFarmaciaWebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<VentaDTO>>> GetVentas()
         {
-            var ventas = await _context.Ventas.Include(v => v.ArticuloEnVenta).ToListAsync();
+            var ventas = await _context.Ventas.ToListAsync();
             var ventasDTO = _mapper.Map<IEnumerable<VentaDTO>>(ventas);
             return Ok(ventasDTO);
         }

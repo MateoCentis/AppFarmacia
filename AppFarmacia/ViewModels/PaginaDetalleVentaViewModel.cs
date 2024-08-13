@@ -1,4 +1,5 @@
 ﻿using AppFarmacia.Models;
+using AppFarmacia.Services;
 using AppFarmacia.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -11,20 +12,30 @@ using System.Threading.Tasks;
 
 namespace AppFarmacia.ViewModels
 {
-    [QueryProperty(nameof(VentaMostrar), "ventaMostrar")]
+    [QueryProperty(nameof(IdVenta), "idVenta")]
     public partial class PaginaDetalleVentaViewModel : ObservableObject
     {
+        private readonly ArticuloVentaService ArticuloVentaService;
+
         [ObservableProperty]
-        private VentaMostrar? ventaMostrar;
+        private int idVenta;
         
         public ObservableCollection<ArticuloEnVentaMostrar> ArticulosEnVenta { get; set; } = [];
         //public AsyncRelayCommand HaciaAtrasCommand { get; }
+
+
+        public PaginaDetalleVentaViewModel()
+        {
+            this.ArticuloVentaService = new ArticuloVentaService();
+        }
+
 
         public async Task ObtenerDetalles()
         {
             try
             {
-                var articulosDetalle = VentaMostrar?.ArticulosEnVenta ?? [];
+                this.ArticulosEnVenta.Clear();
+                var articulosDetalle = await ArticuloVentaService.GetArticulosEnVentasPorIdVenta(IdVenta);
                 foreach (var aev in articulosDetalle)
                 {
                     var articuloEnVentaMostrar = new ArticuloEnVentaMostrar();
