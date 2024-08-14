@@ -28,7 +28,7 @@ namespace AppFarmaciaWebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ArticuloEnVentaDTO>>> GetArticulosEnVenta()
         {
-            var articulosEnVenta = await _context.ArticulosEnVenta.ToListAsync();
+            var articulosEnVenta = await _context.ArticulosEnVenta.Include(a => a.IdArticuloNavigation).ToListAsync();
             var articulosEnVentaDTO = _mapper.Map<IEnumerable<ArticuloEnVentaDTO>>(articulosEnVenta);
             return Ok(articulosEnVentaDTO);
         }
@@ -37,7 +37,7 @@ namespace AppFarmaciaWebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ArticuloEnVentaDTO>> GetArticuloEnVenta(int id)
         {
-            var articuloEnVenta = await _context.ArticulosEnVenta.FirstOrDefaultAsync(a => a.IdVenta == id);
+            var articuloEnVenta = await _context.ArticulosEnVenta.Include(a => a.IdArticuloNavigation).FirstOrDefaultAsync(a => a.IdVenta == id);
 
             if (articuloEnVenta == null)
             {
@@ -53,6 +53,7 @@ namespace AppFarmaciaWebAPI.Controllers
         {
             var articulosEnVenta = await _context.ArticulosEnVenta
                 .Where(a => a.IdVenta == id)
+                .Include(a => a.IdArticuloNavigation)
                 .ToListAsync();
 
             if (articulosEnVenta == null || articulosEnVenta.Count == 0)

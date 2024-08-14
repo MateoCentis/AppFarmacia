@@ -19,14 +19,15 @@ namespace AppFarmacia.ViewModels
 
         [ObservableProperty]
         private int idVenta;
-        
-        public ObservableCollection<ArticuloEnVentaMostrar> ArticulosEnVenta { get; set; } = [];
+
+        [ObservableProperty]
+        private ObservableCollection<ArticuloEnVenta> articulosEnVenta = [];
         //public AsyncRelayCommand HaciaAtrasCommand { get; }
 
 
         public PaginaDetalleVentaViewModel()
         {
-            this.ArticuloVentaService = new ArticuloVentaService();
+            ArticuloVentaService = new ArticuloVentaService();
         }
 
 
@@ -34,14 +35,20 @@ namespace AppFarmacia.ViewModels
         {
             try
             {
-                this.ArticulosEnVenta.Clear();
+                ArticulosEnVenta.Clear();
                 var articulosDetalle = await ArticuloVentaService.GetArticulosEnVentasPorIdVenta(IdVenta);
-                foreach (var aev in articulosDetalle)
+                foreach (var articulo in articulosDetalle)
                 {
-                    var articuloEnVentaMostrar = new ArticuloEnVentaMostrar();
-                    await articuloEnVentaMostrar.InicializarAsync(aev);
-                    this.ArticulosEnVenta.Add(articuloEnVentaMostrar);
+                    articulo.calcularMonto(); // Llama al método para calcular el monto
                 }
+                ArticulosEnVenta = new ObservableCollection<ArticuloEnVenta>(articulosDetalle);
+
+                //foreach (var aev in articulosDetalle)
+                //{
+                //    var articuloEnVentaMostrar = new ArticuloEnVentaMostrar();
+                //    await articuloEnVentaMostrar.InicializarAsync(aev);
+                //    this.ArticulosEnVenta.Add(articuloEnVentaMostrar);
+                //}
             }
             catch (Exception ex)
             {

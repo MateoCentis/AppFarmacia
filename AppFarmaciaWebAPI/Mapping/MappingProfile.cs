@@ -22,7 +22,11 @@ namespace AppFarmaciaWebAPI.Mapping
                 .ForMember(dest => dest.ArticulosEnVenta, opt => opt.MapFrom(src => src.ArticulosEnVentaDTO));
                 
             // Mapeo entre ArticuloEnVenta y ArticuloEnVentaDTO
-            CreateMap<ArticuloEnVenta, ArticuloEnVentaDTO>().ReverseMap();
+            CreateMap<ArticuloEnVenta, ArticuloEnVentaDTO>()
+                .ForMember(dest => dest.NombreArticulo, opt => opt.MapFrom(src => src.IdArticuloNavigation.Nombre));
+
+            // Mapeo entre ArticuloEnVentaDTO y ArticuloEnVenta
+            CreateMap<ArticuloEnVentaDTO, ArticuloEnVenta>();
 
             // Mapeo entre Categoria y CategoriaDTO
             CreateMap<Categoria, CategoriaDTO>()
@@ -52,10 +56,11 @@ namespace AppFarmaciaWebAPI.Mapping
 
             // Mapeo entre Venta y VentaDTO
             CreateMap<Venta, VentaDTO>()
-                .ForMember(dest => dest.ArticulosEnVentaDTO, opt => opt.MapFrom(src => src.ArticuloEnVenta));
+                //.ForMember(dest => dest.ArticulosEnVentaDTO, opt => opt.MapFrom(src => src.ArticuloEnVenta))
+                .ForMember(dest => dest.MontoTotal, opt => opt.MapFrom(src => src.ArticuloEnVenta.Sum(a => a.Precio * a.Cantidad)));
 
-            CreateMap<VentaDTO, Venta>()
-                .ForMember(dest => dest.ArticuloEnVenta, opt => opt.MapFrom(src => src.ArticulosEnVentaDTO));
+            CreateMap<VentaDTO, Venta>();
+                //.ForMember(dest => dest.ArticuloEnVenta, opt => opt.MapFrom(src => src.ArticulosEnVentaDTO));
         }
     }
 }

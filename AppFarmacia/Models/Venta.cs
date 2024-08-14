@@ -11,6 +11,10 @@ namespace AppFarmacia.Models
         [JsonPropertyName("articulosEnVentaDTO")]
         public ICollection<ArticuloEnVenta> ArticulosEnVenta { get; set; } = [];
 
+        [JsonPropertyName("montoTotal")]
+        public decimal MontoTotal { get; set; }
+
+
         public decimal ObtenerMontoTotal()
         {
             decimal monto = 0;

@@ -64,10 +64,15 @@ namespace AppFarmacia.ViewModels
                 var ventas = await this.VentasService.GetVentas();
                 if (ventas.Count != 0)
                     this.ListaVentas.Clear();
+                // Convertir la lista de Venta a VentaMostrar
+                var ventasMostrar = ventas.Select(venta => new VentaMostrar(venta)).ToList();
+
+                // Asignar la colección convertida
+                this.ListaVentas = new ObservableCollection<VentaMostrar>(ventasMostrar);
 
                 // ¿Esto será lo que demora?
-                foreach (Venta venta in ventas)
-                    this.ListaVentas.Add(new VentaMostrar(venta));
+                //foreach (Venta venta in ventas)
+                //    this.ListaVentas.Add(new VentaMostrar(venta));
             }
             catch (Exception ex)
             {

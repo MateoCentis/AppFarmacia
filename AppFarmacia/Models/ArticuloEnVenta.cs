@@ -18,5 +18,16 @@ namespace AppFarmacia.Models
         
         [JsonPropertyName("precio")]
         public decimal Precio { get; set; }
+
+        [JsonPropertyName("nombreArticulo")]
+        public string? NombreArticulo { get; set; }
+
+        public decimal Monto { get; set; }
+
+        public void calcularMonto()
+        {
+            this.Monto = this.Precio * this.Cantidad;
+        }
+
     }
 }
