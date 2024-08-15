@@ -43,6 +43,23 @@ namespace AppFarmaciaWebAPI.Controllers
             return Ok(precioDTO);
         }
 
+        [HttpGet("Articulo/{id}")]
+        public async Task<ActionResult<IEnumerable<PrecioDTO>>> GetPreciosArticulo(int id)
+        {
+            var precios = await _context.Precios
+                .Where(p => p.IdArticulo == id)
+                .ToListAsync();
+
+            if (precios == null || precios.Count == 0)
+            {
+                return NotFound();
+            }
+
+            var preciosDTO = _mapper.Map<IEnumerable<PrecioDTO>>(precios);
+
+            return Ok(preciosDTO);
+        }
+
         // PUT: api/Precio/5
         [HttpPut("{id}")]
         public async Task<IActionResult> EditPrecio(int id, [FromBody] PrecioDTO precioDTO)

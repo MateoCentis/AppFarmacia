@@ -53,7 +53,7 @@
             <Frame Style="{StaticResource FrameGrafico}" Grid.Row="2" Margin="10,10,10,10">
                 <VerticalStackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"> 
                     <Label Text="{Binding NombreArticulo, StringFormat='Demanda mensual de {0}'}" Style="{StaticResource TituloGrafico}" FontSize="Medium"/>
-                    <micro:ChartView x:Name="chartView" HeightRequest="500"/>
+                    <micro:ChartView Chart="{Binding DemandaMensualChart}" HeightRequest="450"/>
                 </VerticalStackLayout>
             </Frame>
         </Grid>

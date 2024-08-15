@@ -40,10 +40,6 @@ namespace AppFarmaciaWebAPI.Controllers
         public async Task<ActionResult<ArticuloDTO>> GetArticulo(int id)
         {
             var articulo = await _context.Articulos
-                .Include(a => a.Precios)
-                .Include(a => a.Vencimientos)
-                .Include(a => a.Stocks)
-                .Include(a => a.ArticulosEnVenta)
                 .FirstOrDefaultAsync(a => a.IdArticulo == id);
 
             if (articulo == null)
@@ -53,6 +49,45 @@ namespace AppFarmaciaWebAPI.Controllers
             var articuloDTO = _mapper.Map<ArticuloDTO>(articulo);
             return Ok(articuloDTO);
         }
+
+        //Obtiene las demandas mensuales de un determinado artículo
+        // GET: api/Articulos/{id}/Demandas/{year}
+        [HttpGet("{id}/Demandas/{year}")]
+        public async Task<ActionResult<List<int>>> GetDemandaMensual(int id, int year)
+        {
+            // Nos traemos las ventas que tienen artículos en venta con ese id de artículo
+            var ventas = await _context.Ventas
+                .Where(v => _context.ArticulosEnVenta.Any(aev => aev.IdArticulo == id && aev.IdVenta == v.IdVenta))
+                .Where(v => v.Fecha.Year == year)
+                .ToListAsync();
+
+            if (ventas == null || ventas.Count == 0)
+            {
+                return NotFound();
+            }
+
+            var demandaMensual = Enumerable.Repeat(0, 12).ToList();
+
+            var articulosEnVenta = await _context.ArticulosEnVenta
+                .Where(aev => aev.IdArticulo == id && ventas.Select(v => v.IdVenta).Contains(aev.IdVenta))
+                .ToListAsync();
+
+            // Agrupa los artículos en venta por mes de la fecha de la venta y cuenta la cantidad de artículos vendidos en cada mes
+            var cantidadesPorMes = articulosEnVenta
+                .Join(ventas, aev => aev.IdVenta, v => v.IdVenta, (aev, v) => new { aev, v.Fecha })
+                .GroupBy(av => av.Fecha.Month)
+                .Select(g => new { Mes = g.Key, Cantidad = g.Count() })
+                .ToList();
+
+            // Actualiza la lista de demanda mensual con las cantidades
+            foreach (var cantidad in cantidadesPorMes)
+            {
+                demandaMensual[cantidad.Mes - 1] = cantidad.Cantidad; // Mes - 1 porque la lista es 0-indexada
+            }
+
+            return Ok(demandaMensual);
+        }
+
 
         // PUT: api/Articulos/5
         [HttpPut("{id}")]

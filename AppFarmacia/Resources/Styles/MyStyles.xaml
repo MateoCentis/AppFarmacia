@@ -26,7 +26,6 @@
     </Style>
     
     <Style TargetType="Label" x:Key="VistaSinData">
-        <Setter Property="FontFamily" Value="Inter var, ui-sans-serif, system-ui, -apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'"/>
         <Setter Property="FontSize" Value="Large"/>
         <Setter Property="TextColor" Value="#111827"/>
         <Setter Property="HorizontalOptions" Value="Center"/>
@@ -52,7 +51,6 @@
         <Setter Property="Margin" Value="10"/>
         <Setter Property="HeaderBordersVisible" Value="True"/>
         <Setter Property="ActiveRowColor" Value="DarkGray"/>
-        <Setter Property="FontFamily" Value="Inter var, ui-sans-serif, system-ui, -apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'"/>
         <Setter Property="HeaderBackground" Value="#E7F1FF"/>
         <Setter Property="RowsBackgroundColorPalette">
             <Setter.Value>
@@ -79,7 +77,6 @@
         <Setter Property="BorderColor" Value="#D1D5DB"/>
         <Setter Property="BorderWidth" Value="1"/>
         <Setter Property="CornerRadius" Value="8"/>
-        <Setter Property="FontFamily" Value="Inter var, ui-sans-serif, system-ui, -apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="FontAttributes" Value="Bold"/>
         <Setter Property="TextColor" Value="#111827"/>
@@ -153,7 +150,6 @@
     <Style x:Key="BarraBusqueda" TargetType="SearchBar">
         <Setter Property="CancelButtonColor" Value="Red"/>
         <Setter Property="BackgroundColor" Value="White"/>
-        <Setter Property="FontFamily" Value="Inter var, ui-sans-serif, system-ui, -apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="TextColor" Value="#111827"/>
         <Setter Property="PlaceholderColor" Value="Gray"/>
@@ -168,7 +164,6 @@
 
     <Style x:Key="PickerEstilo" TargetType="Picker">
         <Setter Property="BackgroundColor" Value="White"/>
-        <Setter Property="FontFamily" Value="Inter var, ui-sans-serif, system-ui, -apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="TextColor" Value="#111827"/>
         <Setter Property="HorizontalOptions" Value="FillAndExpand"/>

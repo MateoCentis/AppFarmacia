@@ -48,6 +48,7 @@ namespace AppFarmaciaWebAPI.Controllers
             return Ok(articuloEnVentaDTO);
         }
 
+        // GET: api/ArticulosEnVenta/PorVentaId/5 (Hdp mira como le pusiste)
         [HttpGet("PorVentaId/{id}")]
         public async Task<ActionResult<IEnumerable<ArticuloEnVentaDTO>>> GetArticulosEnVentaPorVenta(int id)
         {
@@ -64,6 +65,25 @@ namespace AppFarmaciaWebAPI.Controllers
             var articulosEnVentaDTOs = _mapper.Map<IEnumerable<ArticuloEnVentaDTO>>(articulosEnVenta);
             return Ok(articulosEnVentaDTOs);
         }
+
+        // GET: api/ArticulosEnVenta/Articulos/5 (obtiene todos los artículos en venta dado un idArticulo)
+        [HttpGet("Articulos/{id}")]
+        public async Task<ActionResult<IEnumerable<ArticuloEnVentaDTO>>> GetArticulosEnVentaArticulo(int id)
+        {
+            var articulos_en_venta = await _context.ArticulosEnVenta
+                .Where(aev => aev.IdArticulo == id)
+                .ToListAsync();
+
+            if (articulos_en_venta == null || articulos_en_venta.Count == 0)
+            {
+                return NotFound();
+            }
+
+            var articulosEnVentaDTO = _mapper.Map<IEnumerable<ArticuloEnVentaDTO>>(articulos_en_venta);
+
+            return Ok(articulosEnVentaDTO);
+        }
+
 
         // PUT: api/ArticulosEnVenta/5
         [HttpPut("{id}")]

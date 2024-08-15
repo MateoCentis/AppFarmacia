@@ -1,11 +1,13 @@
 ﻿using System.Net.Http.Json;
 using AppFarmacia.Models;
+
 namespace AppFarmacia.Services
 {
     public class ArticulosService
     {
-        List<Articulo>? articulos = [];
+        private List<Articulo>? articulos = new List<Articulo>();
         private readonly HttpClient httpClient;
+        private const string CadenaConexion = "http://localhost:83/api"; // Cadena de conexión centralizada
 
         public ArticulosService()
         {
@@ -16,12 +18,15 @@ namespace AppFarmacia.Services
         {
             if (this.articulos?.Count > 0)
             {
-                return articulos;
+                return articulos!;
             }
-            var respuesta = await httpClient.GetAsync("http://localhost:83/api/Articulos");
+
+            var respuesta = await httpClient.GetAsync($"{CadenaConexion}/Articulos");
 
             if (respuesta.IsSuccessStatusCode)
+            {
                 this.articulos = await respuesta.Content.ReadFromJsonAsync<List<Articulo>>() ?? [];
+            }
 
             return this.articulos!;
         }
@@ -29,12 +34,12 @@ namespace AppFarmacia.Services
         public async Task<Articulo?> GetArticuloPorId(int id)
         {
             Articulo? articulo = this.articulos.FirstOrDefault(a => a.IdArticulo == id);
-            if ( articulo != null )
+            if (articulo != null)
             {
                 return articulo;
             }
 
-            var respuesta = await httpClient.GetAsync($"http://localhost:83/api/Articulos/{id}");
+            var respuesta = await httpClient.GetAsync($"{CadenaConexion}/Articulos/{id}");
 
             if (respuesta.IsSuccessStatusCode)
             {
@@ -45,5 +50,17 @@ namespace AppFarmacia.Services
             return null;
         }
 
+        public async Task<List<int>> GetDemandasMensualesArticulo(int id, int year)
+        {
+            var demandas = new List<int>();
+            var respuesta = await httpClient.GetAsync($"{CadenaConexion}/Articulos/{id}/Demandas/{year}");
+
+            if (respuesta.IsSuccessStatusCode)
+            {
+                demandas = await respuesta.Content.ReadFromJsonAsync<List<int>>() ?? [];
+            }
+
+            return demandas;
+        }
     }
 }

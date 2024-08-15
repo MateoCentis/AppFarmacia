@@ -46,6 +46,17 @@ namespace AppFarmacia.Services
             return null;
         }
 
+        public async Task<List<Precio>> GetPreciosArticulo(int id)
+        {
+            var respuesta = await httpClient.GetAsync($"http://localhost:83/api/Precios/Articulo/{id}");
+            List<Precio> precios_articulo = [];
+
+            if (respuesta.IsSuccessStatusCode)
+                precios_articulo = await respuesta.Content.ReadFromJsonAsync<List<Precio>>() ?? [];
+
+            return precios_articulo!;
+        }
+
 
     }
 }

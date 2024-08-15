@@ -4,6 +4,7 @@ using AppFarmacia.ViewModels;
 using AppFarmacia.Views;
 using Microcharts.Maui;
 using SkiaSharp.Views.Maui.Controls.Hosting;
+using CommunityToolkit.Maui;
 
 namespace AppFarmacia
 {
@@ -16,6 +17,7 @@ namespace AppFarmacia
                 .UseMauiApp<App>()
                 .UseSkiaSharp()
                 .UseMicrocharts()
+                .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -49,6 +51,8 @@ namespace AppFarmacia
             builder.Services.AddSingleton<ArticulosService>();
             builder.Services.AddSingleton<CategoriasService>();
             builder.Services.AddSingleton<PreciosService>();
+            builder.Services.AddSingleton<VencimientosService>();
+            builder.Services.AddSingleton<ArticuloVentaService>();
 
 #if DEBUG
     		builder.Logging.AddDebug();

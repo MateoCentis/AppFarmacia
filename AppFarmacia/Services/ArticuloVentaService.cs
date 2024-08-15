@@ -31,5 +31,17 @@ namespace AppFarmacia.Services
 
             return this.ArticulosEnVenta!;
         }
+
+        public async Task<List<ArticuloEnVenta>> GetArticulosEnVentaArticulo(int id)
+        {
+            var respuesta = await httpClient.GetAsync($"http://localhost:83/api/ArticulosEnVenta/Articulos/{id}");
+            List<ArticuloEnVenta> aev_articulos = [];
+
+            if (respuesta.IsSuccessStatusCode)
+                aev_articulos = await respuesta.Content.ReadFromJsonAsync<List<ArticuloEnVenta>>() ?? [];
+
+            return aev_articulos!;
+        }
+
     }
 }

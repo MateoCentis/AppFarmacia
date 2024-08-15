@@ -46,6 +46,24 @@ namespace AppFarmaciaWebAPI.Controllers
             return Ok(vencimientoDTO);
         }
 
+        // GET: api/Vencimientos/Articulos/5 (obtiene todos los vencimientos dado un idArticulo)
+        [HttpGet("Articulos/{id}")]
+        public async Task<ActionResult<IEnumerable<VencimientoDTO>>> GetVencimientosArticulo(int id)
+        {
+            var vencimientos = await _context.Vencimientos
+                .Where(v => v.IdArticulo == id)
+                .ToListAsync();
+
+            if (vencimientos == null || vencimientos.Count == 0)
+            {
+                return NotFound();
+            }
+
+            var vencimientosDTO = _mapper.Map<IEnumerable<VencimientoDTO>>(vencimientos);
+
+            return Ok(vencimientosDTO);
+        }
+
         // PUT: api/Vencimientos/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutVencimiento(int id, [FromBody] VencimientoDTO vencimientoDTO)
