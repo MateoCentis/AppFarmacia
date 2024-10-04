@@ -1,4 +1,6 @@
-﻿namespace AppFarmaciaWebAPI.ModelsDTO
+﻿using System.Text.Json.Serialization;
+
+namespace AppFarmaciaWebAPI.ModelsDTO
 {
     public class ArticuloDTO
     {
@@ -15,6 +17,12 @@
         public string? Codigo { get; set; }
         public int? IdCategoria { get; set; }
         public bool Activo { get; set; }
+        public string? Clasificacion { get; set; }
+        public int? DemandaAnual { get; set; }
+        public int? PuntoReposicion { get; set; }
+        public int? CantidadAPedir { get; set; }
+        public int? DemandaAnualHistorica { get; set; }
+        public string? NombresDrogas { get; set; }
 
         public ICollection<ArticuloEnVentaDTO> ArticulosEnVentaDTO { get; set; } = [];
         public ICollection<PrecioDTO> PreciosDTO { get; set; } = [];

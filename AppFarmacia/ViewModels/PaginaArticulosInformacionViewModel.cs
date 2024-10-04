@@ -54,7 +54,7 @@ namespace AppFarmacia.ViewModels
             VencimientoService = new VencimientosService();
             ArticuloService = new ArticulosService();
         }
-
+        
         partial void OnArticuloMostrarChanged(ArticuloMostrar? value)
         {
             if (value != null)

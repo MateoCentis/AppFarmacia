@@ -21,15 +21,27 @@ namespace AppFarmaciaWebAPI.Controllers
 
         // GET: api/Articulos
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ArticuloDTO>>> GetArticulos()
+        public async Task<ActionResult<IEnumerable<ArticuloDTO>>> GetArticulos(int size = 0)
         {
+            var articulos = new List<Articulo>();
             // Acá cambié para que muestre todos, no solo los activos, de última del front sacamos los no activos
-            var articulos = await _context.Articulos
+            if (size==0)
+            {
+                articulos = await _context.Articulos
                  //.Include(a => a.Precios)
                  //.Include(a => a.Vencimientos)
                  //.Include(a => a.Stocks)
                  //.Include(a => a.ArticulosEnVenta)
                  .ToListAsync();
+            }
+            else
+            {
+                // Tomas los primero "size"
+                articulos = await _context.Articulos
+                    .Take(size)
+                    .ToListAsync();
+            }
+            
 
             var articuloDTOs = _mapper.Map<IEnumerable<ArticuloDTO>>(articulos);
             return Ok(articuloDTOs);

@@ -22,8 +22,29 @@ namespace AppFarmacia.Models
         [JsonPropertyName("idCategoria")]
         public int? IdCategoria { get; set; }
 
+        [JsonPropertyName("nomCategoria")]
+        public string? NombreCategoria { get; set; }
+
         [JsonPropertyName("activo")]
         public bool Activo { get; set; }
+
+        [JsonPropertyName("clasificacion")]
+        public string? Clasificacion { get; set; }
+
+        [JsonPropertyName("denandaAnual")]
+        public int? DemandaAnual { get; set; }
+
+        [JsonPropertyName("puntoReposicion")]
+        public int? PuntoReposicion { get; set; }
+
+        [JsonPropertyName("cantidadAPedir")]
+        public int? CantidadAPedir { get; set; }
+
+        [JsonPropertyName("demandaAnualHistorica")]
+        public int? DemandaAnualHistorica { get; set; }
+
+        [JsonPropertyName("nombresDrogas")]
+        public string? NombresDrogas { get; set; }
 
         [JsonPropertyName("idArticuloVentaDTO")]
         public ICollection<ArticuloEnVenta> ArticulosEnVenta { get; set; } = [];

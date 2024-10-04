@@ -19,6 +19,13 @@ public partial class Articulo
 
     public string? Codigo { get; set; }
 
+    public string? Clasificacion { get; set; }
+    public int? DemandaAnual { get; set; }
+    public int? PuntoReposicion { get; set; }
+    public int? CantidadAPedir { get; set; }
+    public int? DemandaAnualHistorica { get; set; }
+    public string? NombresDrogas { get; set; }
+
     public virtual Categoria? IdCategoriaNavigation { get; set; }
 
     public virtual ICollection<ArticuloEnVenta> ArticulosEnVenta { get; set; } = new List<ArticuloEnVenta>();

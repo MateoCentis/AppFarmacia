@@ -14,6 +14,14 @@ namespace AppFarmacia.Models
         public decimal PrecioActual { get; set; }
         public DateOnly FechaUltimoPrecio { get; set; }
         public int Stock {  get; set; }
+
+        public string? Clasificacion { get; set; }
+        public int? DemandaAnual { get; set; }
+        public int? PuntoReposicion { get; set; }
+        public int? CantidadAPedir { get; set; }
+        public int? DemandaAnualHistorica { get; set; }
+        public string? NombresDrogas { get; set; }
+
         public DateOnly FechaVencimientoMasCercano {  get; set; }
 
         public ICollection<Vencimiento> Vencimientos { get; set; } = [];
@@ -41,6 +49,12 @@ namespace AppFarmacia.Models
             this.Stocks = articulo.Stocks;
             this.Vencimientos = articulo.Vencimientos;
             this.Precios = articulo.Precios;
+            this.Clasificacion = articulo.Clasificacion ?? string.Empty;
+            this.DemandaAnual = articulo.DemandaAnual.HasValue ? articulo.DemandaAnual.Value : (int?)null;
+            this.PuntoReposicion = articulo.PuntoReposicion.HasValue ? articulo.PuntoReposicion.Value : (int?)null;
+            this.CantidadAPedir = articulo.CantidadAPedir.HasValue ? articulo.CantidadAPedir.Value : (int?)null;
+            this.DemandaAnualHistorica = articulo.DemandaAnualHistorica.HasValue ? articulo.DemandaAnualHistorica.Value : (int?)null;
+            this.NombresDrogas = articulo.NombresDrogas ?? string.Empty;
 
             // Si tiene categoría
             if (articulo.IdCategoria.HasValue)
