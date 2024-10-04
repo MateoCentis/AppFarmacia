@@ -9,7 +9,7 @@ namespace AppFarmacia.Models
         public string Nombre { get; set; }
         public string Marca { get; set; }
         public string Descripcion { get; set; }
-        public int IdCategoria { get; set; }
+        public int? IdCategoria { get; set; }
         public string Categoria { get; set; }
         public decimal PrecioActual { get; set; }
         public DateOnly FechaUltimoPrecio { get; set; }
@@ -36,7 +36,7 @@ namespace AppFarmacia.Models
             this.Nombre = articulo.Nombre;
             this.Marca = articulo.Marca ?? string.Empty;
             this.Descripcion = articulo.Descripcion ?? string.Empty;
-            this.IdCategoria = articulo.IdCategoria.Value;
+            this.IdCategoria = articulo.IdCategoria.HasValue ? articulo.IdCategoria.Value : (int?)null;
             this.ArticulosEnVenta = articulo.ArticulosEnVenta;
             this.Stocks = articulo.Stocks;
             this.Vencimientos = articulo.Vencimientos;

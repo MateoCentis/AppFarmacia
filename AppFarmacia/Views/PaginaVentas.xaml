@@ -5,10 +5,10 @@
              x:Class="AppFarmacia.Views.PaginaVentas"
              Shell.NavBarIsVisible="False">
 
-    <ContentPage.BindingContext>
+    <!--<ContentPage.BindingContext>
         <viewModels:PaginaVentasViewModel/>
-    </ContentPage.BindingContext>
-    
+    </ContentPage.BindingContext>--> <!-- Esto se hace en el constructor de la página -->
+
     <!-- Grilla de dos filas -> En la primera pongo botones y cosas y en la segunda la tabla -->
     <Grid RowDefinitions="Auto,*, Auto" Padding="1">
 

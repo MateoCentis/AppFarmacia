@@ -26,11 +26,17 @@ namespace AppFarmaciaWebAPI.Controllers
 
         // GET: api/Venta
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<VentaDTO>>> GetVentas()
+        public async Task<ActionResult<IEnumerable<VentaDTO>>> GetVentas(int page = 1, int pageSize = 100)
         {
-            // Incluir los ArticulosEnVenta en la consulta
+            // Validar los parámetros de paginación
+            if (page <= 0) page = 1;
+            if (pageSize <= 0) pageSize = 100;
+
+            // Incluir los ArticulosEnVenta solo si es necesario
             var ventas = await _context.Ventas
-                                       .Include(v => v.ArticuloEnVenta)
+                                       //.Include(v => v.ArticuloEnVenta) // Puedes descomentar si es necesario incluir los artículos
+                                       .Skip((page - 1) * pageSize)
+                                       .Take(pageSize)
                                        .ToListAsync();
 
             // Mapear a VentaDTO
@@ -38,6 +44,7 @@ namespace AppFarmaciaWebAPI.Controllers
 
             return Ok(ventasDTO);
         }
+
 
         // GET: api/Venta/5
         [HttpGet("{id}")]

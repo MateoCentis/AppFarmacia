@@ -6,9 +6,9 @@
              Shell.NavBarIsVisible="False">
 
     
-    <ContentPage.BindingContext>
+    <!--<ContentPage.BindingContext>
         <viewModels:PaginaArticulosViewModel/>
-    </ContentPage.BindingContext>
+    </ContentPage.BindingContext>--> <!-- Esto se hace en el constructor de la página -->
 
 
     <Grid RowDefinitions="Auto,*">

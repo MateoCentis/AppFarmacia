@@ -146,7 +146,10 @@ namespace AppFarmacia.ViewModels
             catch (Exception ex)
             {
                 Debug.WriteLine($"Unable to get articles: {ex.Message}");
-                await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    Shell.Current.DisplayAlert("Error articles!", ex.Message, "OK");
+                });
             }
         }
 
@@ -167,7 +170,10 @@ namespace AppFarmacia.ViewModels
             catch (Exception ex)
             {
                 Debug.WriteLine($"Unable to get categorias: {ex.Message}");
-                await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    Shell.Current.DisplayAlert("Error categorias!", ex.Message, "OK");
+                });
             }
         }
 
