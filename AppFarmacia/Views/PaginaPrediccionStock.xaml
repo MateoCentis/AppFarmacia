@@ -12,52 +12,44 @@
     
     
     <Grid RowDefinitions="Auto,*">
-        <HorizontalStackLayout>
+        <HorizontalStackLayout Margin="110,30,0,0">
             <!--/boton para cargar articulos-->
-            <Button Text="Cargar Artículos" Command="{Binding ObtenerArticulosCommand}" Style="{StaticResource BotonGeneral}" Margin="80,0,0,0"/>
+            <Button Text="Cargar Artículos" Command="{Binding ObtenerArticulosCommand}" Style="{StaticResource BotonGeneral}"/>
             <Picker Title="Selecciona el tamaño de carga" ItemsSource="{Binding CantArticulos}" SelectedItem="{Binding CantArticulosSeleccionada}" 
-                        WidthRequest="200" Margin="80,0,5,15" HeightRequest="60" VerticalTextAlignment="Center" HorizontalTextAlignment="Start"/>
+                        Style="{StaticResource PickerEstilo}" WidthRequest="200" Margin="80,0,5,15" HeightRequest="60" VerticalTextAlignment="Center" HorizontalTextAlignment="Start"/>
         </HorizontalStackLayout>
 
-        <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ListaArticulos}" 
+        <Frame Grid.Row="1" BorderColor="Black" CornerRadius="0" Padding="0" Margin="50,10,50,10">
+            <dg:DataGrid ItemsSource="{Binding ListaArticulos}"
                  SelectionMode="Single" SelectedItem="{Binding ArticuloSeleccionado}"
                  PaginationEnabled="True" PageSize="{Binding SizePagina, Mode=OneWay}" Style="{StaticResource TablaComun}"
-                 IsRefreshing="{Binding EstaCargando}" Margin="0">
-            <!-- Para cuando la página no tiene data para ver-->
-            <dg:DataGrid.NoDataView>
-                <Label Text="No hay artículos que cumplan con esos criterios" Style="{StaticResource VistaSinData}">
-                    <Label.Triggers>
-                        <DataTrigger TargetType="Label" Binding="{Binding EstaCargando}" Value="True">
-                            <Setter Property="Text" Value="Cargando Articulos..." />
-                            <Setter Property="TextColor" Value="#868686" />
-                            <Setter Property="FontSize" Value="18" />
-                        </DataTrigger>
-                        <DataTrigger TargetType="Label" Binding="{Binding EstaCargando}" Value="False">
-                            <Setter Property="IsVisible" Value="True" />
-                        </DataTrigger>
-                    </Label.Triggers>
-                </Label>
-            </dg:DataGrid.NoDataView>
+                 IsRefreshing="{Binding EstaCargando}">
+                <!-- Para cuando la página no tiene data para ver-->
+                <dg:DataGrid.NoDataView>
+                    <Label Text="No hay artículos que cumplan con esos criterios" Style="{StaticResource VistaSinData}">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding EstaCargando}" Value="True">
+                                <Setter Property="Text" Value="Cargando Articulos..." />
+                                <Setter Property="TextColor" Value="#868686" />
+                                <Setter Property="FontSize" Value="18" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding EstaCargando}" Value="False">
+                                <Setter Property="IsVisible" Value="True" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                </dg:DataGrid.NoDataView>
 
-            <!-- Acá dentro se definen las columnas de la tabla -->
-            <!-- Ver bien el tema de configurar bien las columnas con DataTemplate -->
-            <dg:DataGrid.Columns>
-
-                <dg:DataGridColumn Title="Nombre" PropertyName="Nombre"/>
-                <dg:DataGridColumn Title="Categoría" PropertyName="NombreCategoria"/>
-                <dg:DataGridColumn Title="Clasificación" PropertyName="Clasificacion"/>
-                <dg:DataGridColumn Title="Punto de reposición" PropertyName="PuntoReposicion"/>
-                <dg:DataGridColumn Title="Stock" PropertyName="Stock"/>
-
-            </dg:DataGrid.Columns>
-
-            <!-- Esto sirve para darle a determinadas celdas colores especiales bajo ciertas condiciones -> usarlo para vencimientos -->
-            <dg:DataGrid.Resources>
-                <ResourceDictionary>
-                    <!--<conv:StreakToColorConverter x:Key="StreakToColorConverter"/>-->
-                </ResourceDictionary>
-            </dg:DataGrid.Resources>
-        </dg:DataGrid>
+                <!-- Acá dentro se definen las columnas de la tabla -->
+                <dg:DataGrid.Columns>
+                    <dg:DataGridColumn Title="Nombre" PropertyName="Nombre"/>
+                    <dg:DataGridColumn Title="Categoría" PropertyName="NombreCategoria"/>
+                    <dg:DataGridColumn Title="Clasificación" PropertyName="Clasificacion"/>
+                    <dg:DataGridColumn Title="Punto de reposición" PropertyName="PuntoReposicion"/>
+                    <dg:DataGridColumn Title="Stock" PropertyName="UltimoStock"/>
+                </dg:DataGrid.Columns>
+            </dg:DataGrid>
+        </Frame>
     </Grid>
 
 

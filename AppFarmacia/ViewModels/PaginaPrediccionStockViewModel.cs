@@ -19,6 +19,7 @@ namespace AppFarmacia.ViewModels
     {
         private readonly ArticulosService articulosService;
         private readonly CategoriasService categoriasService;
+        private readonly StockService stocksService;
 
         [ObservableProperty]
         private int sizePagina;
@@ -42,8 +43,10 @@ namespace AppFarmacia.ViewModels
 
         public PaginaPrediccionStockViewModel()
         {
+            
             this.articulosService = new ArticulosService();
             this.categoriasService = new CategoriasService();
+            this.stocksService = new StockService();
             this._listaArticulos = new ObservableCollection<Articulo>();
 
             SizePagina = 20;
@@ -88,6 +91,10 @@ namespace AppFarmacia.ViewModels
                     {
                         articulo.NombreCategoria = "Sin categoría";
                     }
+
+                    // Obtener el último stock del artículo
+                    Stock? stock = await stocksService.GetUltimoStockPorArticulo(articulo.IdArticulo);
+                    articulo.UltimoStock = stock?.CantidadActual;
                 }
 
                 // Asignar la lista de artículos a la propiedad ListaArticulos

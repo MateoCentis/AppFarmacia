@@ -47,6 +47,25 @@ namespace AppFarmaciaWebAPI.Controllers
             return Ok(stockDTO);
         }
 
+        // GET: api/Stocks/GetUltimoStockPorArticulo/1
+        [HttpGet("GetUltimoStockPorArticulo/{id_articulo}")]
+        public async Task<ActionResult<StockDTO>> GetUltimoStockPorArticulo(int id_articulo)
+        {
+            // Obtener el último registro de stock para el artículo específico
+            var stock = await _context.Stocks
+                .Where(s => s.IdArticulo == id_articulo)
+                .OrderByDescending(s => s.Fecha) // Ordenar por fecha descendente
+                .FirstOrDefaultAsync(); // Obtener el primer registro (el más reciente)
+
+            if (stock == null)
+            {
+                return NotFound();
+            }
+
+            var stockDTO = _mapper.Map<StockDTO>(stock);
+            return Ok(stockDTO);
+        }
+
         // PUT: api/Stocks/5
         [HttpPut("{id}")]
         public async Task<IActionResult> EditStock(int id, [FromBody] StockDTO stockDTO)

@@ -22,9 +22,6 @@ namespace AppFarmacia.Models
         [JsonPropertyName("idCategoria")]
         public int? IdCategoria { get; set; }
 
-        [JsonPropertyName("nomCategoria")]
-        public string? NombreCategoria { get; set; }
-
         [JsonPropertyName("activo")]
         public bool Activo { get; set; }
 
@@ -57,6 +54,14 @@ namespace AppFarmacia.Models
 
         [JsonPropertyName("stocksDTO")]
         public ICollection<Stock> Stocks { get; set; } = [];
+
+        // Parametros adicionales
+        [JsonPropertyName("nomCategoria")]
+        public string? NombreCategoria { get; set; }
+
+        [JsonPropertyName("ultimoStock")]
+        public int? UltimoStock { get; set; }
+
     }
 }
 

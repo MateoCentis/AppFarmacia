@@ -17,7 +17,7 @@ namespace AppFarmacia.ViewModels
         private readonly CategoriasService categoriasService;
 
         [ObservableProperty]
-        private ArticuloMostrar articuloSeleccionado;//Sirve para implementar luego otras cosas
+        private ArticuloMostrar? articuloSeleccionado;//Sirve para implementar luego otras cosas
         
         [ObservableProperty]
         private int sizePagina;
