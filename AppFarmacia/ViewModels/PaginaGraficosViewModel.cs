@@ -12,28 +12,22 @@ namespace AppFarmacia.ViewModels
 {
     public partial class PaginaGraficosViewModel : ObservableObject
     {
-        // Lo que dijo Mati: 
-        //Aquí se podrían incluir gráficos de ventas en pesos con segmentos temporales(por día, por semana, por
-        //mes). Se pueden buscar distintas formas de evaluar las ventas:
-        //- Cantidad de tickets(hace referencia a cuanta gente ingresó y compró en la farmacia)
-        //- Cantidad de elementos por ticket promedio
-        //- Cantidad de unidades vendidas → Aquí es clave la categorización, sobre todo en lo referido a
-        //medicamentos, perfumería y dermocosmética
-        //Hay mucho más para profundizar, si quieren lo vemos juntos
+        //Gráficos a realizarse:
+            // Horarios con más ventas por día
+            // Días con más ventas de un determinado mes
+            // Años con más ventas
+            // Gráfico de torta con acciones terapéuticas más vendidas
+            // Pensar más ....
+        
 
-        //¿Gráficos que se pueden mostrar? (para ver más gráficos hablarlo con Lucas)
-        //Lista de Articulos más vendidos de la farmacia?
-        //Lista de artículos con más stock de la farmacia?
-        //Horarios en los que más se vende diferenciando por día
-
-        //Propiedades - Gráfico de Facturación mensual por ventas
+        //Propiedades - Gráfico de Facturación mensual por ventas ------------------
         [ObservableProperty]
         private int yearSeleccionadoGraficoVentasMensuales;
 
         [ObservableProperty]
         private LineChart? ventasMensualesChart;
 
-        //Propiedades - Gráfico de ventas diarias dado un mes y un año
+        //Propiedades - Gráfico de ventas diarias dado un mes y un año --------------------
         [ObservableProperty]
         private int yearSeleccionadoGraficoVentasDiarias;
 
@@ -60,7 +54,7 @@ namespace AppFarmacia.ViewModels
             Task.Run(async () => await GenerarGraficoVentasMensuales());
         }
 
-        //Gráfico que muestra monto total de ventas por mes para un determinado año
+        //Gráfico que muestra monto total de ventas por mes para un determinado año-----------------
         [RelayCommand]
         private async Task GenerarGraficoVentasMensuales()
         {
@@ -116,7 +110,7 @@ namespace AppFarmacia.ViewModels
 
         }
 
-        //Gráfico que muestras las ventas diarias para un mes y año determinados
+        //Gráfico que muestras las ventas diarias para un mes y año determinados-----------------
         [RelayCommand]
         private async Task GenerarGraficoVentasDiarias()
         {

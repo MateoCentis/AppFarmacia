@@ -164,10 +164,112 @@ namespace AppFarmaciaWebAPI.Controllers
             return NoContent();
         }
 
-
         private bool VentaExists(int id)
         {
             return _context.Ventas.Any(e => e.IdVenta == id);
+        }
+
+        // --------------------------------------MÉTODOS RELACIONADOS A LOS GRÁFICOS--------------------------------------
+
+        // Obtener la lista de cantidades vendidas por mes dado un año determinado
+        [HttpGet("cantidad-por-mes/{year}")]
+        public async Task<IActionResult> GetCantidadVendidaPorMes(int year)
+        {
+            // Realizamos la primera agregación en una subconsulta.
+            var ventasPorMes = await _context.ArticulosEnVenta
+                .Join(_context.Ventas,
+                      articulo => articulo.IdVenta,
+                      venta => venta.IdVenta,
+                      (articulo, venta) => new { Articulo = articulo, Venta = venta })
+                .Where(v => v.Venta.Fecha.Year == year)
+                .GroupBy(v => v.Venta.Fecha.Month)
+                .Select(g => new
+                {
+                    Mes = g.Key,
+                    TotalCantidadVendida = g.Sum(v => v.Articulo.Cantidad)
+                })
+                .ToListAsync();
+
+            return Ok(ventasPorMes);
+        }
+
+        [HttpGet("cantidad-por-hora-semana")]
+        public async Task<IActionResult> GetCantidadVendidaPorHoraSemana()
+        {
+            // Obtener las ventas con los datos básicos desde la base de datos
+            var ventasConDetalles = await _context.Ventas
+                .Include(v => v.ArticuloEnVenta)  // Incluir los artículos en venta
+                .ToListAsync();
+
+            // Realizar la agrupación en memoria
+            var ventasPorHoraSemana = ventasConDetalles
+                .SelectMany(v => v.ArticuloEnVenta.Select(a => new
+                {
+                    DiaSemana = (int)v.Fecha.DayOfWeek,  // Día de la semana (0 = Domingo, 1 = Lunes, ...)
+                    Hora = v.Fecha.Hour,                 // Hora de la venta
+                    a.Cantidad                           // Cantidad vendida del artículo
+                }))
+                .GroupBy(v => new { v.DiaSemana, v.Hora })  // Agrupar por día de la semana y hora
+                .Select(g => new
+                {
+                    DiaSemana = g.Key.DiaSemana,
+                    Hora = g.Key.Hora,
+                    CantidadVendida = g.Sum(v => v.Cantidad)  // Sumar la cantidad vendida
+                })
+                .OrderBy(v => v.DiaSemana)
+                .ThenBy(v => v.Hora)
+                .ToList();
+
+            // Preparar el formato final para que la respuesta esté organizada por día de la semana
+            var resultado = ventasPorHoraSemana
+                .GroupBy(v => v.DiaSemana)
+                .Select(g => new
+                {
+                    DiaSemana = g.Key,
+                    VentasPorHora = g.Select(v => new { v.Hora, v.CantidadVendida }).ToList()
+                })
+                .ToList();
+
+            return Ok(resultado);
+        }
+
+        [HttpGet("cantidad-por-dia/{year}/{month}")]
+        public async Task<IActionResult> GetCantidadVendidaPorDia(int year, int month)
+        {
+            // Realizar un join entre ArticuloEnVenta y Venta
+            var ventasPorDia = await _context.ArticulosEnVenta
+                .Join(_context.Ventas,
+                      articulo => articulo.IdVenta,  // FK en ArticuloEnVenta
+                      venta => venta.IdVenta,             // PK en Venta
+                      (articulo, venta) => new { Articulo = articulo, Venta = venta }) // Unión en Join
+                .Where(v => v.Venta.Fecha.Year == year && v.Venta.Fecha.Month == month) // Filtrar por año y mes
+                .GroupBy(v => v.Venta.Fecha.Day) // Agrupar por día
+                .Select(g => new
+                {
+                    Dia = g.Key,
+                    CantidadVendida = g.Sum(v => v.Articulo.Cantidad)  // Sumar las cantidades vendidas por día
+                })
+                .ToListAsync();
+
+            return Ok(ventasPorDia);
+        }
+
+        // Obtener la lista de cantidades vendidas por categoría
+        [HttpGet("cantidad-por-categoria")]
+        public async Task<IActionResult> GetCantidadVendidaPorCategoria()
+        {
+            var ventasPorCategoria = await _context.ArticulosEnVenta
+                .Include(a => a.IdArticuloNavigation)
+                .ThenInclude(a => a.IdCategoriaNavigation)
+                .GroupBy(a => a.IdArticuloNavigation.IdCategoriaNavigation.Nombre)
+                .Select(g => new
+                {
+                    Categoria = g.Key,
+                    CantidadVendida = g.Sum(a => a.Cantidad)
+                })
+                .ToListAsync();
+
+            return Ok(ventasPorCategoria);
         }
     }
 }
