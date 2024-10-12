@@ -7,11 +7,19 @@ using System.Threading.Tasks;
 using SkiaSharp;
 using Microcharts;
 using CommunityToolkit.Mvvm.Input;
+using AppFarmacia.Services;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace AppFarmacia.ViewModels
 {
     public partial class PaginaGraficosViewModel : ObservableObject
     {
+        // Ideas de otros gráficos
+            //Un gráfico que muestre las estimaciones de ventas para los próximos meses
+                // Habría que tirar el modelo a varios meses
+            //Un gráfico que muestre la historia completa de la farmacia, sin separarla por año
+            // Un gráfico con las facturaciones, no de cantidades vendidas
         //Gráficos a realizarse:
             // Horarios con más ventas por día
             // Días con más ventas de un determinado mes
@@ -20,14 +28,14 @@ namespace AppFarmacia.ViewModels
             // Pensar más ....
         
 
-        //Propiedades - Gráfico de Facturación mensual por ventas ------------------
+        //Propiedades - Gráfico VENTAS MENSUALES ------------------------------------------
         [ObservableProperty]
         private int yearSeleccionadoGraficoVentasMensuales;
 
         [ObservableProperty]
         private LineChart? ventasMensualesChart;
 
-        //Propiedades - Gráfico de ventas diarias dado un mes y un año --------------------
+        //Propiedades - Gráfico VENTAS DIARIAS --------------------------------------------
         [ObservableProperty]
         private int yearSeleccionadoGraficoVentasDiarias;
 
@@ -35,46 +43,80 @@ namespace AppFarmacia.ViewModels
         private int mesSeleccionadoGraficoVentasDiarias;
 
         [ObservableProperty]
+        private string nombreMesSeleccionadoGraficoVentasDiarias;
+
+        // Propiedades - Gráfico HORARIOS --------------------------------------------------
+        [ObservableProperty]
+        private string diaSeleccionado = "Lunes"; // Día de la semana seleccionado
+
+        [ObservableProperty]
         private LineChart? ventasDiariasChart;//null hasta ser llamado
 
-        // Propiedades añadidas
-        public List<int> YearsDisponibles { get; } = Enumerable.Range(2000, 50).ToList(); // Años desde 2000 hasta 2049
-        public List<int> MesesDisponibles { get; } = Enumerable.Range(1, 12).ToList(); // Acá estaría bueno mostrar nombres y luego parsear pero por ahora queda así
+        [ObservableProperty]
+        private LineChart? ventasHorariosChart;
 
+        [ObservableProperty]
+        private List<DiaSemanaDto>? ventasPorHora;
+
+        // Propiedades - Gráfico CATEGORIAS -------------------------------------------------
+        [ObservableProperty]
+        private PieChart? ventasPorCategoriaChart;
+
+        private List<VentaCategoriaDto> VentasPorCategoria;
+
+        // Propiedades comunes -------
+        [ObservableProperty]
+        private List<String> diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+
+        [ObservableProperty]
+        private List<string> meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
+                                                "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+        private readonly List<String> colores = ["#3498db", "#e74c3c", "#2ecc71", "#9b59b6", "#f1c40f",
+            "#e67e22", "#1abc9c", "#34495e", "#e84393", "#fd79a8",
+            "#95a5a6" // Color para "otros"
+            ];
+
+        public List<int> YearsDisponibles { get; } = Enumerable.Range(2017, 13).ToList(); // Años desde 2017 hasta 2030
+
+        private readonly VentasService VentaService;
 
         public PaginaGraficosViewModel()
         {
             //Que se inicialicen con fechas actuales
-            yearSeleccionadoGraficoVentasDiarias = DateTime.Now.Year;
-            mesSeleccionadoGraficoVentasDiarias = DateTime.Now.Month;
+            YearSeleccionadoGraficoVentasDiarias = DateTime.Now.Year;
+            MesSeleccionadoGraficoVentasDiarias = DateTime.Now.Month;
             YearSeleccionadoGraficoVentasMensuales = DateTime.Now.Year;
+            NombreMesSeleccionadoGraficoVentasDiarias = Meses[MesSeleccionadoGraficoVentasDiarias - 1];
+
+            VentaService = new VentasService();
 
             // TODO: Inicializar los gráficos (tirar los comandos necesarios o hacerlo bien -> que paja)
             Task.Run(async () => await GenerarGraficoVentasDiarias());
             Task.Run(async () => await GenerarGraficoVentasMensuales());
+            Task.Run(async () => await GenerarGraficoCategorias());
+            Task.Run(async () => await GenerarGraficoHorarios());
         }
 
-        //Gráfico que muestra monto total de ventas por mes para un determinado año-----------------
+        //--------------Gráfico que muestra monto total de ventas por mes para un determinado año--------------------
         [RelayCommand]
         private async Task GenerarGraficoVentasMensuales()
         {
-            //TODO: Obtener todas las ventas de un año y diferencias los montos por mes
-            var ventasMonto = new float[MesesDisponibles.Count];
-            // Se deja con DATA DEMO
+            // Llamar a la API que obtiene las ventas mensuales para el año seleccionado
+            var ventasPorMes = await VentaService.GetCantidadVendidaPorMes(YearSeleccionadoGraficoVentasMensuales);
 
-            await Task.Delay(500);
+            var ventasMonto = new float[12];//12 meses xd
 
-            var random = new Random();
-            for (int i = 0; i < MesesDisponibles.Count; i++)
+            // Asignar los valores obtenidos al array de ventas
+            foreach (var venta in ventasPorMes)
             {
-                ventasMonto[i] = (float)(random.NextDouble() * 10000);
+                ventasMonto[venta.Mes - 1] = venta.TotalCantidadVendida;
             }
 
             var entries = ventasMonto.Select((value, index) => new ChartEntry(value)
             {
-                Label = (index + 1).ToString(), //Día
-                ValueLabel = value.ToString("F2"), //Monto del mes
-                Color = SKColor.Parse("#2c3e50") //Color (se le pueden llegar a poner todos los colores definidos antes)
+                Label = Meses[index], // Mostrar el nombre del mes
+                ValueLabel = value.ToString("F2"), // Monto del mes
+                Color = SKColor.Parse("#2c3e50") // Color del gráfico
             }).ToArray();
 
             // Definición del gráfico ya cargados los datos
@@ -110,35 +152,36 @@ namespace AppFarmacia.ViewModels
 
         }
 
-        //Gráfico que muestras las ventas diarias para un mes y año determinados-----------------
+        //-------------------Gráfico que muestras las ventas diarias para un mes y año determinados---------------------
         [RelayCommand]
         private async Task GenerarGraficoVentasDiarias()
         {
-            
+            // Castear de string -> entero 
+            MesSeleccionadoGraficoVentasDiarias = Array.IndexOf(Meses.ToArray(), NombreMesSeleccionadoGraficoVentasDiarias) + 1;
+            // Data para la generación adecuada del gráfico
             var diasEnElMes = DateTime.DaysInMonth(YearSeleccionadoGraficoVentasDiarias, MesSeleccionadoGraficoVentasDiarias);
-            var ventas = new float[diasEnElMes];
-            // TODO: Obtener ventas de ese mes y año, luego obtener el monto por día y meterlo en "ventas"
-            // Está en todo porque habría que optimizar esto y generar los comandos necesarios
-            
-            // Por ahora se deja con DATA DEMO
-            await Task.Delay(500);
+            var primerDiaDelMes = new DateTime(YearSeleccionadoGraficoVentasDiarias, MesSeleccionadoGraficoVentasDiarias, 1);
 
-            var random = new Random();
-            for (int i = 0; i < diasEnElMes; i++)
+            // Llamar a la API que obtiene las ventas diarias para el mes y año seleccionados
+            var ventasPorDia = await VentaService.GetCantidadVendidaPorDia(YearSeleccionadoGraficoVentasDiarias, MesSeleccionadoGraficoVentasDiarias);
+
+            var ventas = new float[diasEnElMes];
+
+            // Asignar los valores obtenidos al array de ventas
+            foreach (var venta in ventasPorDia)
             {
-                ventas[i] = (float)(random.NextDouble() * 1000);
+                ventas[venta.Dia - 1] = venta.CantidadVendida;
             }
 
-
+            int diaInicioSemana = (int)primerDiaDelMes.DayOfWeek;
             // Hacer las entries con el vector de ventas
             var entries = ventas.Select((value, index) => new ChartEntry(value)
             {
-                Label = (index + 1).ToString(), //Día
+                Label = DiasSemana[(diaInicioSemana + index - 1) % 7], //Esto me lo saqué de la galera, calculo anda bien
                 ValueLabel = value.ToString("F2"), //Monto del día
                 Color = SKColor.Parse("#2c3e50") //Color (se le pueden llegar a poner todos los colores definidos antes)
             }).ToArray();
 
-            // Definición del gráfico ya cargados los datos
             VentasDiariasChart = new LineChart 
             { 
                 Entries = entries,
@@ -164,8 +207,99 @@ namespace AppFarmacia.ViewModels
             };
         }
 
+        //------------------Gráfico que muestra los horarios pico de la semana----------------------------------
+        [RelayCommand]
+        private async Task GenerarGraficoHorarios()
+        {
+            // Leer toda la info de la API
+            if (VentasPorHora == null)
+            {
+                VentasPorHora = await VentaService.GetCantidadVendidaPorHoraSemana();
+            }
 
+            // Conversión de días (0 para domingo, 6 para sábado)
+            int diaNumero = DiasSemana.IndexOf(DiaSeleccionado) + 1;
+            if (diaNumero == 7) diaNumero = 0; // Para que domingo sea 0
 
+            // Filtrar las ventas según el día
+            var ventasDelDia = VentasPorHora.FirstOrDefault(v => v.DiaSemana == diaNumero);
 
+            // Asignar las ventas a las horas
+            var ventas = new List<ChartEntry>();
+
+            if (ventasDelDia != null)
+            {
+                foreach (var ventaHora in ventasDelDia.VentasPorHora)
+                {
+                    ventas.Add(new ChartEntry(ventaHora.CantidadVendida)
+                    {
+                        Label = $"{ventaHora.Hora}",
+                        ValueLabel = ventaHora.CantidadVendida.ToString("F0"),
+                        Color = SKColor.Parse("#2c3e50")
+                    });
+                }
+            }
+
+            VentasHorariosChart = new LineChart
+            {
+                Entries = ventas.ToArray(),
+                LineMode = LineMode.Straight,
+                LineSize = 8,
+                PointMode = PointMode.Square,
+                PointSize = 18,
+                LabelTextSize = 24,
+                ValueLabelTextSize = 16,
+                ShowYAxisLines = true,
+                ShowYAxisText = true,
+                YAxisPosition = Position.Left,
+                BackgroundColor = SKColor.Parse("FFFFFF"),
+                LabelOrientation = Orientation.Horizontal,
+            };
+        }
+
+        // ------------------ Gráfico de torta con las categorías más vendidas (revisar que hacer porque son muchas)------------------
+        [RelayCommand]
+        private async Task GenerarGraficoCategorias()
+        {
+            // Llamar a la API solo si no se han cargado las ventas (porque sino es bastante lento)
+            if (VentasPorCategoria == null)
+            {
+                VentasPorCategoria = await VentaService.GetCantidadVendidaPorCategoria();
+            }
+
+            // Ordenar por cantidad vendida y tomar las 10 más vendidas
+            var ventasOrdenadas = VentasPorCategoria.OrderByDescending(v => v.CantidadVendida).ToList();
+            var top10Categorias = ventasOrdenadas.Take(10).ToList();
+
+            // A las otras se las define como otros
+            var cantidadOtros = ventasOrdenadas.Skip(10).Sum(v => v.CantidadVendida);
+
+            // Hacer las entries
+            var entries = top10Categorias.Select((venta, index) => new ChartEntry(venta.CantidadVendida)
+            {
+                Label = string.IsNullOrEmpty(venta.Categoria) ? "Sin categoría" : venta.Categoria, // Asignar nombre si está vacío
+                ValueLabel = venta.CantidadVendida.ToString("F0"),
+                Color = SKColor.Parse(colores[index % colores.Count]) // Asignar colores de la lista
+            }).ToList();
+
+            if (cantidadOtros > 0)
+            {
+                entries.Add(new ChartEntry(cantidadOtros)
+                {
+                    Label = "Otros",
+                    ValueLabel = cantidadOtros.ToString("F0"),
+                    Color = SKColor.Parse(colores.Last()) // Usar el último color para "otros"
+                });
+            }
+
+            // Crear el gráfico de torta con las entradas generadas
+            VentasPorCategoriaChart = new PieChart
+            {
+                Entries = entries.ToArray(),
+                LabelTextSize = 16,
+                BackgroundColor = SKColor.Parse("FFFFFF"),
+                LabelMode = LabelMode.RightOnly,
+            };
+        }
     }
 }

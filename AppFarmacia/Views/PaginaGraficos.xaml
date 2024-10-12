@@ -23,14 +23,15 @@
                                 Command="{Binding GenerarGraficoVentasMensualesCommand}"/>
                     </HorizontalStackLayout>
                     <Label Text="Monto mensual por ventas" Style="{StaticResource TituloGrafico}"/>
-                    <micro:ChartView Chart="{Binding VentasMensualesChart}" HeightRequest="450" />
+                    <micro:ChartView Chart="{Binding VentasMensualesChart}" HeightRequest="500" />
                 </VerticalStackLayout>
             </Frame>
             
-            <!-- Gráfico 2: -->
+            <!-- Gráfico 2: Gráfico de torta de categorías-->
             <Frame Grid.Row="0" Grid.Column="1" Style="{StaticResource FrameGrafico}" Margin="10,10,10,10">
                 <VerticalStackLayout>
-                    <Label Text="Gráfico 2" Style="{StaticResource TituloGrafico}"/>
+                    <Label Text="Categorías más vendidas" Style="{StaticResource TituloGrafico}"/>
+                    <micro:ChartView Chart="{Binding VentasPorCategoriaChart}" HeightRequest="500"/>
                 </VerticalStackLayout>
             </Frame>
 
@@ -40,19 +41,25 @@
                     <HorizontalStackLayout>
                         <Picker Title="Seleccione un Año" ItemsSource="{Binding YearsDisponibles}" 
                                 SelectedItem="{Binding YearSeleccionadoGraficoVentasDiarias}" Style="{StaticResource PickerEstilo}"/>
-                        <Picker Title="Seleccione un Mes" ItemsSource="{Binding MesesDisponibles}" 
-                                SelectedItem="{Binding MesSeleccionadoGraficoVentasDiarias}" Style="{StaticResource PickerEstilo}"/>
+                        <Picker Title="Seleccione un Mes" ItemsSource="{Binding Meses}" 
+                                SelectedItem="{Binding NombreMesSeleccionadoGraficoVentasDiarias}" Style="{StaticResource PickerEstilo}"/>
                         <Button Text="Generar Gráfico" Command="{Binding GenerarGraficoVentasDiariasCommand}" Style="{StaticResource BotonGeneral}"/>
                     </HorizontalStackLayout>
                     <Label Text="Monto diario por Ventas" Style="{StaticResource TituloGrafico}"/>
-                    <micro:ChartView Chart="{Binding VentasDiariasChart}" HeightRequest="450" />
+                    <micro:ChartView Chart="{Binding VentasDiariasChart}" HeightRequest="500" />
                 </VerticalStackLayout>
             </Frame>
             
-            <!-- Gráfico 4: -->
+            <!-- Gráfico 4: Horarios según el día de la semana-->
             <Frame Grid.Row="1" Grid.Column="1" Style="{StaticResource FrameGrafico}" Margin="10,10,10,10">
                 <VerticalStackLayout >
-                    <Label Text="Gráfico 4" Style="{StaticResource TituloGrafico}"/>
+                    <Label Text="Horarios de ventas por día" Style="{StaticResource TituloGrafico}"/>
+                    <HorizontalStackLayout>
+                        <Picker Title="Seleccione un día" ItemsSource="{Binding DiasSemana}" SelectedItem="{Binding DiaSeleccionado}" Style="{StaticResource PickerEstilo}"/>
+                        <Button Style="{StaticResource BotonGeneral}" Command="{Binding GenerarGraficoHorariosCommand}" Text="Cambiar día"/>
+                    </HorizontalStackLayout>
+                    
+                    <micro:ChartView Chart="{Binding VentasHorariosChart}" HeightRequest="500"/>
                 </VerticalStackLayout>
             </Frame>
 

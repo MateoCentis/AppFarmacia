@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using AppFarmacia.Models;
 
+// Tipos de datos para obtener las respuestas de la API ---------------------------------------------
 public class VentaMesDto
 {
     public int Mes { get; set; }
@@ -16,7 +17,7 @@ public class VentaHoraDto
 public class DiaSemanaDto
 {
     public int DiaSemana { get; set; }
-    public List<VentaHoraDto> VentasPorHora { get; set; }
+    public List<VentaHoraDto> VentasPorHora { get; set; } = [];
 }
 
 public class VentaDiaDto
@@ -30,6 +31,7 @@ public class VentaCategoriaDto
     public string Categoria { get; set; }
     public int CantidadVendida { get; set; }
 }
+// ---------------------------------------------------------------------------------------------------
 
 namespace AppFarmacia.Services
 {
@@ -88,7 +90,7 @@ namespace AppFarmacia.Services
         // Lista de cantidades vendidas por categoría
         public async Task<List<VentaCategoriaDto>> GetCantidadVendidaPorCategoria()
         {
-            var response = await httpClient.GetAsync("{CadenaConexion}/Ventas/cantidad-por-categoria");
+            var response = await httpClient.GetAsync($"{CadenaConexion}/Ventas/cantidad-por-categoria");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<List<VentaCategoriaDto>>() ?? [];
         }

@@ -6,7 +6,6 @@ namespace AppFarmacia.Views;
 
 public partial class PaginaArticulos : ContentPage
 {
-    private PaginaSpinnerPopup popupCarga;
 
     public PaginaArticulos(PaginaArticulosViewModel viewModel)
     {
