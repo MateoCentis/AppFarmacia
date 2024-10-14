@@ -3,15 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AppFarmacia.Views.PaginaGraficos"
              xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
+             xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
              xmlns:micro="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
              Shell.NavBarIsVisible="False">
 
+    
     <ContentPage.BindingContext>
         <viewModels:PaginaGraficosViewModel/>
     </ContentPage.BindingContext>
     
     <ScrollView VerticalOptions="FillAndExpand" Orientation="Vertical" Scrolled="ScrollView_Scrolled">
-        <Grid RowDefinitions="*,*" ColumnDefinitions="*,*">
+        <Grid RowDefinitions="*,*,*" ColumnDefinitions="*,*">
             
             <!-- Gráfico 1: Ventas mensuales -->
             <Frame Grid.Row="0" Grid.Column="0" Style="{StaticResource FrameGrafico}" Margin="10,10,10,10">
@@ -63,8 +65,51 @@
                 </VerticalStackLayout>
             </Frame>
 
+             <!--Gráfico 5: Facturación mensual--> 
+            <Frame Grid.Row="2" Grid.Column="0" Style="{StaticResource FrameGrafico}" Margin="10,10,10,10">
+                <VerticalStackLayout>
+                    <Label Text="Facturación mensual" Style="{StaticResource TituloGrafico}"/>
+                    
+                    <HorizontalStackLayout>
+                        <Picker Title="Seleccione un año" Style="{StaticResource PickerEstilo}" ItemsSource="{Binding YearsDisponibles}" 
+                                SelectedItem="{Binding YearSeleccionadoFacturacionMensual}"/>
+                        <Button Style="{StaticResource BotonGeneral}" Command="{Binding GenerarGraficoFacturacionMensualCommand}" Text="Cambiar año"/>
+                    </HorizontalStackLayout>
+                    
+                    <micro:ChartView Chart="{Binding FacturacionMensualChart}" HeightRequest="500"/>
+                </VerticalStackLayout>
+            </Frame>
 
+             <!--Tabla 1: Artículos más vendidos-->
+            <Frame Grid.Row="2" Grid.Column="1" Style="{StaticResource FrameGrafico}" Margin="10,10,10,10">
+                <VerticalStackLayout>
+                    <Label Text="Artículos más vendidos de la farmacia" Style="{StaticResource TituloGrafico}"/>
+                    
+                    <HorizontalStackLayout>
+                        <Picker Title="Seleccione un año" Style="{StaticResource PickerEstilo}" ItemsSource="{Binding YearsDisponibles}" 
+                                SelectedItem="{Binding YearSeleccionadoArticulosMasVendidos}"/>
+                        <Picker Title="Seleccione un mes" Style="{StaticResource PickerEstilo}" ItemsSource="{Binding Meses}"
+                                SelectedItem="{Binding MesSeleccionadoArticulosMasVendidos}"/>
+                        <!--<Picker Title="Selecciona una cantidad" Style="{StaticResource PickerEstilo}" ItemsSource="{Binding CantidadesArticulosMasVendidos}"
+                                SelectedItem="{Binding CantidadArticulosMasVendidosAMostrar}"-->
+                        <Button Text="Recargar" Command="{Binding LlenarTablaArticulosMasVendidosCommand}" Style="{StaticResource BotonGeneral}"/>
+                    </HorizontalStackLayout>
+                    
+                    <dg:DataGrid ItemsSource="{Binding ArticulosMasVendidos}" SelectionMode="Single" Style="{StaticResource TablaComun}" Margin="0">
+                        <dg:DataGrid.NoDataView>
+                            <Label Text="No hay artículos que cumplan con esos criterios" Style="{StaticResource VistaSinData}"/>
+                        </dg:DataGrid.NoDataView>
 
+                        <dg:DataGrid.Columns>
+
+                            <dg:DataGridColumn Title="ID" PropertyName="IdProducto"/>
+                            <dg:DataGridColumn Title="Artículo" PropertyName="Nombre"/>
+                            <dg:DataGridColumn Title="Cantidad vendida" PropertyName="CantidadVendida"/>
+                        </dg:DataGrid.Columns>
+
+                    </dg:DataGrid>
+                </VerticalStackLayout>
+            </Frame>
         </Grid>
     </ScrollView>
 </ContentPage>

@@ -31,6 +31,20 @@ public class VentaCategoriaDto
     public string Categoria { get; set; }
     public int CantidadVendida { get; set; }
 }
+
+public class FacturacionMensual
+{
+    public int Mes { get; set; }
+    public decimal TotalFacturacion { get; set; }
+}
+
+public class ArticuloDTO
+{
+    public int IdProducto { get; set; }
+    public string Nombre { get; set; }
+    public int CantidadVendida { get; set; }
+}
+
 // ---------------------------------------------------------------------------------------------------
 
 namespace AppFarmacia.Services
@@ -93,6 +107,20 @@ namespace AppFarmacia.Services
             var response = await httpClient.GetAsync($"{CadenaConexion}/Ventas/cantidad-por-categoria");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<List<VentaCategoriaDto>>() ?? [];
+        }
+
+        public async Task<List<FacturacionMensual>> GetFacturacionMensual(int year)
+        {
+            var response = await httpClient.GetAsync($"{CadenaConexion}/Ventas/facturacion-mensual/{year}");
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<List<FacturacionMensual>>() ?? [];
+        }
+
+        public async Task<List<ArticuloDTO>> GetArticulosMasVendidos(int year, int mes, int cantidad)
+        {
+            var response = await httpClient.GetAsync($"{CadenaConexion}/Ventas/articulos-mas-vendidos/{year}/{mes}/{cantidad}");
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<List<ArticuloDTO>>() ?? [];
         }
     }
 }

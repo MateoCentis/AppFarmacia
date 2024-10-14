@@ -10,16 +10,14 @@ using CommunityToolkit.Mvvm.Input;
 using AppFarmacia.Services;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Azure;
 
 namespace AppFarmacia.ViewModels
 {
     public partial class PaginaGraficosViewModel : ObservableObject
     {
         // Ideas de otros gráficos
-            //Un gráfico que muestre las estimaciones de ventas para los próximos meses
-                // Habría que tirar el modelo a varios meses
-            //Un gráfico que muestre la historia completa de la farmacia, sin separarla por año
-            // Un gráfico con las facturaciones, no de cantidades vendidas
+            // Un gráfico que muestre la historia completa de la farmacia, sin separarla por año (para facturación y cantidad)
         //Gráficos a realizarse:
             // Horarios con más ventas por día
             // Días con más ventas de un determinado mes
@@ -56,7 +54,7 @@ namespace AppFarmacia.ViewModels
         private LineChart? ventasHorariosChart;
 
         [ObservableProperty]
-        private List<DiaSemanaDto>? ventasPorHora;
+        private List<DiaSemanaDto> ventasPorHora;
 
         // Propiedades - Gráfico CATEGORIAS -------------------------------------------------
         [ObservableProperty]
@@ -64,7 +62,33 @@ namespace AppFarmacia.ViewModels
 
         private List<VentaCategoriaDto> VentasPorCategoria;
 
-        // Propiedades comunes -------
+        // Propiedades - Gráfico FACTURACIONES MENSUALES -------------------------------------
+        [ObservableProperty]
+        private LineChart? facturacionMensualChart;
+
+        [ObservableProperty]
+        private List<FacturacionMensual> facturacionesMensuales;
+
+        [ObservableProperty]
+        private int yearSeleccionadoFacturacionMensual;
+
+        // Propiedades - Tabla de artículos más vendidos -------------------------------------
+        [ObservableProperty]
+        private List<ArticuloDTO> articulosMasVendidos;
+
+        [ObservableProperty]
+        private int yearSeleccionadoArticulosMasVendidos;
+
+        [ObservableProperty]
+        private int mesSeleccionadoArticulosMasVendidos;
+
+        [ObservableProperty]
+        private int cantidadArticulosMasVendidosAMostrar = 10;
+
+        [ObservableProperty]
+        private string nombreMesSeleccionadoArticulosMasVendidos;
+
+        // Propiedades comunes ----------------------------------------------------------------
         [ObservableProperty]
         private List<String> diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 
@@ -80,22 +104,33 @@ namespace AppFarmacia.ViewModels
 
         private readonly VentasService VentaService;
 
+        // Inicialización de gráficos y variables
         public PaginaGraficosViewModel()
         {
             //Que se inicialicen con fechas actuales
             YearSeleccionadoGraficoVentasDiarias = DateTime.Now.Year;
             MesSeleccionadoGraficoVentasDiarias = DateTime.Now.Month;
-            YearSeleccionadoGraficoVentasMensuales = DateTime.Now.Year;
             NombreMesSeleccionadoGraficoVentasDiarias = Meses[MesSeleccionadoGraficoVentasDiarias - 1];
+            
+            YearSeleccionadoGraficoVentasMensuales = DateTime.Now.Year;
+            YearSeleccionadoFacturacionMensual = DateTime.Now.Year;
+
+            MesSeleccionadoArticulosMasVendidos = DateTime.Now.Month;
+            YearSeleccionadoArticulosMasVendidos = DateTime.Now.Year;
+            NombreMesSeleccionadoArticulosMasVendidos = Meses[MesSeleccionadoArticulosMasVendidos - 1];
 
             VentaService = new VentasService();
 
             // TODO: Inicializar los gráficos (tirar los comandos necesarios o hacerlo bien -> que paja)
+
             Task.Run(async () => await GenerarGraficoVentasDiarias());
             Task.Run(async () => await GenerarGraficoVentasMensuales());
             Task.Run(async () => await GenerarGraficoCategorias());
             Task.Run(async () => await GenerarGraficoHorarios());
+            Task.Run(async () => await GenerarGraficoFacturacionMensual());
+            Task.Run(async () => await LlenarTablaArticulosMasVendidos());
         }
+
 
         //--------------Gráfico que muestra monto total de ventas por mes para un determinado año--------------------
         [RelayCommand]
@@ -300,6 +335,60 @@ namespace AppFarmacia.ViewModels
                 BackgroundColor = SKColor.Parse("FFFFFF"),
                 LabelMode = LabelMode.RightOnly,
             };
+        }
+
+        // ------------------- Gráfico de facturación mensual -----------------------------------------
+        [RelayCommand]
+        private async Task GenerarGraficoFacturacionMensual()
+        {
+            if (FacturacionesMensuales == null)
+            {
+                FacturacionesMensuales = await VentaService.GetFacturacionMensual(YearSeleccionadoFacturacionMensual);
+            }
+
+            var facturacionMonto = new float[12];
+
+            foreach (var facturacion in FacturacionesMensuales)
+            {
+                facturacionMonto[facturacion.Mes - 1] = (float)facturacion.TotalFacturacion;
+            }
+
+            // Entradas para el gráfico
+            var entries = facturacionMonto.Select((value, index) => new ChartEntry(value)
+            {
+                Label = Meses[index], // Mes
+                ValueLabel = value.ToString("F2"), // Monto 
+                Color = SKColor.Parse("#2c3e50") // Color
+            }).ToArray();
+
+            // Definir el gráfico con los datos cargados
+            FacturacionMensualChart = new LineChart
+            {
+                Entries = entries,
+                LineMode = LineMode.Straight,
+                LineSize = 8,
+                PointMode = PointMode.Square,
+                PointSize = 18,
+                LabelTextSize = 24,
+                ValueLabelTextSize = 16,
+                LabelOrientation = Orientation.Horizontal,
+                ValueLabelOrientation = Orientation.Horizontal,
+                ValueLabelOption = ValueLabelOption.TopOfElement,
+                ShowYAxisLines = true,
+                ShowYAxisText = true,
+                YAxisPosition = Position.Left,
+                EnableYFadeOutGradient = false,
+                BackgroundColor = SKColor.Parse("FFFFFF"),
+            };
+        }
+        // ------------------- Tabla de artículos más vendidos -----------------------------------------
+        [RelayCommand]
+        private async Task LlenarTablaArticulosMasVendidos()
+        {
+            MesSeleccionadoArticulosMasVendidos = Array.IndexOf(Meses.ToArray(), nombreMesSeleccionadoArticulosMasVendidos) + 1;
+
+            ArticulosMasVendidos = await VentaService.GetArticulosMasVendidos(YearSeleccionadoArticulosMasVendidos, MesSeleccionadoArticulosMasVendidos, 
+                                                                                    CantidadArticulosMasVendidosAMostrar);
         }
     }
 }

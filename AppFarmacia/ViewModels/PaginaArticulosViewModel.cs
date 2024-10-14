@@ -12,7 +12,7 @@ namespace AppFarmacia.ViewModels
 {
     public partial class PaginaArticulosViewModel : ObservableObject
     {
-        // Poner días de stock? => Necesidad para un día de funcionamiento = unidades vendidas en los últimos 30 días / 30
+        // Poner días de stock? => Necesidad para un día de funcionamiento = unidades vendidas en los últimos 30 días / 30 (PONER ESTO)
         private readonly ArticulosService articulosService;
         private readonly CategoriasService categoriasService;
 

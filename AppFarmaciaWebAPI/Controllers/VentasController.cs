@@ -271,5 +271,58 @@ namespace AppFarmaciaWebAPI.Controllers
 
             return Ok(ventasPorCategoria);
         }
+
+        [HttpGet("facturacion-mensual/{year}")]
+        public async Task<IActionResult> GetFacturacionMensual(int year)
+        {
+            // Obtener facturación por mes de manera más directa
+            var facturacionMensual = await _context.Ventas
+                .Where(v => v.Fecha.Year == year) // Filtra ventas por año
+                .SelectMany(v => v.ArticuloEnVenta, (venta, articulo) => new
+                {
+                    venta.Fecha.Month,
+                    Facturacion = articulo.Precio * articulo.Cantidad
+                }) // Calcular facturación para cada artículo
+                .GroupBy(v => v.Month) // Agrupar por mes
+                .Select(g => new
+                {
+                    Mes = g.Key,
+                    TotalFacturacion = g.Sum(v => v.Facturacion) // Sumar las facturaciones ya calculadas
+                })
+                .ToListAsync();
+
+            return Ok(facturacionMensual);
+        }
+
+        [HttpGet("articulos-mas-vendidos/{year}/{mes}/{cantidad}")]
+        public async Task<IActionResult> GetArticulosMasVendidos(int year, int mes, int cantidad)
+        {
+            var ventas = await _context.Ventas
+                .Where(v => v.Fecha.Year == year && v.Fecha.Month == mes)
+                .SelectMany(v => v.ArticuloEnVenta)
+                .GroupBy(a => a.IdArticulo)
+                .Select(g => new
+                {
+                    IdArticulo = g.Key,
+                    CantidadVendida = g.Sum(a => a.Cantidad)
+                })
+                .ToListAsync(); // Traer los resultados a memoria
+
+            // Luego realiza la unión en memoria
+            var resultado = ventas
+                .Join(_context.Articulos,
+                      venta => venta.IdArticulo,
+                      articulo => articulo.IdArticulo,
+                      (venta, articulo) => new
+                      {
+                          IdArticulo = articulo.IdArticulo,
+                          Nombre = articulo.Nombre,
+                          CantidadVendida = venta.CantidadVendida
+                      })
+                .ToList(); // Resultado final en memoria
+
+            return Ok(resultado);
+        }
+
     }
 }
