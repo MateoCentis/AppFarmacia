@@ -1,115 +1,240 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<uranium:UraniumContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              x:Class="AppFarmacia.Views.PaginaGraficos"
              xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
              xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
              xmlns:micro="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
              Shell.NavBarIsVisible="False">
 
-    
-    <ContentPage.BindingContext>
+    <uranium:UraniumContentPage.BindingContext>
         <viewModels:PaginaGraficosViewModel/>
-    </ContentPage.BindingContext>
+    </uranium:UraniumContentPage.BindingContext>
     
     <ScrollView VerticalOptions="FillAndExpand" Orientation="Vertical" Scrolled="ScrollView_Scrolled">
-        <Grid RowDefinitions="*,*,*" ColumnDefinitions="*,*">
+        
+        <Grid RowDefinitions="*,*,*,*" ColumnDefinitions="*,*" RowSpacing="5" Margin="5" HorizontalOptions="Fill" VerticalOptions="Fill">
             
             <!-- Gráfico 1: Ventas mensuales -->
-            <Frame Grid.Row="0" Grid.Column="0" Style="{StaticResource FrameGrafico}" Margin="10,10,10,10">
-                <VerticalStackLayout>
-                    <HorizontalStackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand">
-                        <Picker Title="Seleccione un Año" ItemsSource="{Binding YearsDisponibles}" 
-                            SelectedItem="{Binding YearSeleccionadoGraficoVentasMensuales}" Style="{StaticResource PickerEstilo}"/>
-                        <Button Text="Generar gráfico" Style="{StaticResource BotonGeneral}" 
-                                Command="{Binding GenerarGraficoVentasMensualesCommand}"/>
-                    </HorizontalStackLayout>
-                    <Label Text="Monto mensual por ventas" Style="{StaticResource TituloGrafico}"/>
+            <Frame Grid.Row="0" Grid.Column="0" Style="{StaticResource FrameGrafico}" Margin="5,5,5,5" BackgroundColor="White">
+                <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                    <Label Text="Cantidad vendida por mes" Style="{StaticResource TituloGrafico}" FontSize="Medium"/>
+                    <!-- Opciones del gráfico -->
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand" VerticalOptions="FillAndExpand" Margin="0,10,0,0" Spacing="10">
+
+                        <material:PickerField Title="Seleccione un Año" 
+                                              ItemsSource="{Binding YearsDisponibles}"
+                                              WidthRequest="150"
+                                              AllowClear="False"
+                                              Icon="calendarline.png"
+                                              SelectedItem="{Binding YearSeleccionadoGraficoVentasMensuales}"
+                                              VerticalOptions="Center"
+                                              HeightRequest="55"
+                                              FontSize="Default"
+                                              Padding="0,0,0,0"/>
+                        <!--SelectedValueChangedCommand="{Binding GenerarGraficoVentasMensualesCommand}"/>-->
+                        
+                        <Button Text="Actualizar" 
+                                Command="{Binding GenerarGraficoVentasMensualesCommand}"
+                                StyleClass="FilledButton"
+                                WidthRequest="115"
+                                FontSize="Default"
+                                Margin="0,5,0,0"
+                                HeightRequest="40"
+                                VerticalOptions="Center"/>
+                    
+                    </StackLayout>
                     <micro:ChartView Chart="{Binding VentasMensualesChart}" HeightRequest="500" />
-                </VerticalStackLayout>
+                </StackLayout>
             </Frame>
             
-            <!-- Gráfico 2: Gráfico de torta de categorías-->
-            <Frame Grid.Row="0" Grid.Column="1" Style="{StaticResource FrameGrafico}" Margin="10,10,10,10">
-                <VerticalStackLayout>
-                    <Label Text="Categorías más vendidas" Style="{StaticResource TituloGrafico}"/>
+            <!-- Gráfico 2: Gráfico de torta de categorías más vendidas-->
+            <Frame Grid.Row="0" Grid.Column="1" Style="{StaticResource FrameGrafico}" Margin="5,5,5,5" BackgroundColor="White">
+                <StackLayout Orientation="Vertical" Spacing="10" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                    <Label Text="Categorías con más ventas registradas" Style="{StaticResource TituloGrafico}" FontSize="Medium"/>
                     <micro:ChartView Chart="{Binding VentasPorCategoriaChart}" HeightRequest="500"/>
-                </VerticalStackLayout>
+                    <material:CheckBox Text="Categoría ''Otros''"
+                                        IsChecked="{Binding CategoriaOtros, Mode=TwoWay}"
+                                        CommandParameter="{Binding Source={x:Reference chkIncluirOtros}, Path=IsChecked}"
+                                        x:Name="chkIncluirOtros"
+                                        CheckChangedCommand="{Binding GenerarGraficoCategoriasCommand}"
+                                        WidthRequest="200"
+                                        Margin="0,5,-50,0"
+                                        HorizontalOptions="End"/>
+                </StackLayout>
             </Frame>
 
             <!-- Gráfico 3: Ventas diarias -->
-            <Frame Grid.Row="1" Grid.Column="0" Style="{StaticResource FrameGrafico}" Margin="10,10,10,10">
-                <VerticalStackLayout >
-                    <HorizontalStackLayout>
-                        <Picker Title="Seleccione un Año" ItemsSource="{Binding YearsDisponibles}" 
-                                SelectedItem="{Binding YearSeleccionadoGraficoVentasDiarias}" Style="{StaticResource PickerEstilo}"/>
-                        <Picker Title="Seleccione un Mes" ItemsSource="{Binding Meses}" 
-                                SelectedItem="{Binding NombreMesSeleccionadoGraficoVentasDiarias}" Style="{StaticResource PickerEstilo}"/>
-                        <Button Text="Generar Gráfico" Command="{Binding GenerarGraficoVentasDiariasCommand}" Style="{StaticResource BotonGeneral}"/>
-                    </HorizontalStackLayout>
-                    <Label Text="Monto diario por Ventas" Style="{StaticResource TituloGrafico}"/>
+            <Frame Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource FrameGrafico}" Margin="5,5,5,5" BackgroundColor="White">
+                <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                    <Label Text="Cantidad vendida por día" Style="{StaticResource TituloGrafico}" FontSize="Medium"/>
+                    <!-- Opciones del gráfico -->
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand" VerticalOptions="FillAndExpand" Margin="0,10,0,0" Spacing="10">
+                        <material:PickerField Title="Seleccione un Año" 
+                                               ItemsSource="{Binding YearsDisponibles}"
+                                               WidthRequest="150"
+                                               Icon="calendarline.png"
+                                               AllowClear="False"
+                                               SelectedItem="{Binding YearSeleccionadoGraficoVentasDiarias}"
+                                               VerticalOptions="Center"
+                                               HeightRequest="55"
+                                               FontSize="Default"
+                                               Padding="0,0,0,0"/>
+
+                        <material:PickerField Title="Seleccione un Mes" 
+                                              ItemsSource="{Binding Meses}" 
+                                              SelectedItem="{Binding NombreMesSeleccionadoGraficoVentasDiarias}" 
+                                              WidthRequest="150"
+                                              AllowClear="False"
+                                              Icon="calendarline2.png"
+                                              VerticalOptions="Center"
+                                              HeightRequest="55"
+                                              FontSize="Default"
+                                              Padding="0,0,0,0"/>
+
+                        <Button Text="Actualizar" 
+                                Command="{Binding GenerarGraficoVentasDiariasCommand}"
+                                StyleClass="FilledButton"
+                                WidthRequest="115"
+                                FontSize="Default"
+                                Margin="0,5,0,0"
+                                HeightRequest="40"
+                                VerticalOptions="Center"/>
+                    </StackLayout>
                     <micro:ChartView Chart="{Binding VentasDiariasChart}" HeightRequest="500" />
-                </VerticalStackLayout>
+                </StackLayout>
             </Frame>
             
-            <!-- Gráfico 4: Horarios según el día de la semana-->
-            <Frame Grid.Row="1" Grid.Column="1" Style="{StaticResource FrameGrafico}" Margin="10,10,10,10">
-                <VerticalStackLayout >
-                    <Label Text="Horarios de ventas por día" Style="{StaticResource TituloGrafico}"/>
-                    <HorizontalStackLayout>
-                        <Picker Title="Seleccione un día" ItemsSource="{Binding DiasSemana}" SelectedItem="{Binding DiaSeleccionado}" Style="{StaticResource PickerEstilo}"/>
-                        <Button Style="{StaticResource BotonGeneral}" Command="{Binding GenerarGraficoHorariosCommand}" Text="Cambiar día"/>
-                    </HorizontalStackLayout>
-                    
-                    <micro:ChartView Chart="{Binding VentasHorariosChart}" HeightRequest="500"/>
-                </VerticalStackLayout>
-            </Frame>
+             <!--Gráfico 4: Facturación mensual-->
+            <Frame Grid.Row="2" Grid.Column="0" Style="{StaticResource FrameGrafico}" Margin="5,5,5,5" BackgroundColor="White">
+                <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                    <Label Text="Facturación mensual" Style="{StaticResource TituloGrafico}" FontSize="Medium"/>
 
-             <!--Gráfico 5: Facturación mensual--> 
-            <Frame Grid.Row="2" Grid.Column="0" Style="{StaticResource FrameGrafico}" Margin="10,10,10,10">
-                <VerticalStackLayout>
-                    <Label Text="Facturación mensual" Style="{StaticResource TituloGrafico}"/>
-                    
-                    <HorizontalStackLayout>
-                        <Picker Title="Seleccione un año" Style="{StaticResource PickerEstilo}" ItemsSource="{Binding YearsDisponibles}" 
-                                SelectedItem="{Binding YearSeleccionadoFacturacionMensual}"/>
-                        <Button Style="{StaticResource BotonGeneral}" Command="{Binding GenerarGraficoFacturacionMensualCommand}" Text="Cambiar año"/>
-                    </HorizontalStackLayout>
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand" VerticalOptions="FillAndExpand" Margin="0,10,0,0" Spacing="10">
+                        <material:PickerField Title="Seleccione un Año" 
+                                               ItemsSource="{Binding YearsDisponibles}"
+                                               WidthRequest="150"
+                                               Icon="calendarline.png"
+                                               AllowClear="False"
+                                               SelectedItem="{Binding YearSeleccionadoFacturacionMensual}"
+                                               VerticalOptions="Center"
+                                               HeightRequest="55"
+                                               FontSize="Default"
+                                               Padding="0,0,0,0"/>
+
+                        <Button Text="Actualizar" 
+                                Command="{Binding GenerarGraficoFacturacionMensualCommand}"
+                                StyleClass="FilledButton"
+                                WidthRequest="115"
+                                FontSize="Default"
+                                Margin="0,5,0,0"
+                                HeightRequest="40"
+                                VerticalOptions="Center"/>
+                        
+                    </StackLayout>
                     
                     <micro:ChartView Chart="{Binding FacturacionMensualChart}" HeightRequest="500"/>
-                </VerticalStackLayout>
+                </StackLayout>
+            </Frame>
+            
+            <!-- Gráfico 5: Horarios según el día de la semana-->
+            <Frame Grid.Row="2" Grid.Column="1" Style="{StaticResource FrameGrafico}" Margin="5,5,5,5" BackgroundColor="White">
+                <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
+                    <Label Text="Cantidad vendida según horario del día" Style="{StaticResource TituloGrafico}" FontSize="Medium"/>
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand" VerticalOptions="FillAndExpand" Margin="0,10,0,0" Spacing="10">
+                        
+                        <material:PickerField Title="Seleccione un Día" 
+                                              ItemsSource="{Binding DiasSemana}" 
+                                              SelectedItem="{Binding DiaSeleccionado}" 
+                                              WidthRequest="150"
+                                              AllowClear="False"
+                                              Icon="calendarline3.png"
+                                              VerticalOptions="Center"
+                                              HeightRequest="55"
+                                              FontSize="Default"
+                                              Padding="0,0,0,0"/>
+                        
+                        <Button Text="Actualizar" 
+                                Command="{Binding GenerarGraficoHorariosCommand}"
+                                StyleClass="FilledButton"
+                                WidthRequest="115"
+                                FontSize="Default"
+                                Margin="0,5,0,0"
+                                HeightRequest="40"
+                                VerticalOptions="Center"/>
+                    </StackLayout>
+                    
+                    <micro:ChartView Chart="{Binding VentasHorariosChart}" HeightRequest="500"/>
+                </StackLayout>
             </Frame>
 
+
              <!--Tabla 1: Artículos más vendidos-->
-            <Frame Grid.Row="2" Grid.Column="1" Style="{StaticResource FrameGrafico}" Margin="10,10,10,10">
-                <VerticalStackLayout>
-                    <Label Text="Artículos más vendidos de la farmacia" Style="{StaticResource TituloGrafico}"/>
+            <Frame Grid.Row="3" Grid.Column="1" Style="{StaticResource FrameGrafico}" Margin="5,5,5,5" BackgroundColor="White" MaximumHeightRequest="500">
+                <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="StartAndExpand" Spacing="0">
+                    <Label Text="Artículos más vendidos de la farmacia" Style="{StaticResource TituloGrafico}" FontSize="Medium"/>
+
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" Margin="0,10,0,10" Spacing="10">
+                        <material:PickerField Title="Seleccione un año" 
+                                              ItemsSource="{Binding YearsDisponibles}" 
+                                              SelectedItem="{Binding YearSeleccionadoArticulosMasVendidos}"
+                                              WidthRequest="150"
+                                              AllowClear="False"
+                                              VerticalOptions="Center"
+                                              Icon="calendarline.png"
+                                              HeightRequest="55"
+                                              FontSize="Default"
+                                              Padding="0,0,0,0"/>
+
+                        <material:PickerField Title="Seleccione un Mes" 
+                                              ItemsSource="{Binding Meses}" 
+                                              SelectedItem="{Binding NombreMesSeleccionadoArticulosMasVendidos}" 
+                                              WidthRequest="150"
+                                              AllowClear="False"
+                                              VerticalOptions="Center"
+                                              Icon="calendarline2.png"
+                                              HeightRequest="55"
+                                              FontSize="Default"
+                                              Padding="0,0,0,0"/>
+
+                        <material:PickerField Title="Cantidad"
+                                                ItemsSource="{Binding CantidadesArticulosMasVendidos}"
+                                                SelectedItem="{Binding CantidadArticulosMasVendidosAMostrar}"
+                                                WidthRequest="100"
+                                                AllowClear="False"
+                                                VerticalOptions="Center"
+                                                Icon="stackelementos.png"
+                                                HeightRequest="55"
+                                                FontSize="Default"
+                                                Padding="0,0,0,0"/>
+
+
+                        <Button Text="Actualizar" 
+                            Command="{Binding LlenarTablaArticulosMasVendidosCommand}"
+                            StyleClass="FilledButton"
+                            WidthRequest="115"
+                            FontSize="Default"
+                            Margin="0,5,0,0"
+                            HeightRequest="40"
+                            VerticalOptions="Center"/>
+                    </StackLayout>
                     
-                    <HorizontalStackLayout>
-                        <Picker Title="Seleccione un año" Style="{StaticResource PickerEstilo}" ItemsSource="{Binding YearsDisponibles}" 
-                                SelectedItem="{Binding YearSeleccionadoArticulosMasVendidos}"/>
-                        <Picker Title="Seleccione un mes" Style="{StaticResource PickerEstilo}" ItemsSource="{Binding Meses}"
-                                SelectedItem="{Binding MesSeleccionadoArticulosMasVendidos}"/>
-                        <!--<Picker Title="Selecciona una cantidad" Style="{StaticResource PickerEstilo}" ItemsSource="{Binding CantidadesArticulosMasVendidos}"
-                                SelectedItem="{Binding CantidadArticulosMasVendidosAMostrar}"-->
-                        <Button Text="Recargar" Command="{Binding LlenarTablaArticulosMasVendidosCommand}" Style="{StaticResource BotonGeneral}"/>
-                    </HorizontalStackLayout>
-                    
-                    <dg:DataGrid ItemsSource="{Binding ArticulosMasVendidos}" SelectionMode="Single" Style="{StaticResource TablaComun}" Margin="0">
+                    <dg:DataGrid ItemsSource="{Binding ArticulosMasVendidos}" SelectionMode="Single" Style="{StaticResource TablaComun}" Margin="0,0,0,0" 
+                                 HorizontalOptions="CenterAndExpand" VerticalOptions="EndAndExpand">
                         <dg:DataGrid.NoDataView>
                             <Label Text="No hay artículos que cumplan con esos criterios" Style="{StaticResource VistaSinData}"/>
                         </dg:DataGrid.NoDataView>
 
                         <dg:DataGrid.Columns>
-
-                            <dg:DataGridColumn Title="ID" PropertyName="IdProducto"/>
+                            <dg:DataGridColumn Title="Id artículo" PropertyName="IdProducto"/>
                             <dg:DataGridColumn Title="Artículo" PropertyName="Nombre"/>
                             <dg:DataGridColumn Title="Cantidad vendida" PropertyName="CantidadVendida"/>
                         </dg:DataGrid.Columns>
-
                     </dg:DataGrid>
-                </VerticalStackLayout>
+                </StackLayout>
             </Frame>
         </Grid>
     </ScrollView>
-</ContentPage>
+</uranium:UraniumContentPage>

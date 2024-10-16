@@ -1,8 +1,8 @@
 using AppFarmacia.ViewModels;
-
+using UraniumUI.Pages;
 
 namespace AppFarmacia.Views;
-public partial class PaginaArticuloInformacion : ContentPage
+public partial class PaginaArticuloInformacion : UraniumContentPage
 {
     private readonly PaginaArticuloInformacionViewModel viewModel;
 

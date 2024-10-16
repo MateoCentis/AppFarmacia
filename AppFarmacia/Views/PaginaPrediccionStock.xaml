@@ -1,22 +1,32 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<uranium:UraniumContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
              x:Class="AppFarmacia.Views.PaginaPrediccionStock"
              Shell.NavBarIsVisible="False"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"              
              xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
              xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels">
 
-    <ContentPage.BindingContext>
-    <viewModels:PaginaPrediccionStockViewModel/>
-    </ContentPage.BindingContext>
+    <uranium:UraniumContentPage.BindingContext>
+        <viewModels:PaginaPrediccionStockViewModel/>
+    </uranium:UraniumContentPage.BindingContext>
     
     
     <Grid RowDefinitions="Auto,*">
         <HorizontalStackLayout Margin="110,30,0,0">
             <!--/boton para cargar articulos-->
-            <Button Text="Cargar Artículos" Command="{Binding ObtenerArticulosCommand}" Style="{StaticResource BotonGeneral}"/>
-            <Picker Title="Selecciona el tamaño de carga" ItemsSource="{Binding CantArticulos}" SelectedItem="{Binding CantArticulosSeleccionada}" 
-                        Style="{StaticResource PickerEstilo}" WidthRequest="200" Margin="80,0,5,15" HeightRequest="60" VerticalTextAlignment="Center" HorizontalTextAlignment="Start"/>
+            <Button Text="Cargar Artículos" 
+                    Command="{Binding ObtenerArticulosCommand}" 
+                    StyleClass="OutlinedButton"
+                    HeightRequest="50"/>
+            <material:PickerField Title="Selecciona el tamaño de carga" 
+                                  ItemsSource="{Binding CantArticulos}" 
+                                  SelectedItem="{Binding CantArticulosSeleccionada}" 
+                                  WidthRequest="220" 
+                                  Margin="80,0,5,15" 
+                                  HeightRequest="60" 
+                                  AllowClear="False"/>
         </HorizontalStackLayout>
 
         <Frame Grid.Row="1" BorderColor="Black" CornerRadius="0" Padding="0" Margin="50,10,50,10">
@@ -54,4 +64,4 @@
 
 
 
-</ContentPage>
+</uranium:UraniumContentPage>

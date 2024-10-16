@@ -24,20 +24,36 @@ namespace AppFarmaciaWebAPI.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/Venta
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<VentaDTO>>> GetVentas(int page = 1, int pageSize = 100)
+        public async Task<ActionResult<IEnumerable<VentaDTO>>> GetVentas(DateTime? fechaInicio = null, DateTime? fechaFin = null)
         {
-            // Validar los parámetros de paginación
-            if (page <= 0) page = 1;
-            if (pageSize <= 0) pageSize = 100;
+            // si es null se trae todo
+            if (!fechaInicio.HasValue)
+            {
+                fechaInicio = new DateTime(2017, 6, 1); // 01/06/2017
+            }
 
-            // Incluir los ArticulosEnVenta solo si es necesario
-            var ventas = await _context.Ventas
-                                       //.Include(v => v.ArticuloEnVenta) // Puedes descomentar si es necesario incluir los artículos
-                                       .Skip((page - 1) * pageSize)
-                                       .Take(pageSize)
-                                       .ToListAsync();
+            if (!fechaFin.HasValue)
+            {
+                fechaFin = DateTime.Now; // Fecha actual
+            }
+
+            // Filtrar por fechas
+            var query = _context.Ventas.AsQueryable();
+
+            query = query.Where(v => v.Fecha >= fechaInicio.Value && v.Fecha <= fechaFin.Value);
+
+            // Incluir los ArticulosEnVenta
+            var ventas = await query
+                               .ToListAsync();
+                               //.Include(v => v.ArticulosEnVenta) // Asegúrate de incluir los artículos en venta
+
+            // Calcular el monto total para cada venta
+            foreach (var venta in ventas)
+            {
+                // Sumar el monto total de los artículos en venta
+                venta.MontoTotal = venta.ArticuloEnVenta.Sum(a => a.Precio * a.Cantidad);
+            }
 
             // Mapear a VentaDTO
             var ventasDTO = _mapper.Map<IEnumerable<VentaDTO>>(ventas);
@@ -319,10 +335,13 @@ namespace AppFarmaciaWebAPI.Controllers
                           Nombre = articulo.Nombre,
                           CantidadVendida = venta.CantidadVendida
                       })
+                .OrderByDescending(a => a.CantidadVendida) // Ordenar por cantidad vendida en orden descendente
+                .Take(cantidad) // Tomar solo la cantidad indicada
                 .ToList(); // Resultado final en memoria
 
             return Ok(resultado);
         }
+
 
     }
 }

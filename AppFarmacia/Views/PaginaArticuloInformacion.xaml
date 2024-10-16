@@ -1,6 +1,7 @@
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<uranium:UraniumContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
+             xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
              xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
              xmlns:micro="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
              x:Class="AppFarmacia.Views.PaginaArticuloInformacion"
@@ -8,9 +9,9 @@
              Shell.TabBarIsVisible="False"
              Shell.FlyoutBehavior="Disabled">
     
-    <ContentPage.BindingContext>
+    <uranium:UraniumContentPage.BindingContext>
         <viewModels:PaginaArticuloInformacionViewModel/>
-    </ContentPage.BindingContext>
+    </uranium:UraniumContentPage.BindingContext>
 
     <ScrollView VerticalOptions="FillAndExpand" Orientation="Vertical" Scrolled="ScrollView_Scrolled">
         <!-- Grilla de toda la pantalla-->
@@ -19,7 +20,7 @@
             <!-- Grilla para las dos tablas-->
             <Grid ColumnDefinitions="*,*" Grid.Row="1">
 
-                <VerticalStackLayout Grid.Column="0">
+                <VerticalStackLayout Grid.Column="0" MaximumHeightRequest="500">
                     <Label Text="Histórico de precios" Style="{StaticResource TituloTabla}"/>
                     <!-- Primera tabla - tabla de precios -->
                     <dg:DataGrid Style="{StaticResource TablaComun}" ItemsSource="{Binding PreciosArticulo}" >
@@ -35,7 +36,7 @@
                     </dg:DataGrid>
                 </VerticalStackLayout>
 
-                <VerticalStackLayout Grid.Column="1">
+                <VerticalStackLayout Grid.Column="1" MaximumHeightRequest="500">
                     <Label Text="Vencimientos" Style="{StaticResource TituloTabla}" />
                     <!-- Segunda tabla - tabla de vencimientos -->
                     <dg:DataGrid Style="{StaticResource TablaComun}" ItemsSource="{Binding VencimientosArticulo}" >
@@ -59,4 +60,4 @@
         </Grid>
     </ScrollView>
 
-</ContentPage>
+</uranium:UraniumContentPage>

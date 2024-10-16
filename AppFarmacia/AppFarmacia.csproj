@@ -65,20 +65,36 @@
 	  <None Remove="Resources\Images\alignjustify.svg" />
 	  <None Remove="Resources\Images\arrowleftcircle.svg" />
 	  <None Remove="Resources\Images\barchart.svg" />
+	  <None Remove="Resources\Images\barcharthorizontal.svg" />
 	  <None Remove="Resources\Images\box.svg" />
 	  <None Remove="Resources\Images\calculator.svg" />
 	  <None Remove="Resources\Images\calculatorline.svg" />
+	  <None Remove="Resources\Images\calendarline.svg" />
+	  <None Remove="Resources\Images\calendarline2.svg" />
+	  <None Remove="Resources\Images\calendarline3.svg" />
+	  <None Remove="Resources\Images\calendarline4.svg" />
+	  <None Remove="Resources\Images\calendarline5.svg" />
+	  <None Remove="Resources\Images\calendarline6.svg" />
+	  <None Remove="Resources\Images\calendarline7.svg" />
+	  <None Remove="Resources\Images\capsulafill.svg" />
+	  <None Remove="Resources\Images\donutchartfill.svg" />
 	  <None Remove="Resources\Images\farmaciaaput.png" />
+	  <None Remove="Resources\Images\graficolineaslleno.svg" />
+	  <None Remove="Resources\Images\graficotorta.svg" />
 	  <None Remove="Resources\Images\layers.svg" />
+	  <None Remove="Resources\Images\medicinebottleline.svg" />
 	  <None Remove="Resources\Images\pluscircle.svg" />
 	  <None Remove="Resources\Images\pricetag.png" />
+	  <None Remove="Resources\Images\refrescar.svg" />
 	  <None Remove="Resources\Images\refresh.svg" />
 	  <None Remove="Resources\Images\save.svg" />
+	  <None Remove="Resources\Images\searchmenuline.svg" />
 	  <None Remove="Resources\Images\settings.svg" />
 	  <None Remove="Resources\Images\settingss.svg" />
 	  <None Remove="Resources\Images\shoppingbag.svg" />
 	  <None Remove="Resources\Images\shoppingcart.svg" />
 	  <None Remove="Resources\Images\sidebar.svg" />
+	  <None Remove="Resources\Images\stackelementos.svg" />
 	  <None Remove="Resources\Images\tool.svg" />
 	  <None Remove="Resources\Images\user.svg" />
 	  <None Remove="Resources\Images\usercheck.svg" />
@@ -109,6 +125,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="2.88.8" />
 		<PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
+		<PackageReference Include="UraniumUI.Material" Version="2.10.2" />
 	</ItemGroup>
 
 	<ItemGroup>

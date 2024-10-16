@@ -1,22 +1,10 @@
-using AppFarmacia.ViewModels;
+using UraniumUI.Pages;
 namespace AppFarmacia.Views;
 
-public partial class PaginaVentas : ContentPage
+public partial class PaginaVentas : UraniumContentPage
 {
-	private readonly PaginaVentasViewModel viewModel;
-	public PaginaVentas(PaginaVentasViewModel viewModel)
+	public PaginaVentas()
 	{
 		InitializeComponent();
-		this.viewModel = viewModel;
-		BindingContext = viewModel;
 	}
-
-    protected override async void OnAppearing()
-    {
-        base.OnAppearing();
-        if (viewModel != null)
-        {
-            await this.viewModel.ObtenerVentas();
-        }
-    }
 }

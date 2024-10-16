@@ -1,31 +1,51 @@
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<uranium:UraniumContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
+             xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
              x:Class="AppFarmacia.Views.PaginaArticulos"
              Shell.NavBarIsVisible="False">
 
     
-    <!--<ContentPage.BindingContext>
+    <ContentPage.BindingContext>
         <viewModels:PaginaArticulosViewModel/>
-    </ContentPage.BindingContext>--> <!-- Esto se hace en el constructor de la página -->
-
+    </ContentPage.BindingContext>  
 
     <Grid RowDefinitions="Auto,*">
-        <HorizontalStackLayout>
+        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" Margin="0,5,0,5">
             
-            <SearchBar Text="{Binding TextoBusqueda}" Placeholder="Buscar..." 
-                 SearchButtonPressed="OnSearchButtonPressed" VerticalOptions="Center" Style="{StaticResource BarraBusqueda}"
-                       WidthRequest="550" Margin="10,0,0,0"/>
-            
-            <Picker Title="Selecciona una categoría" ItemsSource="{Binding ListCategorias}" SelectedItem="{Binding CategoriaSeleccionada}" 
-                    WidthRequest="180" Margin="80,0,5,15" HeightRequest="60" VerticalTextAlignment="Center" HorizontalTextAlignment="Start"/>
+            <SearchBar Text="{Binding TextoBusqueda}" 
+                       Placeholder="Buscar..." 
+                       SearchButtonPressed="OnSearchButtonPressed" 
+                       VerticalOptions="Center" 
+                       Style="{StaticResource BarraBusqueda}"
+                       WidthRequest="550" 
+                       Margin="10,0,0,0"
+                       HeightRequest="50"/>
 
-            <Button Text="Filtrar" Command="{Binding FiltrarCommand}" Style="{StaticResource BotonGeneral}" Margin="0,0,80,0"/>
-            <Button Text="Ver Artículo" Command="{Binding VerArticuloCommand}"  Style="{StaticResource BotonGeneral}" Margin="0,0,0,0"/>
-            <!--<ImageButton Command="{Binding ObtenerArticulosCommand}" Style="{StaticResource ImagenBotonGeneral}" 
-                    Margin="0,0,0,0" Source="refresh.png" HeightRequest="40" Scale="0.5"/>-->
-        </HorizontalStackLayout>
+            <material:AutoCompleteTextField Title="Selecciona una categoría" 
+                                            ItemsSource="{Binding NombresCategorias}" 
+                                            Text="{Binding CategoriaSeleccionada.Nombre, Mode=TwoWay}"
+                                            WidthRequest="230" 
+                                            Icon="capsulafill.png"
+                                            Margin="30,0,5,0" 
+                                            HeightRequest="55" 
+                                            AllowClear="False"/>
+
+            <Button Text="Filtrar" 
+                    Command="{Binding FiltrarArticulosCommand}" 
+                    StyleClass="FilledButton"
+                    FontSize="Default"
+                    HeightRequest="50"
+                    Margin="0,0,80,0"/>
+            
+            <Button Text="Ver Artículo" 
+                    Command="{Binding VerArticuloCommand}"  
+                    StyleClass="OutlinedButton" 
+                    HeightRequest="50"
+                    Margin="0,0,0,0"/>
+        </StackLayout>
 
         <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ListaArticulos}" 
                      SelectionMode="Single" SelectedItem="{Binding ArticuloSeleccionado}"
@@ -68,4 +88,4 @@
             </dg:DataGrid.Resources>
         </dg:DataGrid>
     </Grid>
-</ContentPage>
+</uranium:UraniumContentPage>

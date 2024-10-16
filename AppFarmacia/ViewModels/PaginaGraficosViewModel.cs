@@ -18,13 +18,6 @@ namespace AppFarmacia.ViewModels
     {
         // Ideas de otros gráficos
             // Un gráfico que muestre la historia completa de la farmacia, sin separarla por año (para facturación y cantidad)
-        //Gráficos a realizarse:
-            // Horarios con más ventas por día
-            // Días con más ventas de un determinado mes
-            // Años con más ventas
-            // Gráfico de torta con acciones terapéuticas más vendidas
-            // Pensar más ....
-        
 
         //Propiedades - Gráfico VENTAS MENSUALES ------------------------------------------
         [ObservableProperty]
@@ -62,6 +55,12 @@ namespace AppFarmacia.ViewModels
 
         private List<VentaCategoriaDto> VentasPorCategoria;
 
+        [ObservableProperty]
+        private int cantidadCategoriasAMostrar = 15;
+
+        [ObservableProperty]
+        private bool categoriaOtros = true;
+
         // Propiedades - Gráfico FACTURACIONES MENSUALES -------------------------------------
         [ObservableProperty]
         private LineChart? facturacionMensualChart;
@@ -88,6 +87,8 @@ namespace AppFarmacia.ViewModels
         [ObservableProperty]
         private string nombreMesSeleccionadoArticulosMasVendidos;
 
+        [ObservableProperty]
+        private List<int> cantidadesArticulosMasVendidos = [10, 50, 100];
         // Propiedades comunes ----------------------------------------------------------------
         [ObservableProperty]
         private List<String> diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
@@ -95,14 +96,39 @@ namespace AppFarmacia.ViewModels
         [ObservableProperty]
         private List<string> meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
                                                 "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-        private readonly List<String> colores = ["#3498db", "#e74c3c", "#2ecc71", "#9b59b6", "#f1c40f",
-            "#e67e22", "#1abc9c", "#34495e", "#e84393", "#fd79a8",
-            "#95a5a6" // Color para "otros"
-            ];
+
+        private readonly List<string> colores = new List<string>
+        {
+            "#3498db",  // Azul
+            "#e74c3c",  // Rojo
+            "#2ecc71",  // Verde
+            "#9b59b6",  // Morado
+            "#f1c40f",  // Amarillo
+            "#e67e22",  // Naranja
+            "#1abc9c",  // Turquesa
+            "#34495e",  // Gris Oscuro
+            "#e84393",  // Rosa Fuerte
+            "#fd79a8",  // Rosa Claro
+            "#8e44ad",  // Morado Oscuro
+            "#2c3e50",  // Azul Oscuro
+            "#d35400",  // Naranja Oscuro
+            "#27ae60",  // Verde Oscuro
+            "#f39c12",  // Amarillo Mostaza
+            "#c0392b",  // Rojo Oscuro
+            "#16a085",  // Verde Agua
+            "#2980b9",  // Azul Marino
+            "#d63031",  // Rojo Intenso
+            "#95a5a6"   // Gris claro para "otros"
+        };
 
         public List<int> YearsDisponibles { get; } = Enumerable.Range(2017, 13).ToList(); // Años desde 2017 hasta 2030
 
         private readonly VentasService VentaService;
+
+        private readonly int ValueLabelSize = 18;
+        private readonly int LineSize = 8;
+        private readonly int PointSize = 18;
+        private readonly int LabelTextSize = 24;
 
         // Inicialización de gráficos y variables
         public PaginaGraficosViewModel()
@@ -150,8 +176,8 @@ namespace AppFarmacia.ViewModels
             var entries = ventasMonto.Select((value, index) => new ChartEntry(value)
             {
                 Label = Meses[index], // Mostrar el nombre del mes
-                ValueLabel = value.ToString("F2"), // Monto del mes
-                Color = SKColor.Parse("#2c3e50") // Color del gráfico
+                ValueLabel = value.ToString("F0"), // Monto del mes
+                Color = SKColor.Parse("#3498db") // Color del gráfico (azul)
             }).ToArray();
 
             // Definición del gráfico ya cargados los datos
@@ -160,13 +186,13 @@ namespace AppFarmacia.ViewModels
                 Entries = entries,
                 //Lineas
                 LineMode = LineMode.Straight,
-                LineSize = 8,
+                LineSize = LineSize,
                 //Puntos
                 PointMode = PointMode.Square,
-                PointSize = 18,
+                PointSize = PointSize,
                 //Labels
-                LabelTextSize = 24,
-                ValueLabelTextSize = 16,
+                LabelTextSize = LabelTextSize,
+                ValueLabelTextSize = ValueLabelSize,
                 LabelOrientation = Orientation.Horizontal,
                 ValueLabelOrientation = Orientation.Horizontal,
                 ValueLabelOption = ValueLabelOption.TopOfElement,
@@ -209,12 +235,17 @@ namespace AppFarmacia.ViewModels
             }
 
             int diaInicioSemana = (int)primerDiaDelMes.DayOfWeek;
+
+            // Ajustar el índice para que comience desde lunes
+            // Convertir el día de la semana para que sea 0 = Lunes, ..., 6 = Domingo
+            diaInicioSemana = (diaInicioSemana + 6) % 7; // Hacer que domingo sea 6
+
             // Hacer las entries con el vector de ventas
             var entries = ventas.Select((value, index) => new ChartEntry(value)
             {
-                Label = DiasSemana[(diaInicioSemana + index - 1) % 7], //Esto me lo saqué de la galera, calculo anda bien
-                ValueLabel = value.ToString("F2"), //Monto del día
-                Color = SKColor.Parse("#2c3e50") //Color (se le pueden llegar a poner todos los colores definidos antes)
+                Label = DiasSemana[(diaInicioSemana + index) % 7], // Usar el índice ajustado
+                ValueLabel = value.ToString("F0"), // Monto del día
+                Color = SKColor.Parse("#f1c40f") // Color
             }).ToArray();
 
             VentasDiariasChart = new LineChart 
@@ -222,13 +253,13 @@ namespace AppFarmacia.ViewModels
                 Entries = entries,
                 //Lineas
                 LineMode = LineMode.Straight,
-                LineSize = 8,
+                LineSize = LineSize,
                 //Puntos
                 PointMode = PointMode.Square,
-                PointSize = 18,
+                PointSize = PointSize,
                 //Labels
-                LabelTextSize = 24,
-                ValueLabelTextSize = 16,
+                LabelTextSize = LabelTextSize,
+                ValueLabelTextSize = ValueLabelSize,
                 LabelOrientation = Orientation.Horizontal,
                 ValueLabelOrientation = Orientation.Horizontal,
                 ValueLabelOption = ValueLabelOption.TopOfElement,
@@ -270,23 +301,20 @@ namespace AppFarmacia.ViewModels
                     {
                         Label = $"{ventaHora.Hora}",
                         ValueLabel = ventaHora.CantidadVendida.ToString("F0"),
-                        Color = SKColor.Parse("#2c3e50")
+                        Color = SKColor.Parse("#8e44ad")
                     });
                 }
             }
 
             VentasHorariosChart = new LineChart
             {
-                Entries = ventas.ToArray(),
-                LineMode = LineMode.Straight,
-                LineSize = 8,
+                Entries = ventas.ToArray(), 
+                LineMode = LineMode.Spline,
+                LineSize = LineSize,
                 PointMode = PointMode.Square,
-                PointSize = 18,
-                LabelTextSize = 24,
-                ValueLabelTextSize = 16,
-                ShowYAxisLines = true,
-                ShowYAxisText = true,
-                YAxisPosition = Position.Left,
+                PointSize = PointSize,
+                LabelTextSize = LabelTextSize,
+                ValueLabelOption = ValueLabelOption.None,
                 BackgroundColor = SKColor.Parse("FFFFFF"),
                 LabelOrientation = Orientation.Horizontal,
             };
@@ -302,22 +330,24 @@ namespace AppFarmacia.ViewModels
                 VentasPorCategoria = await VentaService.GetCantidadVendidaPorCategoria();
             }
 
+            var ventasConCategoria = VentasPorCategoria.Where(v => !string.IsNullOrEmpty(v.Categoria)).ToList(); //Limpiar lo que no tiene categoría
+
             // Ordenar por cantidad vendida y tomar las 10 más vendidas
-            var ventasOrdenadas = VentasPorCategoria.OrderByDescending(v => v.CantidadVendida).ToList();
-            var top10Categorias = ventasOrdenadas.Take(10).ToList();
+            var ventasOrdenadas = ventasConCategoria.OrderByDescending(v => v.CantidadVendida).ToList();
+            var top10Categorias = ventasOrdenadas.Take(CantidadCategoriasAMostrar).ToList();
 
             // A las otras se las define como otros
-            var cantidadOtros = ventasOrdenadas.Skip(10).Sum(v => v.CantidadVendida);
+            var cantidadOtros = ventasOrdenadas.Skip(CantidadCategoriasAMostrar).Sum(v => v.CantidadVendida);
 
             // Hacer las entries
             var entries = top10Categorias.Select((venta, index) => new ChartEntry(venta.CantidadVendida)
             {
-                Label = string.IsNullOrEmpty(venta.Categoria) ? "Sin categoría" : venta.Categoria, // Asignar nombre si está vacío
+                Label = venta.Categoria, // Asignar nombre si está vacío
                 ValueLabel = venta.CantidadVendida.ToString("F0"),
                 Color = SKColor.Parse(colores[index % colores.Count]) // Asignar colores de la lista
             }).ToList();
 
-            if (cantidadOtros > 0)
+            if (cantidadOtros > 0 && CategoriaOtros)
             {
                 entries.Add(new ChartEntry(cantidadOtros)
                 {
@@ -331,7 +361,7 @@ namespace AppFarmacia.ViewModels
             VentasPorCategoriaChart = new PieChart
             {
                 Entries = entries.ToArray(),
-                LabelTextSize = 16,
+                LabelTextSize = LabelTextSize - 8,
                 BackgroundColor = SKColor.Parse("FFFFFF"),
                 LabelMode = LabelMode.RightOnly,
             };
@@ -341,10 +371,7 @@ namespace AppFarmacia.ViewModels
         [RelayCommand]
         private async Task GenerarGraficoFacturacionMensual()
         {
-            if (FacturacionesMensuales == null)
-            {
-                FacturacionesMensuales = await VentaService.GetFacturacionMensual(YearSeleccionadoFacturacionMensual);
-            }
+            FacturacionesMensuales = await VentaService.GetFacturacionMensual(YearSeleccionadoFacturacionMensual);
 
             var facturacionMonto = new float[12];
 
@@ -358,7 +385,7 @@ namespace AppFarmacia.ViewModels
             {
                 Label = Meses[index], // Mes
                 ValueLabel = value.ToString("F2"), // Monto 
-                Color = SKColor.Parse("#2c3e50") // Color
+                Color = SKColor.Parse("#e67e22") // Color (Naranja)
             }).ToArray();
 
             // Definir el gráfico con los datos cargados
@@ -366,18 +393,19 @@ namespace AppFarmacia.ViewModels
             {
                 Entries = entries,
                 LineMode = LineMode.Straight,
-                LineSize = 8,
-                PointMode = PointMode.Square,
-                PointSize = 18,
-                LabelTextSize = 24,
-                ValueLabelTextSize = 16,
+                LineSize = LineSize,
+                PointMode = PointMode.Circle,
+                PointSize = PointSize,
+                LabelTextSize = LabelTextSize,
+
+                ValueLabelTextSize = ValueLabelSize,
                 LabelOrientation = Orientation.Horizontal,
                 ValueLabelOrientation = Orientation.Horizontal,
                 ValueLabelOption = ValueLabelOption.TopOfElement,
                 ShowYAxisLines = true,
                 ShowYAxisText = true,
                 YAxisPosition = Position.Left,
-                EnableYFadeOutGradient = false,
+                EnableYFadeOutGradient = true,
                 BackgroundColor = SKColor.Parse("FFFFFF"),
             };
         }
@@ -385,7 +413,7 @@ namespace AppFarmacia.ViewModels
         [RelayCommand]
         private async Task LlenarTablaArticulosMasVendidos()
         {
-            MesSeleccionadoArticulosMasVendidos = Array.IndexOf(Meses.ToArray(), nombreMesSeleccionadoArticulosMasVendidos) + 1;
+            MesSeleccionadoArticulosMasVendidos = Array.IndexOf(Meses.ToArray(), NombreMesSeleccionadoArticulosMasVendidos) + 1;
 
             ArticulosMasVendidos = await VentaService.GetArticulosMasVendidos(YearSeleccionadoArticulosMasVendidos, MesSeleccionadoArticulosMasVendidos, 
                                                                                     CantidadArticulosMasVendidosAMostrar);

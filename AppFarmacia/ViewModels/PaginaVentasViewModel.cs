@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Windows.Input;
 using AppFarmacia.Models;
 using AppFarmacia.Services;
@@ -11,21 +12,28 @@ namespace AppFarmacia.ViewModels
 {
     public partial class PaginaVentasViewModel : ObservableObject
     {
-        [ObservableProperty]
-        private ObservableCollection<VentaMostrar> listaVentas = [];
-        
+        [ObservableProperty] // Lista que MUESTRA (VentaMostrar)
+        private ObservableCollection<VentaMostrar> listaMostrarVentas = [];
+
+        [ObservableProperty] //Lista donde se cargan todas las ventas
+        private List<VentaMostrar> listaCompletaVentas = [];
+
         [ObservableProperty]
         private VentaMostrar ventaSeleccionada;
 
         private readonly VentasService VentasService;
-        //public VentaMostrar VentaSeleccionada { get; set; }
-        //public IAsyncRelayCommand VerDetalleCommand { get; }
 
         [ObservableProperty]
         private int sizePagina;
 
         [ObservableProperty]
         private bool paginationEnabled;
+
+        [ObservableProperty]//Inicio de las ventas
+        private DateTime fechaInicio = new DateTime(2017, 6, 1);
+
+        [ObservableProperty]
+        private DateTime fechaFin = DateTime.Now;
 
         public PaginaVentasViewModel()
         {
@@ -34,10 +42,47 @@ namespace AppFarmacia.ViewModels
             this.PaginationEnabled = true;
             this.SizePagina = 20;
 
-            //VerDetalleCommand = new AsyncRelayCommand(VerDetalle);
-
+            //Task.Run(async () => await ObtenerVentas());
         }
 
+        [RelayCommand]
+        private async Task FiltrarFechas()
+        {
+            if (FechaInicio > FechaFin) // Validación
+            {
+                await Shell.Current.DisplayAlert("Error!", "La fecha de inicio no puede ser mayor que la fecha de fin.", "OK");
+                return;
+            }
+
+            try
+            {
+                // Filtrar las ventas según las fechas seleccionadas
+                var ventasFiltradas = ListaCompletaVentas
+                    .Where(venta =>
+                    {
+                        // string -> datetime
+                        if (DateTime.TryParse(venta.Fecha, out DateTime fechaVenta))
+                        {
+                            // DateTime -> DateOnly
+                            //DateOnly dateOnlyVenta = DateOnly.FromDateTime(fechaVenta);
+                            // Filtrado por rango
+                            return fechaVenta >= FechaInicio && fechaVenta <= FechaFin;
+                        }
+                        return false; // Si no se puede convertir, se descarta la venta
+                    })
+                    .ToList(); // Aquí se obtiene la lista filtrada
+
+                // Actualizar la lista de ventas mostradas
+                ListaMostrarVentas = new ObservableCollection<VentaMostrar>(ventasFiltradas);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error al filtrar las ventas: {ex.Message}");
+                await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
+            }
+        }
+
+        // Redirecciona a la pantalla de detalle
         [RelayCommand]
         async Task VerDetalle()
         {
@@ -56,28 +101,25 @@ namespace AppFarmacia.ViewModels
             }
 
         }
-        
-        public async Task ObtenerVentas()
+
+        // Carga las ventas del sistema a la ListaCompletaVentas
+        [RelayCommand]
+        private async Task ObtenerVentas()
         {
             try
             {
                 var ventas = await this.VentasService.GetVentas();
                 if (ventas.Count != 0)
-                    this.ListaVentas.Clear();
+                    ListaCompletaVentas.Clear();
+
                 // Convertir la lista de Venta a VentaMostrar
-                var ventasMostrar = ventas.Select(venta => new VentaMostrar(venta)).ToList();
-
-                // Asignar la colección convertida
-                this.ListaVentas = new ObservableCollection<VentaMostrar>(ventasMostrar);
-
-                // ¿Esto será lo que demora?
-                //foreach (Venta venta in ventas)
-                //    this.ListaVentas.Add(new VentaMostrar(venta));
+                ListaCompletaVentas = ventas.Select(venta => new VentaMostrar(venta)).ToList();
+                ListaMostrarVentas = new ObservableCollection<VentaMostrar>(ListaCompletaVentas);// Hago que se muestre todo
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"No hay ventas: {ex.Message}");
-                await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
+                await Shell.Current.DisplayAlert("Error al cargar las ventas!:", ex.Message, "OK");
             }
         }
 

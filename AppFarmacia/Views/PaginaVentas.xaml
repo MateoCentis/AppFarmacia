@@ -1,26 +1,67 @@
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<uranium:UraniumContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
              xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
              xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             xmlns:converters="clr-namespace:AppFarmacia.Converters"
              x:Class="AppFarmacia.Views.PaginaVentas"
              Shell.NavBarIsVisible="False">
 
     <!--<ContentPage.BindingContext>
         <viewModels:PaginaVentasViewModel/>
     </ContentPage.BindingContext>--> <!-- Esto se hace en el constructor de la página -->
+    <uranium:UraniumContentPage.Resources>
+        <ResourceDictionary>
+            <converters:DateTimeToDateConverter x:Key="DateTimeToDateConverter" />
+        </ResourceDictionary>
+    </uranium:UraniumContentPage.Resources>
 
+    <uranium:UraniumContentPage.BindingContext>
+        <viewModels:PaginaVentasViewModel/>
+    </uranium:UraniumContentPage.BindingContext>
+    
     <!-- Grilla de dos filas -> En la primera pongo botones y cosas y en la segunda la tabla -->
     <Grid RowDefinitions="Auto,*, Auto" Padding="1">
 
-        <HorizontalStackLayout HorizontalOptions="Center" Margin="0,0,0,5">
-            <Button Text="Ver Detalle" Margin="5" Command="{Binding VerDetalleCommand}" Style="{StaticResource BotonGeneral}"/>
+        <StackLayout Orientation="Horizontal" HorizontalOptions="Fill" Margin="0,0,0,5" VerticalOptions="Center" Spacing="10">
+            <material:DatePickerField Title="Fecha Inicio" 
+                                        Icon="calendarline7.png"
+                                        WidthRequest="200"
+                                        AllowClear="False"
+                                        Date="{Binding FechaInicio, Converter={StaticResource DateTimeToDateConverter}}"
+                                        Format="dd/MM/yyyy"/>
+                                        <!--Date="{Binding Fecha_Ingreso, Converter={StaticResource DateTimeToDateOnlyConverter}}"-->
             
-        </HorizontalStackLayout>
+            <material:DatePickerField Title="Fecha Fin" 
+                                        Icon="calendarline5.png"
+                                        WidthRequest="200"
+                                        AllowClear="False"
+                                        Date="{Binding FechaFin, Converter={StaticResource DateTimeToDateConverter}}"
+                                        Format="dd/MM/yyyy"/>
+                                        <!--Date="{Binding Fecha_Ingreso, Converter={StaticResource DateTimeToDateOnlyConverter}}"-->
+
+            <Button Text="Filtrar"
+                    Command="{Binding FiltrarFechasCommand}"
+                    StyleClass="FilledButton"
+                    WidthRequest="115"
+                    FontSize="Default"
+                    Margin="0,5,0,0"
+                    HeightRequest="40"
+                    VerticalOptions="Center"/>
+
+            <Button Text="Ver Detalle" 
+                    Margin="0,5,0,0" 
+                    Command="{Binding VerDetalleCommand}" 
+                    StyleClass="OutlinedButton"
+                    HorizontalOptions="End"/>
+            
+        </StackLayout>
         
         <!--- Configuraciones generales del datagrid -->
-        <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ListaVentas}" 
+        <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ListaMostrarVentas}" 
                      SelectionMode="Single" SelectedItem="{Binding VentaSeleccionada}"
-                     Style="{StaticResource TablaComun}" Margin="0,5,0,0" Padding="5"
+                     Style="{StaticResource TablaComun}" Margin="0,0,0,0" Padding="5"
                      PaginationEnabled="{Binding PaginationEnabled}" PageSize="{Binding SizePagina}">
             
             <dg:DataGrid.NoDataView>
@@ -44,4 +85,4 @@
 
     </Grid>
 
-</ContentPage>
+</uranium:UraniumContentPage>

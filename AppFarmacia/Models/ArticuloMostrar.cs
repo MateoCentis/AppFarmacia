@@ -37,6 +37,11 @@ namespace AppFarmacia.Models
             this.Categoria = string.Empty;
         }
 
+        public ArticuloMostrar(Articulo articulo)
+        {
+            InicializarAsync(articulo).Wait();
+        }
+
         public async Task InicializarAsync(Articulo articulo)
         {
             // Van derecho

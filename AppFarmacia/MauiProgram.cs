@@ -5,6 +5,7 @@ using AppFarmacia.Views;
 using Microcharts.Maui;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using CommunityToolkit.Maui;
+using UraniumUI;
 
 namespace AppFarmacia
 {
@@ -17,6 +18,8 @@ namespace AppFarmacia
                 .UseMauiApp<App>()
                 .UseSkiaSharp()
                 .UseMicrocharts()
+                .UseUraniumUI()
+                .UseUraniumUIMaterial() 
                 .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {

@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<uranium:UraniumContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
+             xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
              xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
              x:Class="AppFarmacia.Views.PaginaDetalleVenta"
              Shell.NavBarIsVisible="False"
              Shell.TabBarIsVisible="False"
              Shell.FlyoutBehavior="Disabled">
 
-    <ContentPage.BindingContext>
+    <uranium:UraniumContentPage.BindingContext>
         <viewModels:PaginaDetalleVentaViewModel/>
-    </ContentPage.BindingContext>
+    </uranium:UraniumContentPage.BindingContext>
     
     <Grid RowDefinitions="Auto,*">
         <ImageButton Source="arrowleftcircle.png" VerticalOptions="Center" HorizontalOptions="Start" Command="{Binding HaciaAtrasCommand}"/>
@@ -34,4 +35,4 @@
 
         </dg:DataGrid>
     </Grid>
-</ContentPage>
+</uranium:UraniumContentPage>

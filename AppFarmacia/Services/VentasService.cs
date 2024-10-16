@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using System.Text.Json.Serialization;
 using AppFarmacia.Models;
 
 // Tipos de datos para obtener las respuestas de la API ---------------------------------------------
@@ -40,8 +41,11 @@ public class FacturacionMensual
 
 public class ArticuloDTO
 {
+    [JsonPropertyName("idArticulo")]
     public int IdProducto { get; set; }
+    [JsonPropertyName("nombre")]
     public string Nombre { get; set; }
+    [JsonPropertyName("cantidadVendida")]
     public int CantidadVendida { get; set; }
 }
 
@@ -61,12 +65,6 @@ namespace AppFarmacia.Services
 
         public async Task<List<Venta>> GetVentas()
         {
-            // Si ya tengo ventas cargadas no llamo a la API
-            if (this.Ventas?.Count > 0)
-            {
-                return Ventas;
-            }
-
             // Obtengo respuesta           //Cambiar a localhost para usar en ambas PC's
             var respuesta = await httpClient.GetAsync($"{CadenaConexion}/Ventas");
 

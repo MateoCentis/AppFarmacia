@@ -42,12 +42,12 @@ namespace AppFarmaciaWebAPI.Controllers
             var precioDTO = _mapper.Map<PrecioDTO>(precio);
             return Ok(precioDTO);
         }
-
         [HttpGet("Articulo/{id}")]
         public async Task<ActionResult<IEnumerable<PrecioDTO>>> GetPreciosArticulo(int id)
         {
             var precios = await _context.Precios
                 .Where(p => p.IdArticulo == id)
+                .OrderBy(p => p.Fecha) // Ordenar por fecha
                 .ToListAsync();
 
             if (precios == null || precios.Count == 0)
@@ -59,6 +59,7 @@ namespace AppFarmaciaWebAPI.Controllers
 
             return Ok(preciosDTO);
         }
+
 
         // PUT: api/Precio/5
         [HttpPut("{id}")]

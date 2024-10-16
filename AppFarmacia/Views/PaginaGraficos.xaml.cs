@@ -1,8 +1,9 @@
 namespace AppFarmacia.Views;
+using UraniumUI.Pages;
 using Microcharts;
 using SkiaSharp;
 
-public partial class PaginaGraficos : ContentPage
+public partial class PaginaGraficos : UraniumContentPage
 {
 	public PaginaGraficos()
 	{
