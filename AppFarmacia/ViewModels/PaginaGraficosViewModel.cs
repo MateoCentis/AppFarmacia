@@ -89,6 +89,14 @@ namespace AppFarmacia.ViewModels
 
         [ObservableProperty]
         private List<int> cantidadesArticulosMasVendidos = [10, 50, 100];
+
+        // Propiedades - HISTÓRICO ------------------------------------------------------------
+        [ObservableProperty]
+        private LineChart? facturacionMensualHistoricoChart;
+
+        [ObservableProperty]
+        private LineChart? ventasMensualesHistoricoChart;
+
         // Propiedades comunes ----------------------------------------------------------------
         [ObservableProperty]
         private List<String> diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
@@ -125,10 +133,10 @@ namespace AppFarmacia.ViewModels
 
         private readonly VentasService VentaService;
 
-        private readonly int ValueLabelSize = 18;
-        private readonly int LineSize = 8;
-        private readonly int PointSize = 18;
-        private readonly int LabelTextSize = 24;
+        private readonly int ValueLabelSize = 16;
+        private readonly int LineSize = 6;
+        private readonly int PointSize = 16;
+        private readonly int LabelTextSize = 20;
 
         // Inicialización de gráficos y variables
         public PaginaGraficosViewModel()
@@ -155,6 +163,7 @@ namespace AppFarmacia.ViewModels
             Task.Run(async () => await GenerarGraficoHorarios());
             Task.Run(async () => await GenerarGraficoFacturacionMensual());
             Task.Run(async () => await LlenarTablaArticulosMasVendidos());
+            Task.Run(async () => await GenerarGraficoHistoricoFarmacia());
         }
 
 
@@ -417,6 +426,85 @@ namespace AppFarmacia.ViewModels
 
             ArticulosMasVendidos = await VentaService.GetArticulosMasVendidos(YearSeleccionadoArticulosMasVendidos, MesSeleccionadoArticulosMasVendidos, 
                                                                                     CantidadArticulosMasVendidosAMostrar);
+        }
+
+        // ------------------ Gráfico histórico de la farmacia -----------------------------------------
+        [RelayCommand]
+        private async Task GenerarGraficoHistoricoFarmacia()
+        {
+            // Obtener las ventas y facturación mensuales desde junio 2017 hasta el mes actual
+            var ventasPorMes = await VentaService.GetCantidadVendidaHistorico();
+            var facturacionPorMes = await VentaService.GetFacturacionHistorico();
+
+            // Listas para las ventas y facturación
+            var ventasEntries = new List<ChartEntry>();
+            var facturacionEntries = new List<ChartEntry>();
+
+            // Crear entradas para los meses de junio 2017 al mes actual
+            DateTime fechaInicio = new DateTime(2017, 6, 1);
+            DateTime fechaFin = DateTime.Now;
+            int totalMeses = ((fechaFin.Year - fechaInicio.Year) * 12) + fechaFin.Month - fechaInicio.Month + 1;
+
+            for (int i = 0; i < totalMeses; i++)
+            {
+                // Con nombres (el tema es que no se llegan a ver ;/)
+                DateTime mesActual = fechaInicio.AddMonths(i);
+                var mesString = $"{Meses[mesActual.Month - 1]} {mesActual.Year}"; // Ejemplo: "Junio 2017"
+                //var mesString = mesActual.ToString("MM/yy");
+                // Ventas
+                var ventas = ventasPorMes.FirstOrDefault(v => v.Mes == mesActual.Month && v.Año == mesActual.Year)?.TotalCantidadVendida ?? 0;
+                ventasEntries.Add(new ChartEntry(ventas)
+                {
+                    Label = mesString,
+                    ValueLabel = ventas.ToString("F0"),
+                    Color = SKColor.Parse("#3498db") // Azul para ventas
+                });
+
+                // Facturación
+                var facturacion = facturacionPorMes.FirstOrDefault(f => f.Mes == mesActual.Month && f.Año == mesActual.Year)?.TotalFacturacion ?? 0;
+                facturacionEntries.Add(new ChartEntry((float)facturacion)
+                {
+                    Label = mesString,
+                    ValueLabel = facturacion.ToString("F2"),
+                    Color = SKColor.Parse("#e67e22") // Naranja para facturación
+                });
+            }
+
+            FacturacionMensualHistoricoChart = new LineChart
+            {
+                Entries = facturacionEntries,
+                LineMode = LineMode.Straight,
+                LineSize = LineSize,
+                PointMode = PointMode.Circle,
+                PointSize = PointSize,
+                LabelTextSize = 16,
+                LabelOrientation = Orientation.Vertical,
+                //ValueLabelTextSize = 12,
+                //ValueLabelOrientation = Orientation.Horizontal,
+                ValueLabelOption = ValueLabelOption.None,
+                ShowYAxisLines = true,
+                ShowYAxisText = true,
+                YAxisPosition = Position.Left,
+                BackgroundColor = SKColor.Parse("FFFFFF"),
+            }; 
+            // Crear el gráfico con ambas series en un solo gráfico
+            VentasMensualesHistoricoChart = new LineChart
+            {
+                Entries = ventasEntries, // Combinar ambas series
+                LineMode = LineMode.Straight,
+                LineSize = LineSize,
+                PointMode = PointMode.Square,
+                PointSize = PointSize,
+                LabelTextSize = 16,
+                LabelOrientation = Orientation.Vertical,
+                //ValueLabelTextSize = 12,
+                //ValueLabelOrientation = Orientation.Horizontal,
+                ValueLabelOption = ValueLabelOption.None,
+                ShowYAxisLines = true,
+                ShowYAxisText = true,
+                YAxisPosition = Position.Left,
+                BackgroundColor = SKColor.Parse("FFFFFF"),
+            };
         }
     }
 }

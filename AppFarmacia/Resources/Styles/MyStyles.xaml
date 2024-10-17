@@ -4,10 +4,13 @@
              xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
              x:Class="AppFarmacia.Resources.Styles.MyStyles">
 
-    <!-- TODO futuro: Para agregarle compatibilidad con el modo oscuro agregarle a todos los estilos "AppThemeBinding"-->
-    
+    <Style TargetType="Entry" x:Key="EntryComun">
+        <Setter Property="FontSize" Value="Micro"/>
+        <Setter Property="VerticalTextAlignment" Value="Center"/>
+        <Setter Property="HorizontalTextAlignment" Value="Start"/>
+        <Setter Property="WidthRequest" Value="150"/>
+    </Style>
     <Style TargetType="Label" x:Key="TituloGrafico">
-        <Setter Property="FontFamily" Value="LexendBold"/>
         <Setter Property="FontSize" Value="Micro"/>
         <Setter Property="FontAttributes" Value="Bold"/>
         <Setter Property="TextColor" Value="#111827"/>
@@ -24,7 +27,7 @@
         <Setter Property="VerticalOptions" Value="Center"/>
         <Setter Property="Margin" Value="0,-5,0,5"/>
     </Style>
-    
+
     <Style TargetType="Label" x:Key="VistaSinData">
         <Setter Property="FontSize" Value="Large"/>
         <Setter Property="TextColor" Value="#111827"/>
@@ -42,7 +45,7 @@
         <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
         <Setter Property="VerticalOptions" Value="FillAndExpand"/>
     </Style>
-    
+
     <Style TargetType="dg:DataGrid" x:Key="TablaComun">
         <Setter Property="RowHeight" Value="40"/>
         <Setter Property="HeaderHeight" Value="50"/>
@@ -69,8 +72,10 @@
         </Setter>
     </Style>
 
+
+
+
     <Style x:Key="BotonGeneral" TargetType="Button">
-        <!-- Establecer las propiedades por defecto -->
         <Setter Property="BackgroundColor" Value="White"/>
         <Setter Property="BorderColor" Value="#D1D5DB"/>
         <Setter Property="BorderWidth" Value="1"/>
@@ -80,53 +85,35 @@
         <Setter Property="TextColor" Value="#111827"/>
         <Setter Property="HorizontalOptions" Value="Center"/>
         <Setter Property="VerticalOptions" Value="Center"/>
-
-        <!-- Sombra suave para el botón -->
         <Setter Property="Shadow">
             <Setter.Value>
-                <Shadow Brush="Black" Opacity="0.1" Offset="0,2" Radius="4"/>
+                <Shadow Brush="Black" Opacity="0.15" Offset="0,1" Radius="2"/>
             </Setter.Value>
         </Setter>
-
-        <!-- Definir los Visual States -->
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
                 <VisualStateGroup x:Name="CommonStates">
-
-                    <!-- Estado normal del botón -->
                     <VisualState x:Name="Normal">
                         <VisualState.Setters>
                             <Setter Property="BackgroundColor" Value="White"/>
                         </VisualState.Setters>
                     </VisualState>
-
-                    <!-- Estado cuando el botón es presionado -->
-                    <VisualState x:Name="Pressed">
+                    <VisualState x:Name="PointerOver">
                         <VisualState.Setters>
-                            <Setter Property="BackgroundColor" Value="#D1E8FF"/>
-                            <Setter Property="BorderColor" Value="#A0AEC0"/>
-                            <Setter Property="Shadow">
-                                <Setter.Value>
-                                    <Shadow Brush="Black" Opacity="0.3" Offset="0,3" Radius="6"/>
-                                </Setter.Value>
-                            </Setter>
+                            <Setter Property="BackgroundColor" Value="#E7F1FF"/>
                         </VisualState.Setters>
                     </VisualState>
-
-                    <!-- Estado cuando el botón está deshabilitado -->
-                    <VisualState x:Name="Disabled">
+                    <VisualState x:Name="Focused">
                         <VisualState.Setters>
-                            <Setter Property="BackgroundColor" Value="#F3F4F6"/>
-                            <Setter Property="TextColor" Value="#9CA3AF"/>
-                            <Setter Property="BorderColor" Value="#E5E7EB"/>
+                            <Setter Property="BackgroundColor" Value="White"/>
+                            <Setter Property="BorderColor" Value="Transparent"/>
+                            <Setter Property="BorderWidth" Value="2"/>
                         </VisualState.Setters>
                     </VisualState>
-
                 </VisualStateGroup>
             </VisualStateGroupList>
         </Setter>
     </Style>
-
 
     <Style TargetType="ImageButton" x:Key="ImagenBotonGeneral">
         <Setter Property="BackgroundColor" Value="White"/>
@@ -162,7 +149,7 @@
             </VisualStateGroupList>
         </Setter>
     </Style>
-    
+
     <Style x:Key="BarraBusqueda" TargetType="SearchBar">
         <Setter Property="CancelButtonColor" Value="Red"/>
         <Setter Property="BackgroundColor" Value="White"/>
@@ -179,60 +166,15 @@
     </Style>
 
     <Style x:Key="PickerEstilo" TargetType="Picker">
-        <!-- Propiedades generales del Picker -->
         <Setter Property="BackgroundColor" Value="White"/>
-        <Setter Property="FontSize" Value="16"/>
-        <!-- Incrementado para mejorar la legibilidad -->
+        <Setter Property="FontSize" Value="14"/>
         <Setter Property="TextColor" Value="#111827"/>
         <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
         <Setter Property="VerticalOptions" Value="Center"/>
-
-        <!-- Sombra suave para un efecto visual agradable -->
         <Setter Property="Shadow">
             <Setter.Value>
-                <Shadow Brush="Black" Opacity="0.15" Offset="0,2" Radius="4"/>
+                <Shadow Brush="Black" Opacity="0.15" Offset="0,1" Radius="2"/>
             </Setter.Value>
-        </Setter>
-
-        <!-- Estados visuales con VisualStateManager -->
-        <Setter Property="VisualStateManager.VisualStateGroups">
-            <VisualStateGroupList>
-                <!-- Grupo de estados comunes -->
-                <VisualStateGroup x:Name="CommonStates">
-                    <!-- Estado normal, sin cambios -->
-                    <VisualState x:Name="Normal">
-                        <VisualState.Setters>
-                            <Setter Property="BackgroundColor" Value="White"/>
-                        </VisualState.Setters>
-                    </VisualState>
-
-                    <!-- Estado cuando el Picker tiene el foco -->
-                    <VisualState x:Name="Focused">
-                        <VisualState.Setters>
-                            <Setter Property="BackgroundColor" Value="#E0F2FE"/>
-                            <!-- Azul claro -->
-                        </VisualState.Setters>
-                    </VisualState>
-
-                    <!-- Estado cuando el Picker está presionado -->
-                    <VisualState x:Name="Pressed">
-                        <VisualState.Setters>
-                            <Setter Property="BackgroundColor" Value="#CCE5FF"/>
-                            <!-- Azul más oscuro -->
-                        </VisualState.Setters>
-                    </VisualState>
-
-                    <!-- Estado cuando el Picker está deshabilitado -->
-                    <VisualState x:Name="Disabled">
-                        <VisualState.Setters>
-                            <Setter Property="BackgroundColor" Value="#F3F4F6"/>
-                            <!-- Gris claro para fondo -->
-                            <Setter Property="TextColor" Value="#9CA3AF"/>
-                            <!-- Texto gris claro -->
-                        </VisualState.Setters>
-                    </VisualState>
-                </VisualStateGroup>
-            </VisualStateGroupList>
         </Setter>
     </Style>
 

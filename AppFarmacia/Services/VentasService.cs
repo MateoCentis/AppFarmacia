@@ -49,6 +49,20 @@ public class ArticuloDTO
     public int CantidadVendida { get; set; }
 }
 
+public class CantidadVendidaHistoricaDTO
+{
+    public int Año { get; set; }
+    public int Mes { get; set; }
+    public int TotalCantidadVendida { get; set; }
+}
+
+public class FacturacionMensualHistoricaDTO
+{
+    public int Año { get; set; }
+    public int Mes { get; set; }
+    public decimal TotalFacturacion { get; set; }
+}
+
 // ---------------------------------------------------------------------------------------------------
 
 namespace AppFarmacia.Services
@@ -120,5 +134,21 @@ namespace AppFarmacia.Services
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<List<ArticuloDTO>>() ?? [];
         }
+
+        // Históricos
+        public async Task<List<CantidadVendidaHistoricaDTO>> GetCantidadVendidaHistorico()
+        {
+            HttpResponseMessage response = await httpClient.GetAsync($"{CadenaConexion}/Ventas/cantidad-vendida-historica");
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<List<CantidadVendidaHistoricaDTO>>() ?? [];
+        }
+
+        public async Task<List<FacturacionMensualHistoricaDTO>> GetFacturacionHistorico()
+        {
+            HttpResponseMessage response = await httpClient.GetAsync($"{CadenaConexion}/Ventas/facturacion-mensual-historica");
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<List<FacturacionMensualHistoricaDTO>>() ?? [];
+        }
+
     }
 }

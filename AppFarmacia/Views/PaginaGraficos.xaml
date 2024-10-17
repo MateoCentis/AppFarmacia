@@ -15,7 +15,7 @@
     
     <ScrollView VerticalOptions="FillAndExpand" Orientation="Vertical" Scrolled="ScrollView_Scrolled">
         
-        <Grid RowDefinitions="*,*,*,*" ColumnDefinitions="*,*" RowSpacing="5" Margin="5" HorizontalOptions="Fill" VerticalOptions="Fill">
+        <Grid RowDefinitions="*,*,*,*,*,*" ColumnDefinitions="*,*" RowSpacing="5" Margin="5" HorizontalOptions="Fill" VerticalOptions="Fill">
             
             <!-- Gráfico 1: Ventas mensuales -->
             <Frame Grid.Row="0" Grid.Column="0" Style="{StaticResource FrameGrafico}" Margin="5,5,5,5" BackgroundColor="White">
@@ -172,8 +172,8 @@
 
 
              <!--Tabla 1: Artículos más vendidos-->
-            <Frame Grid.Row="3" Grid.Column="1" Style="{StaticResource FrameGrafico}" Margin="5,5,5,5" BackgroundColor="White" MaximumHeightRequest="500">
-                <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="StartAndExpand" Spacing="0">
+            <Frame Grid.Row="3" Grid.ColumnSpan="2" Style="{StaticResource FrameGrafico}" Margin="5,5,5,5" BackgroundColor="White" MaximumHeightRequest="700">
+                <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="StartAndExpand" Spacing="5">
                     <Label Text="Artículos más vendidos de la farmacia" Style="{StaticResource TituloGrafico}" FontSize="Medium"/>
 
                     <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" Margin="0,10,0,10" Spacing="10">
@@ -222,7 +222,7 @@
                     </StackLayout>
                     
                     <dg:DataGrid ItemsSource="{Binding ArticulosMasVendidos}" SelectionMode="Single" Style="{StaticResource TablaComun}" Margin="0,0,0,0" 
-                                 HorizontalOptions="CenterAndExpand" VerticalOptions="EndAndExpand">
+                                 HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand">
                         <dg:DataGrid.NoDataView>
                             <Label Text="No hay artículos que cumplan con esos criterios" Style="{StaticResource VistaSinData}"/>
                         </dg:DataGrid.NoDataView>
@@ -235,6 +235,21 @@
                     </dg:DataGrid>
                 </StackLayout>
             </Frame>
+
+            <Frame Grid.Row="4" Grid.ColumnSpan="2" Style="{StaticResource FrameGrafico}" Margin="5,5,5,5" BackgroundColor="White">
+                <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="StartAndExpand" Spacing="0">
+                    <Label Text="Cantidad vendida histórica de la farmacia" Style="{StaticResource TituloGrafico}" FontSize="Medium"/>
+                    <micro:ChartView Chart="{Binding VentasMensualesHistoricoChart}" HeightRequest="700"/> 
+                </StackLayout>
+            </Frame>
+
+            <Frame Grid.Row="5" Grid.ColumnSpan="2" Style="{StaticResource FrameGrafico}" Margin="5,5,5,5" BackgroundColor="White">
+                <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="StartAndExpand" Spacing="0">
+                    <Label Text="Facturación mensual histórica de la farmacia" Style="{StaticResource TituloGrafico}" FontSize="Medium"/>
+                    <micro:ChartView Chart="{Binding FacturacionMensualHistoricoChart}" HeightRequest="700"/>
+                </StackLayout>
+            </Frame>
+            
         </Grid>
     </ScrollView>
 </uranium:UraniumContentPage>

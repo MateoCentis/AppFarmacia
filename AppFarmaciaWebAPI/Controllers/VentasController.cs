@@ -48,12 +48,12 @@ namespace AppFarmaciaWebAPI.Controllers
                                .ToListAsync();
                                //.Include(v => v.ArticulosEnVenta) // Asegúrate de incluir los artículos en venta
 
-            // Calcular el monto total para cada venta
-            foreach (var venta in ventas)
-            {
-                // Sumar el monto total de los artículos en venta
-                venta.MontoTotal = venta.ArticuloEnVenta.Sum(a => a.Precio * a.Cantidad);
-            }
+            //// Calcular el monto total para cada venta
+            //foreach (var venta in ventas)
+            //{
+            //    // Sumar el monto total de los artículos en venta
+            //    venta.MontoTotal = venta.ArticuloEnVenta.Sum(a => a.Precio * a.Cantidad);
+            //}
 
             // Mapear a VentaDTO
             var ventasDTO = _mapper.Map<IEnumerable<VentaDTO>>(ventas);
@@ -342,6 +342,61 @@ namespace AppFarmaciaWebAPI.Controllers
             return Ok(resultado);
         }
 
+        [HttpGet("cantidad-vendida-historica")]
+        public async Task<IActionResult> GetCantidadVendidaHistorica()
+        {
+            var query = _context.ArticulosEnVenta
+                .Join(_context.Ventas,
+                      articulo => articulo.IdVenta,
+                      venta => venta.IdVenta,
+                      (articulo, venta) => new { Articulo = articulo, Venta = venta });
+
+            // Agrupamos por año y mes para obtener la cantidad vendida por mes cada año
+            var ventasPorMes = await query
+                .GroupBy(v => new { v.Venta.Fecha.Year, v.Venta.Fecha.Month }) // Agrupo por año y mes
+                .Select(g => new
+                {
+                    Año = g.Key.Year,  // Extraigo el año
+                    Mes = g.Key.Month,  // Extraigo el mes
+                    TotalCantidadVendida = g.Sum(v => v.Articulo.Cantidad)
+                })
+                .OrderBy(v => v.Año)  // Primero por año
+                .ThenBy(v => v.Mes)   // Luego por mes
+                .ToListAsync();
+
+            return Ok(ventasPorMes);
+        }
+
+        // Lo mismo pero para la facturación
+        [HttpGet("facturacion-mensual-historica")]
+        public async Task<IActionResult> GetFacturacionMensualHistorica()
+        {
+            // Filtrar por el año si se proporciona, de lo contrario obtener todas las ventas
+            var query = _context.Ventas
+                .Join(_context.ArticulosEnVenta,
+                      venta => venta.IdVenta,
+                      articulo => articulo.IdVenta,
+                      (venta, articulo) => new
+                      {
+                          venta.Fecha,
+                          Facturacion = articulo.Precio * articulo.Cantidad
+                      });
+
+            // Agrupar por año y mes y sumar la facturación mensual
+            var facturacionMensual = await query
+                .GroupBy(v => new { v.Fecha.Year, v.Fecha.Month }) // Agrupar por año y mes
+                .Select(g => new
+                {
+                    Año = g.Key.Year,  // Extraigo el año
+                    Mes = g.Key.Month,  // Extraigo el mes
+                    TotalFacturacion = g.Sum(v => v.Facturacion) // Sumar la facturación de cada mes
+                })
+                .OrderBy(v => v.Año)  // Ordenamos primero por año
+                .ThenBy(v => v.Mes)   // Luego por mes
+                .ToListAsync();
+
+            return Ok(facturacionMensual);
+        }
 
     }
 }

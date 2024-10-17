@@ -66,7 +66,7 @@ namespace AppFarmacia.Models
             {
                 CategoriasService categoriasService = new CategoriasService();
                 Categoria categoria = await categoriasService.GetCategoriaPorId(articulo.IdCategoria.Value);
-                this.Categoria = categoria.Nombre;
+                this.Categoria = categoria.Nombre ?? "no cargó";// Acá siempre rompe cuando la API no carga, habría que hacer la validación de null?
             }
             else
                 this.Categoria = "-";

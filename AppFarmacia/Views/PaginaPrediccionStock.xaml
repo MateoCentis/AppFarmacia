@@ -6,30 +6,47 @@
              Shell.NavBarIsVisible="False"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"              
              xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
+             xmlns:converters="clr-namespace:AppFarmacia.Converters"
              xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels">
 
     <uranium:UraniumContentPage.BindingContext>
         <viewModels:PaginaPrediccionStockViewModel/>
     </uranium:UraniumContentPage.BindingContext>
+
+    <uranium:UraniumContentPage.Resources>
+        <converters:StockColorConverter x:Key="StockColorConverter"/>
+    </uranium:UraniumContentPage.Resources>
     
-    
+    <!-- Grilla general de la página -->
     <Grid RowDefinitions="Auto,*">
-        <HorizontalStackLayout Margin="110,30,0,0">
+        <!-- Carga de cantidad de artículos-->
+        <StackLayout Orientation="Horizontal" Margin="20,10,20,0" HorizontalOptions="StartAndExpand" VerticalOptions="FillAndExpand" Spacing="10">
             <!--/boton para cargar articulos-->
-            <Button Text="Cargar Artículos" 
-                    Command="{Binding ObtenerArticulosCommand}" 
-                    StyleClass="OutlinedButton"
-                    HeightRequest="50"/>
             <material:PickerField Title="Selecciona el tamaño de carga" 
                                   ItemsSource="{Binding CantArticulos}" 
                                   SelectedItem="{Binding CantArticulosSeleccionada}" 
                                   WidthRequest="220" 
-                                  Margin="80,0,5,15" 
+                                  Margin="20,5,0,0" 
                                   HeightRequest="60" 
                                   AllowClear="False"/>
-        </HorizontalStackLayout>
+            
+            <material:PickerField Title="Selecciona la clasificación"
+                                  ItemsSource="{Binding Clasificaciones}"
+                                  SelectedItem="{Binding ClasificacionSeleccionada}"
+                                  WidthRequest="220" 
+                                  Margin="20,5,0,0" 
+                                  HeightRequest="60" 
+                                  AllowClear="False"/>
+            
+            <Button Text="Cargar Artículos" 
+                    Command="{Binding ObtenerArticulosCommand}" 
+                    StyleClass="OutlinedButton" 
+                    HeightRequest="50"
+                    VerticalOptions="Center"/>
+            
+        </StackLayout>
 
-        <Frame Grid.Row="1" BorderColor="Black" CornerRadius="0" Padding="0" Margin="50,10,50,10">
+        <Frame Grid.Row="1" Margin="20,0,20,5" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#f1f1f2">
             <dg:DataGrid ItemsSource="{Binding ListaArticulos}"
                  SelectionMode="Single" SelectedItem="{Binding ArticuloSeleccionado}"
                  PaginationEnabled="True" PageSize="{Binding SizePagina, Mode=OneWay}" Style="{StaticResource TablaComun}"
@@ -56,7 +73,17 @@
                     <dg:DataGridColumn Title="Categoría" PropertyName="NombreCategoria"/>
                     <dg:DataGridColumn Title="Clasificación" PropertyName="Clasificacion"/>
                     <dg:DataGridColumn Title="Punto de reposición" PropertyName="PuntoReposicion"/>
-                    <dg:DataGridColumn Title="Stock" PropertyName="UltimoStock"/>
+                    <dg:DataGridColumn Title="Cantidad a pedir" PropertyName="PuntoReposicion"/>
+                    <dg:DataGridColumn Title="Stock" PropertyName="UltimoStock">
+                        <dg:DataGridColumn.CellTemplate>
+                            <DataTemplate>
+                                <ContentView HorizontalOptions="Fill" VerticalOptions="Fill"
+                                 BackgroundColor="{Binding Converter={StaticResource StockColorConverter}}">
+                                    <Label Text="{Binding}" HorizontalOptions="Center" VerticalOptions="Center" TextColor="Black"/>
+                                </ContentView>
+                            </DataTemplate>
+                        </dg:DataGridColumn.CellTemplate>
+                    </dg:DataGridColumn>
                 </dg:DataGrid.Columns>
             </dg:DataGrid>
         </Frame>

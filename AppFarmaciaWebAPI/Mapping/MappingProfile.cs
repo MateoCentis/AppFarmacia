@@ -14,13 +14,13 @@ namespace AppFarmaciaWebAPI.Mapping
                 .ForMember(dest => dest.VencimientosDTO, opt => opt.MapFrom(src => src.Vencimientos))
                 .ForMember(dest => dest.StocksDTO, opt => opt.MapFrom(src => src.Stocks))
                 .ForMember(dest => dest.ArticulosEnVentaDTO, opt => opt.MapFrom(src => src.ArticulosEnVenta));
-            
+
             CreateMap<ArticuloDTO, Articulo>()
                 .ForMember(dest => dest.Precios, opt => opt.MapFrom(src => src.PreciosDTO))
                 .ForMember(dest => dest.Vencimientos, opt => opt.MapFrom(src => src.VencimientosDTO))
                 .ForMember(dest => dest.Stocks, opt => opt.MapFrom(src => src.StocksDTO))
                 .ForMember(dest => dest.ArticulosEnVenta, opt => opt.MapFrom(src => src.ArticulosEnVentaDTO));
-                
+
             // Mapeo entre ArticuloEnVenta y ArticuloEnVentaDTO
             CreateMap<ArticuloEnVenta, ArticuloEnVentaDTO>()
                 .ForMember(dest => dest.NombreArticulo, opt => opt.MapFrom(src => src.IdArticuloNavigation.Nombre));
@@ -60,7 +60,7 @@ namespace AppFarmaciaWebAPI.Mapping
                 .ForMember(dest => dest.MontoTotal, opt => opt.MapFrom(src => src.ArticuloEnVenta.Sum(a => a.Precio * a.Cantidad)));
 
             CreateMap<VentaDTO, Venta>();
-                //.ForMember(dest => dest.ArticuloEnVenta, opt => opt.MapFrom(src => src.ArticulosEnVentaDTO));
+            //.ForMember(dest => dest.ArticuloEnVenta, opt => opt.MapFrom(src => src.ArticulosEnVentaDTO));
         }
     }
 }

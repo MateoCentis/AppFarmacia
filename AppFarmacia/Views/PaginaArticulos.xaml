@@ -7,10 +7,10 @@
              x:Class="AppFarmacia.Views.PaginaArticulos"
              Shell.NavBarIsVisible="False">
 
-    
+
     <ContentPage.BindingContext>
         <viewModels:PaginaArticulosViewModel/>
-    </ContentPage.BindingContext>  
+    </ContentPage.BindingContext>
 
     <Grid RowDefinitions="Auto,*">
         <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" Margin="0,5,0,5">
@@ -26,12 +26,21 @@
 
             <material:AutoCompleteTextField Title="Selecciona una categoría" 
                                             ItemsSource="{Binding NombresCategorias}" 
-                                            Text="{Binding CategoriaSeleccionada.Nombre, Mode=TwoWay}"
+                                            Text="{Binding CategoriaSeleccionadaNombre, Mode=TwoWay}"
                                             WidthRequest="230" 
                                             Icon="capsulafill.png"
                                             Margin="30,0,5,0" 
                                             HeightRequest="55" 
                                             AllowClear="False"/>
+
+            <!-- Próximos a vencer/vencidos/normales -->
+            <material:PickerField Title="Seleccione según vencimiento"
+                                    ItemsSource="{Binding OpcionesVencimiento}"
+                                    SelectedItem="{Binding OpcionVencimientoSeleccionada}"
+                                    WidthRequest="230" 
+                                    Margin="30,0,5,0" 
+                                    HeightRequest="55" 
+                                    AllowClear="False"/>
 
             <Button Text="Filtrar" 
                     Command="{Binding FiltrarArticulosCommand}" 

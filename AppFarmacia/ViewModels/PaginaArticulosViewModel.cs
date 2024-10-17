@@ -55,11 +55,11 @@ namespace AppFarmacia.ViewModels
             NombresCategorias = [];
             PaginationEnabled = true;
             SizePagina = 20;
+            CategoriaSeleccionadaNombre = "Todas";
 
-            
             // Carga inicial de los artículos
-            Task.Run(async () => await ObtenerArticulos());
             Task.Run(async () => await ObtenerCategorias());
+            Task.Run(async () => await ObtenerArticulos());
         }
 
         // Código de mierdddda ----------------------------------------
@@ -90,14 +90,17 @@ namespace AppFarmacia.ViewModels
             }
         }
 
+        private string _categoriaSeleccionadaNombre = string.Empty;
         public string CategoriaSeleccionadaNombre
         {
-            get => CategoriaSeleccionada?.Nombre ?? string.Empty; // El get devuelve el nombre (por cosas en el front)
+            get => _categoriaSeleccionadaNombre;
             set
             {
-                var categoria = ListCategorias.FirstOrDefault(c => c.Nombre == value);
-                CategoriaSeleccionada = categoria;
-                OnPropertyChanged();
+                if (SetProperty(ref _categoriaSeleccionadaNombre, value))
+                {
+                    CategoriaSeleccionada = ListCategorias.FirstOrDefault(c => c.Nombre == value);
+                    //FiltrarArticulos();// Esto hace que filtre para cada letra que ingresemos
+                }
             }
         }
 
