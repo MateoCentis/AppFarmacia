@@ -22,7 +22,7 @@ namespace AppFarmacia.Models
         public int? DemandaAnualHistorica { get; set; }
         public string? NombresDrogas { get; set; }
 
-        public DateOnly FechaVencimientoMasCercano {  get; set; }
+        public DateOnly UltimoVencimiento {  get; set; }
 
         public ICollection<Vencimiento> Vencimientos { get; set; } = [];
         public ICollection<Precio> Precios { get; set; } = [];
@@ -85,14 +85,15 @@ namespace AppFarmacia.Models
                 this.FechaUltimoPrecio = DateOnly.FromDateTime(DateTime.MinValue); // Fecha predeterminada
             }
 
-            if (Vencimientos.Count > 0)
-            {
-                this.FechaVencimientoMasCercano = Vencimientos.First().Fecha;
-            }
-            else
-            {
-                this.FechaVencimientoMasCercano = DateOnly.FromDateTime(DateTime.MinValue);
-            }
+            // Esto lo comenté porque se ahora cuando se envía desde el mapeo de la API
+            //if (Vencimientos.Count > 0)
+            //{
+            //    this.FechaVencimientoMasCercano = Vencimientos.First().Fecha;
+            //}
+            //else
+            //{
+            //    this.FechaVencimientoMasCercano = DateOnly.FromDateTime(DateTime.MinValue);
+            //}
             if (Stocks.Count > 0)
             {
                 Stock stock = Stocks.First();

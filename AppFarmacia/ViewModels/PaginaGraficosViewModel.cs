@@ -171,10 +171,10 @@ namespace AppFarmacia.ViewModels
         [RelayCommand]
         private async Task GenerarGraficoVentasMensuales()
         {
-            // Llamar a la API que obtiene las ventas mensuales para el año seleccionado
+            // Llama a la API que obtiene las ventas mensuales para el año seleccionado
             var ventasPorMes = await VentaService.GetCantidadVendidaPorMes(YearSeleccionadoGraficoVentasMensuales);
 
-            var ventasMonto = new float[12];//12 meses xd
+            var ventasMonto = new float[12];
 
             // Asignar los valores obtenidos al array de ventas
             foreach (var venta in ventasPorMes)
@@ -186,7 +186,7 @@ namespace AppFarmacia.ViewModels
             {
                 Label = Meses[index], // Mostrar el nombre del mes
                 ValueLabel = value.ToString("F0"), // Monto del mes
-                Color = SKColor.Parse("#3498db") // Color del gráfico (azul)
+                Color = SKColor.Parse("#3498db") // Color de la línea (azul)
             }).ToArray();
 
             // Definición del gráfico ya cargados los datos
@@ -214,9 +214,6 @@ namespace AppFarmacia.ViewModels
                 BackgroundColor = SKColor.Parse("FFFFFF"),
                 // Animación
                 //AnimationDuration = TimeSpan.FromMilliseconds(1500)
-
-                //Leyenda -> esto está rompiendo no se por qué
-                //LegendOption = SeriesLegendOption.Top,
             };
 
 

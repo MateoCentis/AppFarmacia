@@ -13,14 +13,14 @@ namespace AppFarmacia.ViewModels
 {
     public partial class PaginaArticulosViewModel : ObservableObject
     {
-        // Servicios
+        // Servicios para acceder a la información de la API
         private readonly ArticulosService articulosService;
         private readonly CategoriasService categoriasService;
 
-        // Propiedades accesibles desde afuera
         [ObservableProperty]
-        private ArticuloMostrar? articuloSeleccionado;//Sirve para implementar luego otras cosas
+        private ArticuloMostrar? articuloSeleccionado;
         
+        // Propiedades para el datagrid
         [ObservableProperty]
         private int sizePagina;
 
@@ -30,11 +30,18 @@ namespace AppFarmacia.ViewModels
         [ObservableProperty]
         private bool estaCargando;
 
+        // Propiedades para el filtrado (por categoría, por buscador y por vencimiento)
         [ObservableProperty]
         private Categoria? categoriaSeleccionada;
 
         [ObservableProperty]
-        private string? textoBusqueda;
+        private List<string> nombresCategorias;
+
+        [ObservableProperty]
+        private List<string> nombresArticulos;
+
+        //[ObservableProperty]
+        //private string? textoBusqueda;
 
         [ObservableProperty]
         private ObservableCollection<Categoria> listCategorias = [];
@@ -43,7 +50,10 @@ namespace AppFarmacia.ViewModels
         private ObservableCollection<ArticuloMostrar> _listaArticulosCompleta;
 
         [ObservableProperty]
-        private List<string> nombresCategorias;
+        private List<string> tiposVencimientos = ["Vencidos", "Por vencer", "Todos"];
+
+        [ObservableProperty]
+        private string tipoVencimientoSeleccionado = "Todos";
 
         public PaginaArticulosViewModel()
         {
@@ -52,6 +62,7 @@ namespace AppFarmacia.ViewModels
             TextoBusqueda = string.Empty;
             this._listaArticulos = [];
             this._listaArticulosCompleta = [];
+            NombresArticulos = [];
             NombresCategorias = [];
             PaginationEnabled = true;
             SizePagina = 20;
@@ -90,6 +101,19 @@ namespace AppFarmacia.ViewModels
             }
         }
 
+        private string textoBusqueda = string.Empty;
+        public string TextoBusqueda
+        {
+            get => textoBusqueda;
+            set
+            {
+                if (SetProperty(ref textoBusqueda, value))// Solo si hay diferencias
+                {
+                    FiltrarArticulos();
+                }
+            }
+        }
+
         private string _categoriaSeleccionadaNombre = string.Empty;
         public string CategoriaSeleccionadaNombre
         {
@@ -113,6 +137,7 @@ namespace AppFarmacia.ViewModels
                 this.EstaCargando = true; 
                 var articulos = await articulosService.GetArticulos();
                 ListaArticulosCompleta = new ObservableCollection<ArticuloMostrar>(articulos.Select(a => new ArticuloMostrar(a)).ToList());
+                NombresArticulos = ListaArticulosCompleta.Select(a => a.Nombre).ToList();
                 this.EstaCargando = false;
                 FiltrarArticulos();
 
@@ -157,20 +182,42 @@ namespace AppFarmacia.ViewModels
         {
             var articulosFiltrados = ListaArticulosCompleta.AsEnumerable();
 
-            //Filtro por texto de búsqueda
+            //Filtro por TEXTO DE BÚSQUEDA
             if (!string.IsNullOrWhiteSpace(TextoBusqueda)) 
             {  // Agregado para que se ignoren minúsculas de mayúsculas
                 articulosFiltrados = articulosFiltrados.Where(a => a.Nombre.Contains(TextoBusqueda, StringComparison.OrdinalIgnoreCase)).ToList();
             }
             
-            // Filtra las categorías, se excluye si la categoría es "Todas", nula o vacía
+            // Filtra las CATEGORIAS, se excluye si la categoría es "Todas", nula o vacía
             if (CategoriaSeleccionada != null && CategoriaSeleccionada.Nombre != "Todas" && CategoriaSeleccionada.Nombre != "")
             { 
                 articulosFiltrados = articulosFiltrados.Where(a => a.IdCategoria == CategoriaSeleccionada.IdCategoria).ToList();
             }
 
+            //Filtro por VENCIMIENTOS(el problema de esto es que no nos traemos los vencimientos, deberíamos traernos el último
+            if (TipoVencimientoSeleccionado != "Todos" && TipoVencimientoSeleccionado != null && TipoVencimientoSeleccionado != "")
+            {
+                DateOnly fechaActual = DateOnly.FromDateTime(DateTime.Now); // Convertir DateTime a DateOnly
 
-            this.ListaArticulos = new ObservableCollection<ArticuloMostrar>(articulosFiltrados);
+                // "Por vencer" -> Vencimientos dentro de los próximos 30 días
+                if (TipoVencimientoSeleccionado == "Por vencer")
+                {
+                    articulosFiltrados = articulosFiltrados
+                        .Where(a => a.UltimoVencimiento >= fechaActual &&// Si es mayor a la fecha actual pero menor a dentro de un mes
+                                    a.UltimoVencimiento <= fechaActual.AddDays(30))
+                        .ToList();
+                }
+                // "Vencidos" -> Vencimientos menores a la fecha actual
+                else if (TipoVencimientoSeleccionado == "Vencidos")
+                {
+                    articulosFiltrados = articulosFiltrados
+                        .Where(a => a.UltimoVencimiento < fechaActual)// Si es antes de la fecha actual -> vencido
+                        .ToList();
+                }
+            }
+
+
+                this.ListaArticulos = new ObservableCollection<ArticuloMostrar>(articulosFiltrados);
         }
 
         // Función para redireccionar a la página de detalle de artículo

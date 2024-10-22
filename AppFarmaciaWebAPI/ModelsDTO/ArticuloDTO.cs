@@ -23,7 +23,8 @@ namespace AppFarmaciaWebAPI.ModelsDTO
         public int? CantidadAPedir { get; set; }
         public int? DemandaAnualHistorica { get; set; }
         public string? NombresDrogas { get; set; }
-
+        public DateOnly UltimoVencimiento { get; set; }
+        
         public ICollection<ArticuloEnVentaDTO> ArticulosEnVentaDTO { get; set; } = [];
         public ICollection<PrecioDTO> PreciosDTO { get; set; } = [];
         public ICollection<VencimientoDTO> VencimientosDTO { get; set; } = [];

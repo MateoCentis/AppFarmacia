@@ -13,16 +13,25 @@
     </ContentPage.BindingContext>
 
     <Grid RowDefinitions="Auto,*">
-        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" Margin="0,5,0,5">
+        <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" Margin="0,5,0,5">
             
-            <SearchBar Text="{Binding TextoBusqueda}" 
+            <!--<SearchBar Text="{Binding TextoBusqueda}" 
                        Placeholder="Buscar..." 
                        SearchButtonPressed="OnSearchButtonPressed" 
                        VerticalOptions="Center" 
                        Style="{StaticResource BarraBusqueda}"
                        WidthRequest="550" 
                        Margin="10,0,0,0"
-                       HeightRequest="50"/>
+                       HeightRequest="50"/>-->
+
+            <material:AutoCompleteTextField Title="Búsqueda por nombre"
+                                            ItemsSource="{Binding NombresArticulos}"
+                                            Text="{Binding TextoBusqueda, Mode=TwoWay}"
+                                            VerticalOptions="Center"
+                                            WidthRequest="550"
+                                            Margin="5,0,0,0"
+                                            Icon="searchline2.png"
+                                            HeightRequest="55"/>
 
             <material:AutoCompleteTextField Title="Selecciona una categoría" 
                                             ItemsSource="{Binding NombresCategorias}" 
@@ -35,8 +44,9 @@
 
             <!-- Próximos a vencer/vencidos/normales -->
             <material:PickerField Title="Seleccione según vencimiento"
-                                    ItemsSource="{Binding OpcionesVencimiento}"
-                                    SelectedItem="{Binding OpcionVencimientoSeleccionada}"
+                                    ItemsSource="{Binding TiposVencimientos}"
+                                    SelectedItem="{Binding TipoVencimientoSeleccionado}"
+                                    Icon="calendarline7.png"
                                     WidthRequest="230" 
                                     Margin="30,0,5,0" 
                                     HeightRequest="55" 
@@ -53,13 +63,14 @@
                     Command="{Binding VerArticuloCommand}"  
                     StyleClass="OutlinedButton" 
                     HeightRequest="50"
+                    HorizontalOptions="End"
                     Margin="0,0,0,0"/>
         </StackLayout>
 
         <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ListaArticulos}" 
                      SelectionMode="Single" SelectedItem="{Binding ArticuloSeleccionado}"
                      PaginationEnabled="{Binding PaginationEnabled}" PageSize="{Binding SizePagina, Mode=OneWay}" Style="{StaticResource TablaComun}"
-                     IsRefreshing="{Binding EstaCargando}" Margin="0">
+                     IsRefreshing="{Binding EstaCargando}" Margin="5,0,5,0">
             <!-- Para cuando la página no tiene data para ver-->
             <dg:DataGrid.NoDataView>
                 <Label Text="No hay artículos que cumplan con esos criterios" Style="{StaticResource VistaSinData}">
@@ -85,7 +96,7 @@
                 <dg:DataGridColumn Title="Categoría" PropertyName="Categoria"/>
                 <dg:DataGridColumn Title="Stock" PropertyName="Stock"/>
                 <dg:DataGridColumn Title="Precio" PropertyName="PrecioActual"/>
-                <dg:DataGridColumn Title="Vencimiento" PropertyName="FechaVencimientoMasCercano"/>
+                <dg:DataGridColumn Title="Vencimiento" PropertyName="UltimoVencimiento"/>
                 <dg:DataGridColumn Title="Descripción" PropertyName="Descripcion"/>
             </dg:DataGrid.Columns>
 

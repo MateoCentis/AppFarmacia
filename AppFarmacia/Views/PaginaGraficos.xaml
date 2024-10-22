@@ -221,7 +221,7 @@
                             VerticalOptions="Center"/>
                     </StackLayout>
                     
-                    <dg:DataGrid ItemsSource="{Binding ArticulosMasVendidos}" SelectionMode="Single" Style="{StaticResource TablaComun}" Margin="0,0,0,0" 
+                    <dg:DataGrid ItemsSource="{Binding ArticulosMasVendidos}" SelectionMode="None" Style="{StaticResource TablaComun}" Margin="0,0,0,0" 
                                  HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand">
                         <dg:DataGrid.NoDataView>
                             <Label Text="No hay artículos que cumplan con esos criterios" Style="{StaticResource VistaSinData}"/>

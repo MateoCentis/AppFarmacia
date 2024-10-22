@@ -13,6 +13,7 @@ using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
+
 namespace AppFarmacia.ViewModels
 {
     internal partial class PaginaPrediccionStockViewModel : ObservableObject
@@ -39,18 +40,24 @@ namespace AppFarmacia.ViewModels
 
         private ObservableCollection<Articulo> _listaArticulos;
 
+        [ObservableProperty]
+        private List<string> clasificaciones = ["A", "B", "C", "Todas"];
+
+        [ObservableProperty]
+        private string clasificacionSeleccionada = "Todas";
+
         public ICommand? ObtenerArticulosCommand { get; private set; }
 
         public PaginaPrediccionStockViewModel()
         {
-            
+
             this.articulosService = new ArticulosService();
             this.categoriasService = new CategoriasService();
             this.stocksService = new StockService();
-            this._listaArticulos = new ObservableCollection<Articulo>();
+            this._listaArticulos = [];
 
             SizePagina = 20;
-            CantArticulos = new List<int>([10,50,100,500,1000]);
+            CantArticulos = new List<int>([10, 50, 100, 500, 1000]);
             CantArticulosSeleccionada = 50;
 
             ObtenerArticulosCommand = new Command(async () => await ObtenerArticulos());
@@ -75,7 +82,7 @@ namespace AppFarmacia.ViewModels
             {
                 this.EstaCargando = true;
 
-                // Obtener los artículos
+                // Obtener los artículos 
                 var articulos = await articulosService.GetArticulos(CantArticulosSeleccionada);
 
                 // Iterar sobre cada artículo para obtener y asignar el nombre de la categoría
@@ -109,6 +116,18 @@ namespace AppFarmacia.ViewModels
                 {
                     Shell.Current.DisplayAlert("Error articles!", ex.Message, "OK");
                 });
+            }
+        }
+
+        // NO está funcionando, hay que arreglarlo porque se está pisando la lista de artículos (hay que hacer una para mostrar y otra para guardar todos)
+        [RelayCommand]
+        private void FiltrarArticulos()
+        {
+            // Filtrar los artículos por clasificación
+            if (ClasificacionSeleccionada != "Todas" && ClasificacionSeleccionada != null && ClasificacionSeleccionada != "")
+            {
+                var articulosFiltrados = ListaArticulos.Where(a => a.Clasificacion == ClasificacionSeleccionada).ToList();
+                ListaArticulos = new ObservableCollection<Articulo>(articulosFiltrados);
             }
         }
     }

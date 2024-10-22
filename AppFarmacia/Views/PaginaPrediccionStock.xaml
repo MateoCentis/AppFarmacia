@@ -17,24 +17,19 @@
         <converters:StockColorConverter x:Key="StockColorConverter"/>
     </uranium:UraniumContentPage.Resources>
     
+    <!-- ESTA PÁGINA ES UNA VERRRRRRRGA NO SE PORQUE ANDA TODO RARO-->
+    
     <!-- Grilla general de la página -->
     <Grid RowDefinitions="Auto,*">
         <!-- Carga de cantidad de artículos-->
-        <StackLayout Orientation="Horizontal" Margin="20,10,20,0" HorizontalOptions="StartAndExpand" VerticalOptions="FillAndExpand" Spacing="10">
+        <StackLayout Orientation="Horizontal" Margin="5,5,5,0" HorizontalOptions="StartAndExpand" VerticalOptions="FillAndExpand" Spacing="10">
             <!--/boton para cargar articulos-->
             <material:PickerField Title="Selecciona el tamaño de carga" 
                                   ItemsSource="{Binding CantArticulos}" 
                                   SelectedItem="{Binding CantArticulosSeleccionada}" 
                                   WidthRequest="220" 
-                                  Margin="20,5,0,0" 
-                                  HeightRequest="60" 
-                                  AllowClear="False"/>
-            
-            <material:PickerField Title="Selecciona la clasificación"
-                                  ItemsSource="{Binding Clasificaciones}"
-                                  SelectedItem="{Binding ClasificacionSeleccionada}"
-                                  WidthRequest="220" 
-                                  Margin="20,5,0,0" 
+                                  Margin="30,5,0,0" 
+                                  Icon="layers.png"
                                   HeightRequest="60" 
                                   AllowClear="False"/>
             
@@ -42,15 +37,33 @@
                     Command="{Binding ObtenerArticulosCommand}" 
                     StyleClass="OutlinedButton" 
                     HeightRequest="50"
+                    Margin="10,0,0,-5"
                     VerticalOptions="Center"/>
             
+            <material:PickerField Title="Selecciona la clasificación"
+                                  ItemsSource="{Binding Clasificaciones}"
+                                  SelectedItem="{Binding ClasificacionSeleccionada}"
+                                  WidthRequest="220" 
+                                  Icon="graficotorta.png"
+                                  Margin="10,5,0,0" 
+                                  HeightRequest="60" 
+                                  AllowClear="False"/>
+
+            <Button Text="Filtrar"
+                    Command="{Binding FiltrarArticulosCommand}" 
+                    StyleClass="OutlinedButton" 
+                    HeightRequest="50"
+                    Margin="10,0,0,-5"
+                    VerticalOptions="Center"/>
+
+
         </StackLayout>
 
-        <Frame Grid.Row="1" Margin="20,0,20,5" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#f1f1f2">
+        <Frame Grid.Row="1" Margin="0,-5,0,0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#f1f1f2">
             <dg:DataGrid ItemsSource="{Binding ListaArticulos}"
                  SelectionMode="Single" SelectedItem="{Binding ArticuloSeleccionado}"
                  PaginationEnabled="True" PageSize="{Binding SizePagina, Mode=OneWay}" Style="{StaticResource TablaComun}"
-                 IsRefreshing="{Binding EstaCargando}">
+                 IsRefreshing="{Binding EstaCargando}" HorizontalOptions="FillAndExpand" VerticalOptions="StartAndExpand">
                 <!-- Para cuando la página no tiene data para ver-->
                 <dg:DataGrid.NoDataView>
                     <Label Text="No hay artículos que cumplan con esos criterios" Style="{StaticResource VistaSinData}">
@@ -74,16 +87,17 @@
                     <dg:DataGridColumn Title="Clasificación" PropertyName="Clasificacion"/>
                     <dg:DataGridColumn Title="Punto de reposición" PropertyName="PuntoReposicion"/>
                     <dg:DataGridColumn Title="Cantidad a pedir" PropertyName="PuntoReposicion"/>
-                    <dg:DataGridColumn Title="Stock" PropertyName="UltimoStock">
-                        <dg:DataGridColumn.CellTemplate>
-                            <DataTemplate>
-                                <ContentView HorizontalOptions="Fill" VerticalOptions="Fill"
+                    <dg:DataGridColumn Title="Stock" PropertyName="UltimoStock"/>
+                    <!-- Esto es para poner de color rojo cuando el stock se acerca al punto de reposición -->
+                    <!--<dg:DataGridColumn.CellTemplate>
+                        <DataTemplate>
+                            <ContentView HorizontalOptions="Fill" VerticalOptions="Fill"
                                  BackgroundColor="{Binding Converter={StaticResource StockColorConverter}}">
-                                    <Label Text="{Binding}" HorizontalOptions="Center" VerticalOptions="Center" TextColor="Black"/>
-                                </ContentView>
-                            </DataTemplate>
-                        </dg:DataGridColumn.CellTemplate>
-                    </dg:DataGridColumn>
+                                <Label Text="{Binding}" HorizontalOptions="Center" VerticalOptions="Center" TextColor="Black"/>
+                            </ContentView>
+                        </DataTemplate>
+                    </dg:DataGridColumn.CellTemplate>-->
+
                 </dg:DataGrid.Columns>
             </dg:DataGrid>
         </Frame>

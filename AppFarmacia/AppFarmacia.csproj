@@ -88,6 +88,8 @@
 	  <None Remove="Resources\Images\refrescar.svg" />
 	  <None Remove="Resources\Images\refresh.svg" />
 	  <None Remove="Resources\Images\save.svg" />
+	  <None Remove="Resources\Images\searchline.svg" />
+	  <None Remove="Resources\Images\searchline2.svg" />
 	  <None Remove="Resources\Images\searchmenuline.svg" />
 	  <None Remove="Resources\Images\settings.svg" />
 	  <None Remove="Resources\Images\settingss.svg" />

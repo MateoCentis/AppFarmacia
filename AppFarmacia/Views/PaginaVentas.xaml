@@ -24,11 +24,12 @@
     <!-- Grilla de dos filas -> En la primera pongo botones y cosas y en la segunda la tabla -->
     <Grid RowDefinitions="Auto,*, Auto" Padding="1">
 
-        <StackLayout Orientation="Horizontal" HorizontalOptions="Fill" Margin="0,0,0,5" VerticalOptions="Center" Spacing="10">
+        <StackLayout Orientation="Horizontal" HorizontalOptions="Fill" Margin="5,5,0,5" VerticalOptions="Center" Spacing="10">
             <material:DatePickerField Title="Fecha Inicio" 
                                         Icon="calendarline7.png"
                                         WidthRequest="200"
                                         AllowClear="False"
+                                        HeightRequest="55"
                                         Date="{Binding FechaInicio, Converter={StaticResource DateTimeToDateConverter}}"
                                         Format="dd/MM/yyyy"/>
                                         <!--Date="{Binding Fecha_Ingreso, Converter={StaticResource DateTimeToDateOnlyConverter}}"-->
@@ -36,6 +37,7 @@
             <material:DatePickerField Title="Fecha Fin" 
                                         Icon="calendarline5.png"
                                         WidthRequest="200"
+                                        HeightRequest="55"
                                         AllowClear="False"
                                         Date="{Binding FechaFin, Converter={StaticResource DateTimeToDateConverter}}"
                                         Format="dd/MM/yyyy"/>
@@ -47,11 +49,12 @@
                     WidthRequest="115"
                     FontSize="Default"
                     Margin="0,5,0,0"
-                    HeightRequest="40"
+                    HeightRequest="50"
                     VerticalOptions="Center"/>
 
             <Button Text="Ver Detalle" 
                     Margin="0,5,0,0" 
+                    HeightRequest="50"
                     Command="{Binding VerDetalleCommand}" 
                     StyleClass="OutlinedButton"
                     HorizontalOptions="End"/>
@@ -61,7 +64,7 @@
         <!--- Configuraciones generales del datagrid -->
         <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ListaMostrarVentas}" 
                      SelectionMode="Single" SelectedItem="{Binding VentaSeleccionada}"
-                     Style="{StaticResource TablaComun}" Margin="0,0,0,0" Padding="5"
+                     Style="{StaticResource TablaComun}" Margin="5,0,5,0"
                      PaginationEnabled="{Binding PaginationEnabled}" PageSize="{Binding SizePagina}">
             
             <dg:DataGrid.NoDataView>
