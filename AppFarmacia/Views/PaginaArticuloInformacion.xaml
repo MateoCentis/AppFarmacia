@@ -21,10 +21,11 @@
             <Grid ColumnDefinitions="*,*" Grid.Row="1">
 
                 <Frame Grid.Column="0" Style="{StaticResource FrameGrafico}" Margin="5,5,5,5" BackgroundColor="White" MaximumHeightRequest="700">
-                    <VerticalStackLayout  HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" Spacing="5">
+                    <VerticalStackLayout  HorizontalOptions="FillAndExpand" VerticalOptions="StartAndExpand" Spacing="5">
                         <Label Text="Histórico de precios" Style="{StaticResource TituloTabla}" HorizontalOptions="Center" VerticalOptions="Center" FontSize="Medium"/>
                         <!-- Primera tabla - tabla de precios -->
-                        <dg:DataGrid Style="{StaticResource TablaComun}" ItemsSource="{Binding PreciosArticulo}" >
+                        <dg:DataGrid Style="{StaticResource TablaComun}" ItemsSource="{Binding PreciosArticulo}" SelectionMode="None" 
+                                     HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand">
                             <dg:DataGrid.NoDataView>
                                 <Label Text="No existen precios cargados aún" Style="{StaticResource VistaSinData}" FontSize="Medium"/>
                             </dg:DataGrid.NoDataView>

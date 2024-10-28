@@ -22,20 +22,20 @@
     <!-- Grilla general de la página -->
     <Grid RowDefinitions="Auto,*">
         <!-- Carga de cantidad de artículos-->
-        <StackLayout Orientation="Horizontal" Margin="5,5,5,0" HorizontalOptions="StartAndExpand" VerticalOptions="FillAndExpand" Spacing="10">
+        <StackLayout Orientation="Horizontal" Margin="0,5,0,5" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" Spacing="5">
             <!--/boton para cargar articulos-->
             <material:PickerField Title="Selecciona el tamaño de carga" 
                                   ItemsSource="{Binding CantArticulos}" 
                                   SelectedItem="{Binding CantArticulosSeleccionada}" 
                                   WidthRequest="220" 
-                                  Margin="30,5,0,0" 
+                                  Margin="5,5,0,0" 
                                   Icon="layers.png"
                                   HeightRequest="60" 
                                   AllowClear="False"/>
             
             <Button Text="Cargar Artículos" 
                     Command="{Binding ObtenerArticulosCommand}" 
-                    StyleClass="OutlinedButton" 
+                    StyleClass="FilledButton" 
                     HeightRequest="50"
                     Margin="10,0,0,-5"
                     VerticalOptions="Center"/>
@@ -59,48 +59,46 @@
 
         </StackLayout>
 
-        <Frame Grid.Row="1" Margin="0,-5,0,0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#f1f1f2">
-            <dg:DataGrid ItemsSource="{Binding ListaArticulos}"
-                 SelectionMode="Single" SelectedItem="{Binding ArticuloSeleccionado}"
-                 PaginationEnabled="True" PageSize="{Binding SizePagina, Mode=OneWay}" Style="{StaticResource TablaComun}"
-                 IsRefreshing="{Binding EstaCargando}" HorizontalOptions="FillAndExpand" VerticalOptions="StartAndExpand">
-                <!-- Para cuando la página no tiene data para ver-->
-                <dg:DataGrid.NoDataView>
-                    <Label Text="No hay artículos que cumplan con esos criterios" Style="{StaticResource VistaSinData}">
-                        <Label.Triggers>
-                            <DataTrigger TargetType="Label" Binding="{Binding EstaCargando}" Value="True">
-                                <Setter Property="Text" Value="Cargando Articulos..." />
-                                <Setter Property="TextColor" Value="#868686" />
-                                <Setter Property="FontSize" Value="18" />
-                            </DataTrigger>
-                            <DataTrigger TargetType="Label" Binding="{Binding EstaCargando}" Value="False">
-                                <Setter Property="IsVisible" Value="True" />
-                            </DataTrigger>
-                        </Label.Triggers>
-                    </Label>
-                </dg:DataGrid.NoDataView>
+        <dg:DataGrid ItemsSource="{Binding ListaArticulosMostrar}" Grid.Row="1"
+                SelectionMode="Single" SelectedItem="{Binding ArticuloSeleccionado}"
+                PaginationEnabled="True" PageSize="{Binding SizePagina, Mode=OneWay}" Style="{StaticResource TablaComun}"
+                IsRefreshing="{Binding EstaCargando}" Margin="5,0,5,0">
+            <!-- Para cuando la página no tiene data para ver-->
+            <dg:DataGrid.NoDataView>
+                <Label Text="No hay artículos que cumplan con esos criterios" Style="{StaticResource VistaSinData}">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding EstaCargando}" Value="True">
+                            <Setter Property="Text" Value="Cargando Articulos..." />
+                            <Setter Property="TextColor" Value="#868686" />
+                            <Setter Property="FontSize" Value="18" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Label" Binding="{Binding EstaCargando}" Value="False">
+                            <Setter Property="IsVisible" Value="True" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+            </dg:DataGrid.NoDataView>
 
-                <!-- Acá dentro se definen las columnas de la tabla -->
-                <dg:DataGrid.Columns>
-                    <dg:DataGridColumn Title="Nombre" PropertyName="Nombre"/>
-                    <dg:DataGridColumn Title="Categoría" PropertyName="NombreCategoria"/>
-                    <dg:DataGridColumn Title="Clasificación" PropertyName="Clasificacion"/>
-                    <dg:DataGridColumn Title="Punto de reposición" PropertyName="PuntoReposicion"/>
-                    <dg:DataGridColumn Title="Cantidad a pedir" PropertyName="PuntoReposicion"/>
-                    <dg:DataGridColumn Title="Stock" PropertyName="UltimoStock"/>
-                    <!-- Esto es para poner de color rojo cuando el stock se acerca al punto de reposición -->
-                    <!--<dg:DataGridColumn.CellTemplate>
-                        <DataTemplate>
-                            <ContentView HorizontalOptions="Fill" VerticalOptions="Fill"
-                                 BackgroundColor="{Binding Converter={StaticResource StockColorConverter}}">
-                                <Label Text="{Binding}" HorizontalOptions="Center" VerticalOptions="Center" TextColor="Black"/>
-                            </ContentView>
-                        </DataTemplate>
-                    </dg:DataGridColumn.CellTemplate>-->
+            <!-- Acá dentro se definen las columnas de la tabla -->
+            <dg:DataGrid.Columns>
+                <dg:DataGridColumn Title="Nombre" PropertyName="Nombre"/>
+                <dg:DataGridColumn Title="Categoría" PropertyName="NombreCategoria"/>
+                <dg:DataGridColumn Title="Clasificación" PropertyName="Clasificacion"/>
+                <dg:DataGridColumn Title="Punto de reposición" PropertyName="PuntoReposicion"/>
+                <dg:DataGridColumn Title="Cantidad a pedir" PropertyName="PuntoReposicion"/>
+                <dg:DataGridColumn Title="Stock" PropertyName="UltimoStock"/>
+                <!-- Esto es para poner de color rojo cuando el stock se acerca al punto de reposición -->
+                <!--<dg:DataGridColumn.CellTemplate>
+                    <DataTemplate>
+                        <ContentView HorizontalOptions="Fill" VerticalOptions="Fill"
+                                BackgroundColor="{Binding Converter={StaticResource StockColorConverter}}">
+                            <Label Text="{Binding}" HorizontalOptions="Center" VerticalOptions="Center" TextColor="Black"/>
+                        </ContentView>
+                    </DataTemplate>
+                </dg:DataGridColumn.CellTemplate>-->
 
-                </dg:DataGrid.Columns>
-            </dg:DataGrid>
-        </Frame>
+            </dg:DataGrid.Columns>
+        </dg:DataGrid>
     </Grid>
 
 

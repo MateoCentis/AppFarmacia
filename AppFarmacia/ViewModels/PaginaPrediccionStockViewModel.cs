@@ -38,7 +38,11 @@ namespace AppFarmacia.ViewModels
         [ObservableProperty]
         private bool estaCargando;
 
-        private ObservableCollection<Articulo> _listaArticulos;
+        [ObservableProperty]
+        private List<Articulo> listaArticulos;
+
+        [ObservableProperty]
+        private List<Articulo> listaArticulosMostrar;
 
         [ObservableProperty]
         private List<string> clasificaciones = ["A", "B", "C", "Todas"];
@@ -54,7 +58,8 @@ namespace AppFarmacia.ViewModels
             this.articulosService = new ArticulosService();
             this.categoriasService = new CategoriasService();
             this.stocksService = new StockService();
-            this._listaArticulos = [];
+            ListaArticulos = [];
+            ListaArticulosMostrar = [];
 
             SizePagina = 20;
             CantArticulos = new List<int>([10, 50, 100, 500, 1000]);
@@ -63,26 +68,13 @@ namespace AppFarmacia.ViewModels
             ObtenerArticulosCommand = new Command(async () => await ObtenerArticulos());
         }
 
-        public ObservableCollection<Articulo> ListaArticulos
-        {
-            get => _listaArticulos;
-            set
-            {
-                if (_listaArticulos != value)
-                {
-                    _listaArticulos = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
+        // CARGA de artículos en lista completa
         async Task ObtenerArticulos()
         {
             try
             {
                 this.EstaCargando = true;
 
-                // Obtener los artículos 
                 var articulos = await articulosService.GetArticulos(CantArticulosSeleccionada);
 
                 // Iterar sobre cada artículo para obtener y asignar el nombre de la categoría
@@ -99,13 +91,12 @@ namespace AppFarmacia.ViewModels
                         articulo.NombreCategoria = "Sin categoría";
                     }
 
-                    // Obtener el último stock del artículo
                     Stock? stock = await stocksService.GetUltimoStockPorArticulo(articulo.IdArticulo);
                     articulo.UltimoStock = stock?.CantidadActual;
                 }
 
-                // Asignar la lista de artículos a la propiedad ListaArticulos
-                this.ListaArticulos = new ObservableCollection<Articulo>(articulos);
+                ListaArticulos = articulos;
+                ListaArticulosMostrar = new List<Articulo>(ListaArticulos);
 
                 this.EstaCargando = false;
             }
@@ -119,15 +110,19 @@ namespace AppFarmacia.ViewModels
             }
         }
 
-        // NO está funcionando, hay que arreglarlo porque se está pisando la lista de artículos (hay que hacer una para mostrar y otra para guardar todos)
+        // Filtrado 
         [RelayCommand]
         private void FiltrarArticulos()
         {
-            // Filtrar los artículos por clasificación
-            if (ClasificacionSeleccionada != "Todas" && ClasificacionSeleccionada != null && ClasificacionSeleccionada != "")
+            // Filtrado por clasificación
+            if (ClasificacionSeleccionada != "Todas" && !string.IsNullOrEmpty(ClasificacionSeleccionada))
             {
-                var articulosFiltrados = ListaArticulos.Where(a => a.Clasificacion == ClasificacionSeleccionada).ToList();
-                ListaArticulos = new ObservableCollection<Articulo>(articulosFiltrados);
+                ListaArticulosMostrar = ListaArticulos.Where(a => a.Clasificacion == ClasificacionSeleccionada).ToList();
+            }
+            else
+            {
+                // Si es "Todas" -> ListaArticulosMostrar es IGUAL a ListaArticulos
+                ListaArticulosMostrar = new List<Articulo>(ListaArticulos);
             }
         }
     }

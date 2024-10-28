@@ -17,7 +17,7 @@
         
         <Grid RowDefinitions="*,*,*,*,*,*" ColumnDefinitions="*,*" RowSpacing="5" Margin="5" HorizontalOptions="Fill" VerticalOptions="Fill">
             
-            <!-- Gráfico 1: Ventas mensuales -->
+            <!-- Gráfico 1: Cantidad vendida mensual -->
             <Frame Grid.Row="0" Grid.Column="0" Style="{StaticResource FrameGrafico}" Margin="5,5,5,5" BackgroundColor="White">
                 <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                     <Label Text="Cantidad vendida por mes" Style="{StaticResource TituloGrafico}" FontSize="Medium"/>
