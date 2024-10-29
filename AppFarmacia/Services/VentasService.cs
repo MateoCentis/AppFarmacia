@@ -1,4 +1,6 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net;
+using System.Net.Http.Json;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using AppFarmacia.Models;
 
@@ -77,16 +79,44 @@ namespace AppFarmacia.Services
             this.httpClient = new HttpClient();
         }
 
-        public async Task<List<Venta>> GetVentas()
+        public async Task<List<Venta>> GetVentas(DateTime fechaInicio, DateTime fechaFin)
         {
-            // Obtengo respuesta           //Cambiar a localhost para usar en ambas PC's
-            var respuesta = await httpClient.GetAsync($"{CadenaConexion}/Ventas");
+            try
+            {
+                // Formateo a string para request (YYYY-MM-dd) 
+                string fechaInicioStr = fechaInicio.ToString("yyyy-MM-dd");
+                string fechaFinStr = fechaFin.ToString("yyyy-MM-dd");
 
-            // Si la respuesta es exitosa
-            if (respuesta.IsSuccessStatusCode)
-                this.Ventas = await respuesta.Content.ReadFromJsonAsync<List<Venta>>() ?? []; 
+                var url = $"{CadenaConexion}/Ventas?fechaInicio={fechaInicioStr}&fechaFin={fechaFinStr}";
+                // Obtengo respuesta  
+                var respuesta = await httpClient.GetAsync(url);
 
-            return this.Ventas!;
+                // Si la respuesta es exitosa
+                if (respuesta.IsSuccessStatusCode)
+                {
+                    this.Ventas = await respuesta.Content.ReadFromJsonAsync<List<Venta>>(); 
+                    return this.Ventas ?? [];
+
+                }
+                else
+                {
+                    // Devoluciones de error
+                    switch (respuesta.StatusCode)
+                    {
+                        case HttpStatusCode.NotFound:
+                            throw new Exception("No se encontró el recurso solicitado.");
+                        case HttpStatusCode.BadRequest:
+                            throw new Exception("Solicitud inválida. Verifique los parámetros de fecha.");
+                        default:
+                            throw new Exception($"Error en la solicitud: {respuesta.StatusCode}");
+                    }
+                }
+
+            }
+            catch (JsonException ex)
+            {
+                throw new Exception($"Error en la solicitud: {ex.Message}");
+            }
         }
 
         // Lista de cantidades vendidas por mes dado un año determinado

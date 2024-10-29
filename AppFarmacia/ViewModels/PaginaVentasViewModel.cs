@@ -12,11 +12,8 @@ namespace AppFarmacia.ViewModels
 {
     public partial class PaginaVentasViewModel : ObservableObject
     {
-        [ObservableProperty] // Lista que MUESTRA (VentaMostrar)
-        private ObservableCollection<VentaMostrar> listaMostrarVentas = [];
-
         [ObservableProperty] //Lista donde se cargan todas las ventas
-        private List<VentaMostrar> listaCompletaVentas = [];
+        private List<VentaMostrar> listaVentas = [];
 
         [ObservableProperty]
         private VentaMostrar ventaSeleccionada;
@@ -45,43 +42,6 @@ namespace AppFarmacia.ViewModels
             //Task.Run(async () => await ObtenerVentas());
         }
 
-        [RelayCommand]
-        private async Task FiltrarFechas()
-        {
-            if (FechaInicio > FechaFin) // Validación
-            {
-                await Shell.Current.DisplayAlert("Error!", "La fecha de inicio no puede ser mayor que la fecha de fin.", "OK");
-                return;
-            }
-
-            try
-            {
-                // Filtrar las ventas según las fechas seleccionadas
-                var ventasFiltradas = ListaCompletaVentas
-                    .Where(venta =>
-                    {
-                        // string -> datetime
-                        if (DateTime.TryParse(venta.Fecha, out DateTime fechaVenta))
-                        {
-                            // DateTime -> DateOnly
-                            //DateOnly dateOnlyVenta = DateOnly.FromDateTime(fechaVenta);
-                            // Filtrado por rango
-                            return fechaVenta >= FechaInicio && fechaVenta <= FechaFin;
-                        }
-                        return false; // Si no se puede convertir, se descarta la venta
-                    })
-                    .ToList(); // Aquí se obtiene la lista filtrada
-
-                // Actualizar la lista de ventas mostradas
-                ListaMostrarVentas = new ObservableCollection<VentaMostrar>(ventasFiltradas);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error al filtrar las ventas: {ex.Message}");
-                await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
-            }
-        }
-
         // Redirecciona a la pantalla de detalle
         [RelayCommand]
         async Task VerDetalle()
@@ -108,13 +68,13 @@ namespace AppFarmacia.ViewModels
         {
             try
             {
-                var ventas = await this.VentasService.GetVentas();
+                var ventas = await this.VentasService.GetVentas(FechaInicio, FechaFin);
                 if (ventas.Count != 0)
-                    ListaCompletaVentas.Clear();
+                    ListaVentas.Clear();
 
                 // Convertir la lista de Venta a VentaMostrar
-                ListaCompletaVentas = ventas.Select(venta => new VentaMostrar(venta)).ToList();
-                ListaMostrarVentas = new ObservableCollection<VentaMostrar>(ListaCompletaVentas);// Hago que se muestre todo
+                ListaVentas = ventas.Select(venta => new VentaMostrar(venta)).ToList();
+                var perro = 5;
             }
             catch (Exception ex)
             {

@@ -25,6 +25,7 @@
     <Grid RowDefinitions="Auto,*, Auto" Padding="1">
 
         <StackLayout Orientation="Horizontal" HorizontalOptions="Fill" Margin="5,5,0,5" VerticalOptions="Center" Spacing="10">
+            
             <material:DatePickerField Title="Fecha Inicio" 
                                         Icon="calendarline7.png"
                                         WidthRequest="200"
@@ -43,8 +44,9 @@
                                         Format="dd/MM/yyyy"/>
                                         <!--Date="{Binding Fecha_Ingreso, Converter={StaticResource DateTimeToDateOnlyConverter}}"-->
 
+            
             <Button Text="Filtrar"
-                    Command="{Binding FiltrarFechasCommand}"
+                    Command="{Binding ObtenerVentasCommand}"
                     StyleClass="FilledButton"
                     WidthRequest="115"
                     FontSize="Default"
@@ -59,10 +61,11 @@
                     StyleClass="OutlinedButton"
                     HorizontalOptions="End"/>
             
+            
         </StackLayout>
         
         <!--- Configuraciones generales del datagrid -->
-        <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ListaMostrarVentas}" 
+        <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ListaVentas}" 
                      SelectionMode="Single" SelectedItem="{Binding VentaSeleccionada}"
                      Style="{StaticResource TablaComun}" Margin="5,0,5,0"
                      PaginationEnabled="{Binding PaginationEnabled}" PageSize="{Binding SizePagina}">

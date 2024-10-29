@@ -25,38 +25,22 @@ namespace AppFarmaciaWebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<VentaDTO>>> GetVentas(DateTime? fechaInicio = null, DateTime? fechaFin = null)
+        public async Task<ActionResult<IEnumerable<VentaDTO>>> GetVentas([FromQuery] DateTime? fechaInicio = null, [FromQuery] DateTime? fechaFin = null)
         {
-            // si es null se trae todo
-            if (!fechaInicio.HasValue)
-            {
-                fechaInicio = new DateTime(2017, 6, 1); // 01/06/2017
-            }
+            // Valores por defecto
+            fechaInicio ??= new DateTime(2017, 6, 1); // 01/06/2017
+            fechaFin ??= DateTime.Now; // Fecha actual
 
-            if (!fechaFin.HasValue)
-            {
-                fechaFin = DateTime.Now; // Fecha actual
-            }
-
-            // Filtrar por fechas
-            var query = _context.Ventas.AsQueryable();
-
-            query = query.Where(v => v.Fecha >= fechaInicio.Value && v.Fecha <= fechaFin.Value);
-
-            // Incluir los ArticulosEnVenta
-            var ventas = await query
-                               .ToListAsync();
-                               //.Include(v => v.ArticulosEnVenta) // Asegúrate de incluir los artículos en venta
-
-            //// Calcular el monto total para cada venta
-            //foreach (var venta in ventas)
-            //{
-            //    // Sumar el monto total de los artículos en venta
-            //    venta.MontoTotal = venta.ArticuloEnVenta.Sum(a => a.Precio * a.Cantidad);
-            //}
-
-            // Mapear a VentaDTO
-            var ventasDTO = _mapper.Map<IEnumerable<VentaDTO>>(ventas);
+            var ventasDTO = await _context.Ventas //Cargo todas las ventas
+                    .Where(v => v.Fecha >= fechaInicio.Value && v.Fecha <= fechaFin.Value) //Filtro por fechas
+                    .Select(v => new VentaDTO //Por cada venta me hago una VentaDTO poniéndole cada cosa de la venta
+                    {
+                        IdVenta = v.IdVenta,
+                        Fecha = v.Fecha,
+                        MontoTotal = v.ArticuloEnVenta.Sum(av => av.Precio * av.Cantidad), // Monto de la venta
+                        ArticulosEnVentaDTO = new List<ArticuloEnVentaDTO>() // No pasamos artículos en venta para ahorrar procesamiento
+                    })
+                    .ToListAsync();
 
             return Ok(ventasDTO);
         }
