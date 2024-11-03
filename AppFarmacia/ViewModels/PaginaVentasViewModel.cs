@@ -74,7 +74,6 @@ namespace AppFarmacia.ViewModels
 
                 // Convertir la lista de Venta a VentaMostrar
                 ListaVentas = ventas.Select(venta => new VentaMostrar(venta)).ToList();
-                var perro = 5;
             }
             catch (Exception ex)
             {

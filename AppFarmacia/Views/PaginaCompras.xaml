@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<uranium:UraniumContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
+             xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
+             xmlns:converters="clr-namespace:AppFarmacia.Converters"
+             x:Class="AppFarmacia.Views.PaginaCompras"
+             Shell.NavBarIsVisible="False">
+
+    <uranium:UraniumContentPage.Resources>
+        <ResourceDictionary>
+            <converters:DateTimeToDateConverter x:Key="DateTimeToDateConverter" />
+        </ResourceDictionary>
+    </uranium:UraniumContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*">
+        <StackLayout Orientation="Horizontal" HorizontalOptions="Fill" Margin="5,5,0,5" VerticalOptions="Center" Spacing="10" Grid.Row="0">
+            <material:DatePickerField Title="Fecha Inicio" 
+                            Icon="calendarline7.png"
+                            WidthRequest="200"
+                            AllowClear="False"
+                            HeightRequest="55"
+                            Date="{Binding FechaInicio, Converter={StaticResource DateTimeToDateConverter}}"
+                            Format="dd/MM/yyyy"/>
+            <!--Date="{Binding Fecha_Ingreso, Converter={StaticResource DateTimeToDateOnlyConverter}}"-->
+
+            <material:DatePickerField Title="Fecha Fin" 
+                            Icon="calendarline5.png"
+                            WidthRequest="200"
+                            HeightRequest="55"
+                            AllowClear="False"
+                            Date="{Binding FechaFin, Converter={StaticResource DateTimeToDateConverter}}"
+                            Format="dd/MM/yyyy"/>
+            <!--Date="{Binding Fecha_Ingreso, Converter={StaticResource DateTimeToDateOnlyConverter}}"-->
+
+
+            <Button Text="Filtrar"
+                Command="{Binding ObtenerComprasCommand}"
+                StyleClass="FilledButton"
+                WidthRequest="115"
+                FontSize="Default"
+                Margin="0,5,0,0"
+                HeightRequest="50"
+                VerticalOptions="Center"/>
+
+            <Button Text="Ver Detalle" 
+                Margin="0,5,0,0" 
+                HeightRequest="50"
+                Command="{Binding VerDetalleCommand}" 
+                StyleClass="OutlinedButton"
+                HorizontalOptions="End"/>
+        </StackLayout>
+        
+        <!-- Grilla con compras -->
+        <dg:DataGrid ItemsSource="{Binding ListaCompras}" 
+                     SelectionMode="Single" SelectedItem="{Binding CompraSeleccionada}"
+                     Style="{StaticResource TablaComun}" Margin="5,0,5,0"
+                     PaginationEnabled="{Binding PaginationEnabled}" PageSize="{Binding SizePagina}" Grid.Row="1">
+
+            <dg:DataGrid.NoDataView>
+                <Label Text="No existen compras cargadas aún" Style="{StaticResource VistaSinData}"/>
+            </dg:DataGrid.NoDataView>
+
+            <dg:DataGrid.Columns>
+                <dg:DataGridColumn Title="Id" PropertyName="Id" />
+                <dg:DataGridColumn Title="Fecha" PropertyName="Fecha"/>
+                <dg:DataGridColumn Title="Hora" PropertyName="Hora"/>
+                <dg:DataGridColumn Title="Monto total" PropertyName="MontoTotal"/>
+            </dg:DataGrid.Columns>
+
+        </dg:DataGrid>
+    </Grid>
+
+</uranium:UraniumContentPage>

@@ -60,7 +60,7 @@
         </StackLayout>
 
         <dg:DataGrid ItemsSource="{Binding ListaArticulosMostrar}" Grid.Row="1"
-                SelectionMode="Single" SelectedItem="{Binding ArticuloSeleccionado}"
+                SelectionMode="Multiple" SelectedItems="{Binding ArticulosSeleccionados}"
                 PaginationEnabled="True" PageSize="{Binding SizePagina, Mode=OneWay}" Style="{StaticResource TablaComun}"
                 IsRefreshing="{Binding EstaCargando}" Margin="5,0,5,0">
             <!-- Para cuando la página no tiene data para ver-->

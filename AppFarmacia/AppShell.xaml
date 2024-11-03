@@ -41,20 +41,33 @@
         Title="Ventas"
         ContentTemplate="{DataTemplate local:PaginaVentas}"
         Route="PaginaVentas"
+            Icon="descuento.png"/>
+
+        <ShellContent
+            Title="Compras"
+            ContentTemplate="{DataTemplate local:PaginaCompras}"
+            Route="PaginaCompras"
             Icon="shoppingcart.png"/>
 
+        <ShellContent
+            Title="Ordenes de compra"
+            ContentTemplate="{DataTemplate local:PaginaGeneracionOrden}"
+            Route="PaginaGeneracionOrden"
+            Icon="shoppingbag.png"/>
+        
         <ShellContent
             Title="Predicción de stock"
             ContentTemplate="{DataTemplate local:PaginaPrediccionStock}"
             Route="PaginaPrediccionStock"
             Icon="calculator.png"/>
 
+
         <ShellContent
             Title="Configuración"
             ContentTemplate="{DataTemplate local:PaginaConfiguracion}"
             Route="PaginaConfiguracion"
             Icon="settings.png"/>
-
+        
     </FlyoutItem>
 
 
