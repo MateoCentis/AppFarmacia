@@ -61,7 +61,6 @@
             Route="PaginaPrediccionStock"
             Icon="calculator.png"/>
 
-
         <ShellContent
             Title="Configuración"
             ContentTemplate="{DataTemplate local:PaginaConfiguracion}"

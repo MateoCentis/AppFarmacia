@@ -50,8 +50,6 @@ namespace AppFarmacia.ViewModels
         [ObservableProperty]
         private string clasificacionSeleccionada = "Todas";
 
-        public ICommand? ObtenerArticulosCommand { get; private set; }
-
         public PaginaPrediccionStockViewModel()
         {
 
@@ -65,11 +63,12 @@ namespace AppFarmacia.ViewModels
             CantArticulos = new List<int>([10, 50, 100, 500, 1000]);
             CantArticulosSeleccionada = 50;
 
-            ObtenerArticulosCommand = new Command(async () => await ObtenerArticulos());
+            Task.Run(async () => await ObtenerArticulos());
         }
 
         // CARGA de artículos en lista completa
-        async Task ObtenerArticulos()
+        [RelayCommand]
+        private async Task ObtenerArticulos()
         {
             try
             {
@@ -105,7 +104,7 @@ namespace AppFarmacia.ViewModels
                 Debug.WriteLine($"Unable to get articles: {ex.Message}");
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {
-                    Shell.Current.DisplayAlert("Error articles!", ex.Message, "OK");
+                    Shell.Current.DisplayAlert("Error al traer los artículos!", ex.Message, "OK");
                 });
             }
         }

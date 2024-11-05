@@ -13,10 +13,6 @@
         <viewModels:PaginaPrediccionStockViewModel/>
     </uranium:UraniumContentPage.BindingContext>
 
-    <uranium:UraniumContentPage.Resources>
-        <converters:StockColorConverter x:Key="StockColorConverter"/>
-    </uranium:UraniumContentPage.Resources>
-    
     <!-- ESTA PÁGINA ES UNA VERRRRRRRGA NO SE PORQUE ANDA TODO RARO-->
     
     <!-- Grilla general de la página -->
@@ -60,7 +56,7 @@
         </StackLayout>
 
         <dg:DataGrid ItemsSource="{Binding ListaArticulosMostrar}" Grid.Row="1"
-                SelectionMode="Multiple" SelectedItems="{Binding ArticulosSeleccionados}"
+                SelectionMode="Single" SelectedItem="{Binding ArticuloSeleccionado}"
                 PaginationEnabled="True" PageSize="{Binding SizePagina, Mode=OneWay}" Style="{StaticResource TablaComun}"
                 IsRefreshing="{Binding EstaCargando}" Margin="5,0,5,0">
             <!-- Para cuando la página no tiene data para ver-->
@@ -85,18 +81,8 @@
                 <dg:DataGridColumn Title="Categoría" PropertyName="NombreCategoria"/>
                 <dg:DataGridColumn Title="Clasificación" PropertyName="Clasificacion"/>
                 <dg:DataGridColumn Title="Punto de reposición" PropertyName="PuntoReposicion"/>
-                <dg:DataGridColumn Title="Cantidad a pedir" PropertyName="PuntoReposicion"/>
+                <dg:DataGridColumn Title="Cantidad a pedir" PropertyName="CantidadAPedir"/>
                 <dg:DataGridColumn Title="Stock" PropertyName="UltimoStock"/>
-                <!-- Esto es para poner de color rojo cuando el stock se acerca al punto de reposición -->
-                <!--<dg:DataGridColumn.CellTemplate>
-                    <DataTemplate>
-                        <ContentView HorizontalOptions="Fill" VerticalOptions="Fill"
-                                BackgroundColor="{Binding Converter={StaticResource StockColorConverter}}">
-                            <Label Text="{Binding}" HorizontalOptions="Center" VerticalOptions="Center" TextColor="Black"/>
-                        </ContentView>
-                    </DataTemplate>
-                </dg:DataGridColumn.CellTemplate>-->
-
             </dg:DataGrid.Columns>
         </dg:DataGrid>
     </Grid>

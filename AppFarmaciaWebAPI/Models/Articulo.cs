@@ -35,4 +35,8 @@ public partial class Articulo
     public virtual ICollection<Stock> Stocks { get; set; } = new List<Stock>();
 
     public virtual ICollection<Vencimiento> Vencimientos { get; set; } = new List<Vencimiento>();
+
+    public virtual ICollection<ArticuloEnCompra> ArticulosEnCompra { get; set; } = [];
+
+    public virtual ICollection<Faltante> Faltantes { get; set; } = [];
 }

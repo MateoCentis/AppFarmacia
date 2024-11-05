@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using AppFarmaciaWebAPI.Models;
+using System.Text.Json.Serialization;
 
 namespace AppFarmaciaWebAPI.ModelsDTO
 {
@@ -25,9 +26,11 @@ namespace AppFarmaciaWebAPI.ModelsDTO
         public string? NombresDrogas { get; set; }
         public DateOnly UltimoVencimiento { get; set; }
         
-        public ICollection<ArticuloEnVentaDTO> ArticulosEnVentaDTO { get; set; } = [];
         public ICollection<PrecioDTO> PreciosDTO { get; set; } = [];
         public ICollection<VencimientoDTO> VencimientosDTO { get; set; } = [];
         public ICollection<StockDTO> StocksDTO { get; set; } = [];
+        public ICollection<ArticuloEnVentaDTO> ArticulosEnVentaDTO { get; set; } = [];
+        public ICollection<ArticuloEnCompraDTO> ArticulosEnCompraDTO { get; set; } = [];
+        public ICollection<FaltanteDTO> FaltantesDTO { get; set; } = [];
     }
 }

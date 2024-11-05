@@ -8,7 +8,5 @@
         public int IdArticulo { get; set; }
         public string? NombreArticulo { get; set; }
         public decimal Precio { get; set; }
-
     }
-
 }

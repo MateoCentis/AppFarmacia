@@ -13,5 +13,7 @@ public partial class Stock
 
     public int CantidadActual { get; set; }
 
+    public int Flujo { get; set;}
+
     public virtual Articulo IdArticuloNavigation { get; set; } = null!;
 }

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using AppFarmaciaWebAPI.Models;
+using AutoMapper;
+using AppFarmaciaWebAPI.ModelsDTO;
 
 namespace AppFarmaciaWebAPI.Models
 {
@@ -24,6 +27,9 @@ namespace AppFarmaciaWebAPI.Models
         public virtual DbSet<Usuario> Usuarios { get; set; }
         public virtual DbSet<Vencimiento> Vencimientos { get; set; }
         public virtual DbSet<Venta> Ventas { get; set; }
+        public virtual DbSet<Compra> Compras { get; set; }
+        public virtual DbSet<Faltante> Faltantes { get; set; }
+        public virtual DbSet<ArticuloEnCompra> ArticulosEnCompra { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -163,9 +169,63 @@ namespace AppFarmaciaWebAPI.Models
                     .HasColumnType("datetime");
             });
 
+            modelBuilder.Entity<Compra>(entity =>
+            {
+                entity.HasKey(e => e.IdCompra);
+
+                entity.ToTable("COMPRA");
+
+                entity.Property(e => e.Fecha)
+                    .HasDefaultValueSql("(getdate())")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Proveedor)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Descripcion)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+            });
+
+            modelBuilder.Entity<Faltante>(entity =>
+            {
+                entity.HasKey(e => e.IdFaltante);
+
+                entity.ToTable("FALTANTE");
+
+                entity.HasOne(d => d.IdArticuloNavigation).WithMany(p => p.Faltantes)
+                    .HasForeignKey(d => d.IdArticulo)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_FALTANTE_ARTICULO");
+            });
+
+            modelBuilder.Entity<ArticuloEnCompra>(entity =>
+            {
+                entity.HasKey(e => e.IdArticuloCompra);
+
+                entity.ToTable("ARTICULO_EN_COMPRA");
+
+                entity.Property(e => e.MotivoCompra)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.IdArticuloNavigation).WithMany(p => p.ArticulosEnCompra) // Actualizado aquí
+                    .HasForeignKey(d => d.IdArticulo)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ARTICULO_EN_COMPRA_ARTICULO");
+
+                entity.HasOne(d => d.IdCompraNavigation).WithMany(p => p.ArticulosEnCompra)
+                    .HasForeignKey(d => d.IdCompra)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ARTICULO_EN_COMPRA_COMPRA");
+            });
+
+
+
             OnModelCreatingPartial(modelBuilder);
         }
-
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }
