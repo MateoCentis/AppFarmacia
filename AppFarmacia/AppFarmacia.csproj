@@ -175,4 +175,14 @@
 	  <MauiAsset Include="Resources\AppIcon\appiconfg.svg" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="Configuration\configuracion.txt">
+	    <CustomToolNamespace></CustomToolNamespace>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+	</ItemGroup>
+
 </Project>
