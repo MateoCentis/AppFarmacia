@@ -46,9 +46,42 @@ namespace AppFarmaciaWebAPI.Controllers
             var articuloDTOs = _mapper.Map<IEnumerable<ArticuloDTO>>(articulos);
             return Ok(articuloDTOs);
         }
+        [HttpGet("ArticulosSugeridosParaComprar")]
+        public async Task<ActionResult<IEnumerable<ArticuloDTO>>> GetArticulosSugeridosParaComprar()
+        {
+            try
+            {
+                // Obtén los artículos junto con su último stock
+                var articulos = await _context.Articulos
+                    .Include(a => a.Stocks)
+                    .Where(a => a.Stocks.Any()) // Solo los artículos que tienen algún historial de stock
+                    .Select(a => new
+                    {
+                        Articulo = a,
+                        UltimoStock = a.Stocks.OrderByDescending(s => s.Fecha).FirstOrDefault() // Obtener el último stock (el más reciente)
+                    })
+                    .Where(a => a.UltimoStock != null && a.UltimoStock.CantidadActual <= a.Articulo.PuntoReposicion) // Verifica que el último stock sea menor al ROP
+                    .ToListAsync();
 
-        // GET: api/Articulos/5
-        [HttpGet("{id}")]
+                // Si no hay artículos que cumplir con la condición
+                if (articulos.Count == 0)
+                {
+                    return Ok(new List<ArticuloDTO>());
+                }
+
+                // Mapear los resultados a DTOs
+                var articuloDTOs = _mapper.Map<IEnumerable<ArticuloDTO>>(articulos.Select(a => a.Articulo));
+
+                return Ok(articuloDTOs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Ocurrió un error al intentar obtener los artículos sugeridos para comprar: {ex.Message}");
+            }
+        }
+
+            // GET: api/Articulos/5
+            [HttpGet("{id}")]
         public async Task<ActionResult<ArticuloDTO>> GetArticulo(int id)
         {
             var articulo = await _context.Articulos

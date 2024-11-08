@@ -8,10 +8,20 @@ using ClosedXML.Excel;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Pdf;
 namespace AppFarmacia.ViewModels;
+using AppFarmacia.Models;
+using AppFarmacia.Services;
+using AppFarmacia.Views;
+using CommunityToolkit.Maui.Views;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Windows.Input;
 
 // En esta clase se introducen los métodos necesarios para generar una orden de compra en .txt/.csv/.xlsx/.pdf
 public partial class PaginaGeneracionOrdenViewModel : ObservableObject  
 {
+    private readonly ArticulosService articulosService;
 
     [ObservableProperty]
     private ObservableCollection<ArticuloEnCompra> listaArticulosComprar = [];//La lista que se muestra y va a la orden de compra
@@ -33,6 +43,7 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
     public PaginaGeneracionOrdenViewModel()
     {
         EstaCargando = true;
+        this.articulosService = new ArticulosService();
         Task.Run(async () => await ObtenerArticulosSugeridosParaComprar());
         EstaCargando = false;
     }
@@ -58,76 +69,21 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
     [RelayCommand]
     private async Task ObtenerArticulosSugeridosParaComprar()
     {
-        var articulo1 = new ArticuloEnCompra
+        try
         {
-            IdArticuloCompra = 1,
-            IdArticulo = 101,
-            IdCompra = 5001,
-            CantidadSugerida = 10,
-            CantidadEncargada = 8,
-            Costo = 15.75m,
-            NombreArticulo = "Paracetamol 500mg"
-        };
-
-        articulo1.calcularMonto(); // Calcula el monto basado en Costo y CantidadEncargada
-                                   // Monto esperado: 15.75 * 8 = 126.00
-        var articulo2 = new ArticuloEnCompra
+            var articulosSugeridos = await articulosService.GetArticulosSugeridosParaComprar();
+            ListaArticulosComprar = new ObservableCollection<ArticuloEnCompra>(articulosSugeridos.Select(a => new ArticuloEnCompra
+            {
+                IdArticulo = a.IdArticulo,         // Asigna el IdArticulo desde Articulo
+                NombreArticulo = a.Nombre,         // Asigna el Nombre desde Articulo
+                CantidadSugerida = a.CantidadAPedir ?? 0 // Asigna CantidadAPedir o 0 si es null
+            }));
+        }
+        catch (Exception ex)
         {
-            IdArticuloCompra = 2,
-            IdArticulo = 102,
-            IdCompra = 5002,
-            CantidadSugerida = 20,
-            CantidadEncargada = 15,
-            Costo = 3.50m,
-            NombreArticulo = "Ibuprofeno 200mg"
-        };
-
-        articulo2.calcularMonto();
-        // Monto esperado: 3.50 * 15 = 52.50
-        var articulo3 = new ArticuloEnCompra
-        {
-            IdArticuloCompra = 3,
-            IdArticulo = 103,
-            IdCompra = 5003,
-            CantidadSugerida = 5,
-            CantidadEncargada = 5,
-            Costo = 50.00m,
-            NombreArticulo = "Antibiótico 500mg"
-        };
-
-        articulo3.calcularMonto();
-        // Monto esperado: 50.00 * 5 = 250.00
-        var articulo4 = new ArticuloEnCompra
-        {
-            IdArticuloCompra = 4,
-            IdArticulo = 104,
-            IdCompra = 5004,
-            CantidadSugerida = 12,
-            CantidadEncargada = 10,
-            Costo = 25.00m,
-            NombreArticulo = "Jarabe para la tos"
-        };
-
-        articulo4.calcularMonto();
-        // Monto esperado: 25.00 * 10 = 250.00
-        var articulo5 = new ArticuloEnCompra
-        {
-            IdArticuloCompra = 5,
-            IdArticulo = 105,
-            IdCompra = 5005,
-            CantidadSugerida = 30,
-            CantidadEncargada = 25,
-            Costo = 2.25m,
-            NombreArticulo = "Alcohol en gel 100ml"
-        };
-
-        articulo5.calcularMonto();
-        // Monto esperado: 2.25 * 25 = 56.25
-        ListaArticulosComprar.Add(articulo1);
-        ListaArticulosComprar.Add(articulo2);
-        ListaArticulosComprar.Add(articulo3);
-        ListaArticulosComprar.Add(articulo4);
-        ListaArticulosComprar.Add(articulo5);
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+                await Shell.Current.DisplayAlert("Error", $"Hubo un problema al obtener los artículos: {ex.Message}", "OK"));
+        }
     }
 
     // ---------------------- Métodos para la generación de la orden de compra ----------------------

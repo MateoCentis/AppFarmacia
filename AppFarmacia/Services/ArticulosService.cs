@@ -14,7 +14,7 @@ namespace AppFarmacia.Services
             this.httpClient = new HttpClient();
         }
 
-        public async Task<List<Articulo>> GetArticulos(int size=0)
+        public async Task<List<Articulo>> GetArticulos(int size = 0)
         {
             if (this.articulos?.Count > 0)
             {
@@ -61,6 +61,20 @@ namespace AppFarmacia.Services
             }
 
             return demandas;
+        }
+
+        public async Task<List<Articulo>> GetArticulosSugeridosParaComprar()
+        {
+
+            var articulosSugeridos = new List<Articulo>();
+            var respuesta = await httpClient.GetAsync($"{CadenaConexion}/Articulos/ArticulosSugeridosParaComprar");
+
+            if (respuesta.IsSuccessStatusCode)
+            {
+                articulosSugeridos = await respuesta.Content.ReadFromJsonAsync<List<Articulo>>() ?? [];
+            }
+
+            return articulosSugeridos;
         }
     }
 }

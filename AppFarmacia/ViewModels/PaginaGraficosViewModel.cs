@@ -138,6 +138,8 @@ namespace AppFarmacia.ViewModels
         private readonly int PointSize = 16;
         private readonly int LabelTextSize = 20;
 
+        private bool _isInitialized = false;
+
         // Inicialización de gráficos y variables
         public PaginaGraficosViewModel()
         {

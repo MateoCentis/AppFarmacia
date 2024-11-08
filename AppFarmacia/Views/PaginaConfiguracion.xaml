@@ -12,6 +12,8 @@
     </uranium:UraniumContentPage.BindingContext>
 
 
+    
+    
     <StackLayout>
 
         <!-- Título de la página -->
@@ -28,7 +30,7 @@
                 <Border Stroke="Gray" StrokeThickness="2" Padding="20" Margin="20" StrokeShape="RoundRectangle 10,10,10,10">
                     <Grid ColumnDefinitions="Auto, 150" 
                           RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" 
-                          RowSpacing="15" ColumnSpacing="10">
+                          ColumnSpacing="10">
 
                         <!-- ROP -->
 

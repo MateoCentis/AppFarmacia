@@ -11,8 +11,6 @@ public partial class PaginaArticulos : UraniumContentPage
     public PaginaArticulos(PaginaArticulosViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = viewModel;
-        viewModel = (PaginaArticulosViewModel)BindingContext;
     }
 
     //Código para el enter en la barra de búsqueda (es un evento no command)
@@ -24,4 +22,6 @@ public partial class PaginaArticulos : UraniumContentPage
             vm.FiltrarArticulosCommand.Execute(null);
         }
     }
+
+
 }

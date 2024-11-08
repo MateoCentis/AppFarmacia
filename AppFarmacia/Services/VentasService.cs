@@ -122,62 +122,126 @@ namespace AppFarmacia.Services
         // Lista de cantidades vendidas por mes dado un año determinado
         public async Task<List<VentaMesDto>> GetCantidadVendidaPorMes(int year)
         {
-            var response = await httpClient.GetAsync($"{CadenaConexion}/Ventas/cantidad-por-mes/{year}");
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<List<VentaMesDto>>() ?? [];
+            try
+            {
+                var response = await httpClient.GetAsync($"{CadenaConexion}/Ventas/cantidad-por-mes/{year}");
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<List<VentaMesDto>>() ?? [];
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error en la solicitud: {ex.Message}");
+            }
+            
         }
 
         // Lista de cantidades vendidas por hora de la semana
         public async Task<List<DiaSemanaDto>> GetCantidadVendidaPorHoraSemana()
         {
-            var response = await httpClient.GetAsync($"{CadenaConexion}/Ventas/cantidad-por-hora-semana");
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<List<DiaSemanaDto>>() ?? [];
+            try
+            {
+                var response = await httpClient.GetAsync($"{CadenaConexion}/Ventas/cantidad-por-hora-semana");
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<List<DiaSemanaDto>>() ?? [];
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error en la solicitud: {ex.Message}");
+            }
+            
         }
 
         // Lista de cantidades vendidas por día dado un año y mes determinado
         public async Task<List<VentaDiaDto>> GetCantidadVendidaPorDia(int year, int mes)
         {
-            var response = await httpClient.GetAsync($"{CadenaConexion}/Ventas/cantidad-por-dia/{year}/{mes}");
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<List<VentaDiaDto>>() ?? [];
+            try
+            {
+                var response = await httpClient.GetAsync($"{CadenaConexion}/Ventas/cantidad-por-dia/{year}/{mes}");
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<List<VentaDiaDto>>() ?? [];
+            }
+            catch (Exception ex) {
+                throw new Exception($"Error en la solicitud: {ex.Message}");
+            }
+            
         }
 
         // Lista de cantidades vendidas por categoría
         public async Task<List<VentaCategoriaDto>> GetCantidadVendidaPorCategoria()
         {
-            var response = await httpClient.GetAsync($"{CadenaConexion}/Ventas/cantidad-por-categoria");
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<List<VentaCategoriaDto>>() ?? [];
+            try
+            {
+                var response = await httpClient.GetAsync($"{CadenaConexion}/Ventas/cantidad-por-categoria");
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<List<VentaCategoriaDto>>() ?? [];
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error en la solicitud: {ex.Message}");
+            }
+            
         }
 
         public async Task<List<FacturacionMensual>> GetFacturacionMensual(int year)
         {
-            var response = await httpClient.GetAsync($"{CadenaConexion}/Ventas/facturacion-mensual/{year}");
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<List<FacturacionMensual>>() ?? [];
+            try
+            {
+                var response = await httpClient.GetAsync($"{CadenaConexion}/Ventas/facturacion-mensual/{year}");
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<List<FacturacionMensual>>() ?? [];
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error en la solicitud: {ex.Message}");
+            }
+            
         }
 
         public async Task<List<ArticuloDTO>> GetArticulosMasVendidos(int year, int mes, int cantidad)
         {
-            var response = await httpClient.GetAsync($"{CadenaConexion}/Ventas/articulos-mas-vendidos/{year}/{mes}/{cantidad}");
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<List<ArticuloDTO>>() ?? [];
+            try
+            {
+                var response = await httpClient.GetAsync($"{CadenaConexion}/Ventas/articulos-mas-vendidos/{year}/{mes}/{cantidad}");
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<List<ArticuloDTO>>() ?? [];
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error en la solicitud: {ex.Message}");
+            }
+            
         }
 
         // Históricos
         public async Task<List<CantidadVendidaHistoricaDTO>> GetCantidadVendidaHistorico()
         {
-            HttpResponseMessage response = await httpClient.GetAsync($"{CadenaConexion}/Ventas/cantidad-vendida-historica");
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<List<CantidadVendidaHistoricaDTO>>() ?? [];
+            try
+            {
+                HttpResponseMessage response = await httpClient.GetAsync($"{CadenaConexion}/Ventas/cantidad-vendida-historica");
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<List<CantidadVendidaHistoricaDTO>>() ?? [];
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error en la solicitud: {ex.Message}");
+            }
+            
         }
 
         public async Task<List<FacturacionMensualHistoricaDTO>> GetFacturacionHistorico()
         {
-            HttpResponseMessage response = await httpClient.GetAsync($"{CadenaConexion}/Ventas/facturacion-mensual-historica");
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<List<FacturacionMensualHistoricaDTO>>() ?? [];
+            try
+            {
+                HttpResponseMessage response = await httpClient.GetAsync($"{CadenaConexion}/Ventas/facturacion-mensual-historica");
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<List<FacturacionMensualHistoricaDTO>>() ?? [];
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error en la solicitud: {ex.Message}");
+            }
+            
         }
 
     }
