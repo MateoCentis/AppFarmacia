@@ -22,7 +22,7 @@
             <!--/boton para cargar articulos-->
             <material:PickerField Title="Selecciona el tamaño de carga" 
                                   ItemsSource="{Binding CantArticulos}" 
-                                  SelectedItem="{Binding CantArticulosSeleccionada}" 
+                                  SelectedItem="{Binding CantArticulosSeleccionada,Mode=TwoWay}" 
                                   WidthRequest="220" 
                                   Margin="5,5,0,0" 
                                   Icon="layers.png"

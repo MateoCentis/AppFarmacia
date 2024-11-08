@@ -16,10 +16,6 @@ namespace AppFarmacia.Services
 
         public async Task<List<Articulo>> GetArticulos(int size = 0)
         {
-            if (this.articulos?.Count > 0)
-            {
-                return articulos!;
-            }
 
             var respuesta = await httpClient.GetAsync($"{CadenaConexion}/Articulos?size={size}");
 

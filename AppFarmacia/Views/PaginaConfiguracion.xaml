@@ -14,74 +14,80 @@
 
     
     
-    <StackLayout>
+    <ScrollView>
+        <Grid ColumnDefinitions="Auto, Auto" RowDefinitions="Auto,Auto,Auto,Auto">
+            
+            
 
-        <!-- Título de la página -->
-        <Label Text="Configuracion para ROP y EOQ" 
-               FontSize="24" 
-               HorizontalOptions="Center" 
-               Margin="0,60,0,10" />
+            <ScrollView VerticalOptions="Center" Grid.Row="0" Grid.Column="0">
 
-        <ScrollView VerticalOptions="Center">
+                <Grid HorizontalOptions="CenterAndExpand">
 
-            <Grid HorizontalOptions="CenterAndExpand">
+                    
 
-                <!-- Borde que envuelve todos los campos de entrada -->
-                <Border Stroke="Gray" StrokeThickness="2" Padding="20" Margin="20" StrokeShape="RoundRectangle 10,10,10,10">
-                    <Grid ColumnDefinitions="Auto, 150" 
-                          RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" 
-                          ColumnSpacing="10">
+                    <!-- Borde que envuelve todos los campos de entrada -->
+                    <Border Stroke="Gray" StrokeThickness="2" Padding="20" Margin="20" StrokeShape="RoundRectangle 10,10,10,10">
+                        <Grid ColumnDefinitions="Auto, 150" 
+                              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" 
+                              ColumnSpacing="10">
 
-                        <!-- ROP -->
+                            <!-- Título de la página -->
+                            <Label Text="Configuracion para ROP y EOQ" 
+                                   FontSize="24" 
+                                   HorizontalOptions="Center" 
+                                   Margin="0,0,0,10"
+                                   Grid.Row="0" Grid.Column="0"/>
 
-                        <!-- Plazo de Entrega -->
-                        <!-- Plazo de Entrega -->
-                        <Label Text="Plazo de Entrega (días):" Grid.Row="0" Grid.Column="0" VerticalOptions="Center" />
-                        <Entry x:Name="PlazoEntregaEntry" Keyboard="Numeric" Placeholder="Ej: 15" Grid.Row="0" Grid.Column="1" Text="{Binding ConfiguracionModelos.PlazoEntrega}"/>
+                            <!-- ROP -->
 
-                        <!-- Nivel de Servicio -->
-                        <Label Text="Nivel de Servicio (%):" Grid.Row="1" Grid.Column="0" VerticalOptions="Center" />
-                        <Entry x:Name="NivelServicioEntry" Keyboard="Numeric" Placeholder="Ej: 95" Grid.Row="1" Grid.Column="1" Text="{Binding ConfiguracionModelos.NivelServicio}"/>
+                            <!-- Plazo de Entrega -->
+                            <!-- Plazo de Entrega -->
+                            <Label Text="Plazo de Entrega (días):" Grid.Row="1" Grid.Column="0" VerticalOptions="Center" />
+                            <Entry x:Name="PlazoEntregaEntry" Keyboard="Numeric" Placeholder="Ej: 15" Grid.Row="1" Grid.Column="1" Text="{Binding ConfiguracionModelos.PlazoEntrega}"/>
 
-                        <!-- Costo en Pesos de la Tarea -->
-                        <Label Text="Costo en Pesos de la Tarea:" Grid.Row="2" Grid.Column="0" VerticalOptions="Center" />
-                        <Entry x:Name="CostoTareaEntry" Keyboard="Numeric" Placeholder="Ej: 2000" Grid.Row="2" Grid.Column="1" Text="{Binding ConfiguracionModelos.BTarea}"/>
+                            <!-- Nivel de Servicio -->
+                            <Label Text="Nivel de Servicio (%):" Grid.Row="2" Grid.Column="0" VerticalOptions="Center" />
+                            <Entry x:Name="NivelServicioEntry" Keyboard="Numeric" Placeholder="Ej: 95" Grid.Row="2" Grid.Column="1" Text="{Binding ConfiguracionModelos.NivelServicio}"/>
 
-                        <!-- Horas Mensuales del Trabajador -->
-                        <Label Text="Horas Mensuales del Trabajador:" Grid.Row="3" Grid.Column="0" VerticalOptions="Center" />
-                        <Entry x:Name="HorasMensualesEntry" Keyboard="Numeric" Placeholder="Ej: 160" Grid.Row="3" Grid.Column="1" Text="{Binding ConfiguracionModelos.HorasMensualesDelTrabajador}"/>
+                            <!-- Costo en Pesos de la Tarea -->
+                            <Label Text="Costo en Pesos de la Tarea:" Grid.Row="3" Grid.Column="0" VerticalOptions="Center" />
+                            <Entry x:Name="CostoTareaEntry" Keyboard="Numeric" Placeholder="Ej: 2000" Grid.Row="3" Grid.Column="1" Text="{Binding ConfiguracionModelos.BTarea}"/>
 
-                        <!-- Tiempo Promedio para Hacer la Tarea -->
-                        <Label Text="Tiempo Promedio para Hacer la Tarea (horas):" Grid.Row="4" Grid.Column="0" VerticalOptions="Center" />
-                        <Entry x:Name="TiempoPromedioEntry" Keyboard="Numeric" Placeholder="Ej: 30" Grid.Row="4" Grid.Column="1" Text="{Binding ConfiguracionModelos.TiempoPromedioParaHacerLaTarea}"/>
+                            <!-- Horas Mensuales del Trabajador -->
+                            <Label Text="Horas Mensuales del Trabajador:" Grid.Row="4" Grid.Column="0" VerticalOptions="Center" />
+                            <Entry x:Name="HorasMensualesEntry" Keyboard="Numeric" Placeholder="Ej: 160" Grid.Row="4" Grid.Column="1" Text="{Binding ConfiguracionModelos.HorasMensualesDelTrabajador}"/>
 
-                        <!-- Valor de Alquiler Mensual -->
-                        <Label Text="Valor de Alquiler Mensual:" Grid.Row="5" Grid.Column="0" VerticalOptions="Center" />
-                        <Entry x:Name="ValorAlquilerEntry" Keyboard="Numeric" Placeholder="Ej: 15000" Grid.Row="5" Grid.Column="1" Text="{Binding ConfiguracionModelos.ValorDeAlquilerMensual}"/>
+                            <!-- Tiempo Promedio para Hacer la Tarea -->
+                            <Label Text="Tiempo Promedio para Hacer la Tarea (horas):" Grid.Row="5" Grid.Column="0" VerticalOptions="Center" />
+                            <Entry x:Name="TiempoPromedioEntry" Keyboard="Numeric" Placeholder="Ej: 30" Grid.Row="5" Grid.Column="1" Text="{Binding ConfiguracionModelos.TiempoPromedioParaHacerLaTarea}"/>
 
-                        <!-- Espacio de Almacenamiento en m² -->
-                        <Label Text="Espacio de Almacenamiento (m²):" Grid.Row="6" Grid.Column="0" VerticalOptions="Center" />
-                        <Entry x:Name="EspacioAlmacenamientoEntry" Keyboard="Numeric" Placeholder="Ej: 500" Grid.Row="6" Grid.Column="1" Text="{Binding ConfiguracionModelos.EspacioDeAlmacenamiento}"/>
+                            <!-- Valor de Alquiler Mensual -->
+                            <Label Text="Valor de Alquiler Mensual:" Grid.Row="6" Grid.Column="0" VerticalOptions="Center" />
+                            <Entry x:Name="ValorAlquilerEntry" Keyboard="Numeric" Placeholder="Ej: 15000" Grid.Row="6" Grid.Column="1" Text="{Binding ConfiguracionModelos.ValorDeAlquilerMensual}"/>
 
-                        <!-- Unidades por Metro Cuadrado -->
-                        <Label Text="Unidades por Metro Cuadrado:" Grid.Row="7" Grid.Column="0" VerticalOptions="Center" />
-                        <Entry x:Name="UnidadesPorMetroCuadradoEntry" Keyboard="Numeric" Placeholder="Ej: 50" Grid.Row="7" Grid.Column="1" Text="{Binding ConfiguracionModelos.UnidadesPorMetroCuadrado}"/>
+                            <!-- Espacio de Almacenamiento en m² -->
+                            <Label Text="Espacio de Almacenamiento (m²):" Grid.Row="7" Grid.Column="0" VerticalOptions="Center" />
+                            <Entry x:Name="EspacioAlmacenamientoEntry" Keyboard="Numeric" Placeholder="Ej: 500" Grid.Row="7" Grid.Column="1" Text="{Binding ConfiguracionModelos.EspacioDeAlmacenamiento}"/>
 
-                        <!-- Botón de Acción -->
-                        <Button Text="Guardar Configuración" 
-                                StyleClass="FilledButton"
-                                Command="{Binding GuardarConfiguracionPrediccionCommand}"
-                                Grid.Row="8" Grid.ColumnSpan="2" 
-                                Margin="0,20,0,0" 
-                                HorizontalOptions="Center" />
+                            <!-- Unidades por Metro Cuadrado -->
+                            <Label Text="Unidades por Metro Cuadrado:" Grid.Row="8" Grid.Column="0" VerticalOptions="Center" />
+                            <Entry x:Name="UnidadesPorMetroCuadradoEntry" Keyboard="Numeric" Placeholder="Ej: 50" Grid.Row="8" Grid.Column="1" Text="{Binding ConfiguracionModelos.UnidadesPorMetroCuadrado}"/>
 
-                    </Grid>
-                </Border>
+                            <!-- Botón de Acción -->
+                            <Button Text="Guardar Configuración" 
+                                    StyleClass="FilledButton"
+                                    Command="{Binding GuardarConfiguracionPrediccionCommand}"
+                                    Grid.Row="9" Grid.ColumnSpan="2" 
+                                    Margin="0,20,0,0" 
+                                    HorizontalOptions="Center" />
 
-            </Grid>
+                        </Grid>
+                    </Border>
 
-        </ScrollView>
+                </Grid>
 
-    </StackLayout>
+            </ScrollView>
+        </Grid>
+    </ScrollView>
 
 </uranium:UraniumContentPage>
