@@ -10,5 +10,7 @@ public partial class Compra
     public string Proveedor { get; set; } = null!;
     public string Descripcion { get; set; } = null!;
 
+    public bool CompraConfirmada { get; set; }
+
     public virtual ICollection<ArticuloEnCompra> ArticulosEnCompra { get; set; } = [];
 }

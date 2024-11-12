@@ -6,5 +6,6 @@ public class CompraDTO
     public DateTime Fecha { get; set; }
     public string? Proveedor { get; set; }
     public string? Descripcion { get; set; }
+    public bool CompraConfirmada { get; set; }
     public ICollection<ArticuloEnCompraDTO> ArticuloEnCompraDTO { get; set; } = [];
 }

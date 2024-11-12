@@ -23,9 +23,16 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
 {
     private readonly ArticulosService articulosService;
     private readonly CategoriasService categoriasService;
+    private readonly CompraService compraService;
 
     [ObservableProperty]
     private ObservableCollection<ArticuloEnCompra> listaArticulosComprar = [];//La lista que se muestra y va a la orden de compra
+
+    [ObservableProperty]
+    private string proveedorCompraTexto;
+
+    [ObservableProperty]
+    private string descripcionCompraTexto;
 
     [ObservableProperty]
     private ObservableCollection<ArticuloEnCompra> listaArticulosFiltrados = [];
@@ -92,12 +99,15 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
     {
         this.articulosService = new ArticulosService();
         this.categoriasService = new CategoriasService();
+        this.compraService = new CompraService();
         TextoBusqueda = string.Empty;
         NombresArticulos = [];
         NombresCategorias = [];
         PaginationEnabled = true;
         SizePagina = 20;
         CategoriaSeleccionadaNombre = "Todas";
+        DescripcionCompraTexto = string.Empty;
+        ProveedorCompraTexto = string.Empty;
 
         // Carga inicial de los artículos
         Task.Run(async () => await ObtenerCategorias());
@@ -196,6 +206,23 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
     // ---------------------- Métodos para la generación de la orden de compra ----------------------
     // En función del tipo de archivo seleccionado, se llama a la función correspondiente
     [RelayCommand]
+    private async Task PostCompra()
+    {
+        Compra compra = new Compra
+        {
+            Fecha = DateTime.Now,
+            Proveedor = ProveedorCompraTexto,
+            Descripcion = DescripcionCompraTexto,
+            ArticuloEnCompra = ListaArticulosComprar.ToList()
+        };
+
+        bool resultado = await compraService.PostCompra(compra);
+        if (resultado) { await Shell.Current.DisplayAlert("Éxito", "Compra realizada con éxito", "OK"); }
+        else { await Shell.Current.DisplayAlert("Error", "Hubo un problema al realizar la compra", "OK"); }
+    }
+
+
+    [RelayCommand]
     private void GenerarOrden()
     {
         switch (TipoArchivoSeleccionado)
@@ -258,6 +285,8 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
 
         this.ListaArticulos = new ObservableCollection<ArticuloMostrar>(articulosFiltrados);
     }
+
+    
 
 
     async Task GenerarOrdenCsv()
@@ -367,4 +396,5 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
             await Shell.Current.DisplayAlert("Error", $"Hubo un problema al exportar la planilla: {ex.Message}", "OK");
         }
     }
+    
 }

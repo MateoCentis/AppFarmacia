@@ -115,19 +115,66 @@
 
                 <StackLayout Grid.Row="1"
                              Grid.Column="1"
-                             Orientation="Horizontal" 
+                             Orientation="Vertical" 
                              HorizontalOptions="CenterAndExpand" 
                              VerticalOptions="Center"
                              Margin="5,5,0,5" Spacing="10">
-                    
-
                     <Button Text="Eliminar Seleccionados" 
                     Margin="0,5,0,0" 
                     HeightRequest="50"
                     Command="{Binding EliminarArticulosSeleccionadosCommand}" 
                     StyleClass="OutlinedButton"
                     HorizontalOptions="Center"/>
+
+                    <Button Text="Generar Orden" 
+                            Margin="0,5,0,0" 
+                            HeightRequest="50"
+                            Command="{Binding PostCompraCommand}" 
+                            StyleClass="FilledButton"
+                            HorizontalOptions="Center"/>
+
+
                 </StackLayout>
+
+
+                <StackLayout Grid.Row="2" Orientation="Vertical" Margin="10,10,10,10">
+                    <!-- Proveedor Field -->
+                    <StackLayout Orientation="Horizontal" VerticalOptions="Center" Margin="0,0,0,010">
+                        <Label Text="Proveedor:" 
+                                    FontSize="Micro" 
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" 
+                                    WidthRequest="90" />
+                        <Entry x:Name="ProveedorEntry" 
+                               Placeholder="Ingrese el nombre del proveedor" 
+                               VerticalOptions="Center" 
+                               HorizontalOptions="FillAndExpand" 
+                               HeightRequest="40"
+                               Background="WhiteSmoke"
+                               Text="{Binding ProveedorCompraTexto, Mode=TwoWay}"/>        
+                    </StackLayout>
+
+                    <!-- Descripción Field -->
+                    <StackLayout Orientation="Vertical" VerticalOptions="Start">
+                        <Label Text="Descripción:" 
+                               FontSize="Micro" 
+                               VerticalOptions="Center" 
+                               HorizontalOptions="Start" 
+                               Margin="0,0,0,5"/>
+                        <Editor x:Name="DescripcionEditor" 
+                                Placeholder="Ingrese la descripción de la compra" 
+                                VerticalOptions="Start" 
+                                HorizontalOptions="FillAndExpand" 
+                                HeightRequest="100" 
+                                Margin="0,0,0,10" 
+                                Background="WhiteSmoke"
+                                Text="{Binding DescripcionCompraTexto, Mode=TwoWay}"/>
+                    </StackLayout>
+                </StackLayout>
+
+
+
+
             </Grid>
 
             <Grid RowDefinitions="Auto,*" Grid.Row="1" Margin="30,0">
