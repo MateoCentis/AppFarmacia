@@ -124,6 +124,7 @@ namespace AppFarmacia.Services
         {
             try
             {
+                httpClient.Timeout = TimeSpan.FromMinutes(5);
                 var response = await httpClient.GetAsync($"{CadenaConexion}/Ventas/cantidad-por-mes/{year}");
                 response.EnsureSuccessStatusCode();
                 return await response.Content.ReadFromJsonAsync<List<VentaMesDto>>() ?? [];

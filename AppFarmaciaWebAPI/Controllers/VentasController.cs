@@ -22,6 +22,8 @@ namespace AppFarmaciaWebAPI.Controllers
         {
             _context = context;
             _mapper = mapper;
+            //Aumentar el tiempo de consulta
+            _context.Database.SetCommandTimeout(300);
         }
 
         [HttpGet]
@@ -212,6 +214,7 @@ namespace AppFarmaciaWebAPI.Controllers
                 
                 var ventasPorMes = await _context.ArticulosEnVenta
                     .Where(a => a.IdVentaNavigation.Fecha.Year == year)
+                    .AsNoTracking()
                     .GroupBy(a => a.IdVentaNavigation.Fecha.Month)
                     .Select(g => new
                     {

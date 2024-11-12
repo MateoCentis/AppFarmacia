@@ -64,7 +64,6 @@
             </dg:DataGrid.NoDataView>
 
             <dg:DataGrid.Columns>
-                <dg:DataGridColumn Title="Id" PropertyName="Id" />
                 <dg:DataGridColumn Title="Fecha" PropertyName="Fecha"/>
                 <dg:DataGridColumn Title="Hora" PropertyName="Hora"/>
                 <dg:DataGridColumn Title="Monto total" PropertyName="MontoTotal"/>

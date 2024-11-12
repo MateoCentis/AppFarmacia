@@ -22,9 +22,51 @@ using System.Windows.Input;
 public partial class PaginaGeneracionOrdenViewModel : ObservableObject  
 {
     private readonly ArticulosService articulosService;
+    private readonly CategoriasService categoriasService;
 
     [ObservableProperty]
     private ObservableCollection<ArticuloEnCompra> listaArticulosComprar = [];//La lista que se muestra y va a la orden de compra
+
+    [ObservableProperty]
+    private ObservableCollection<ArticuloEnCompra> listaArticulosFiltrados = [];
+
+    [ObservableProperty]
+    private List<string> nombresArticulos;
+
+    private string textoBusqueda = string.Empty;
+    public string TextoBusqueda
+    {
+        get => textoBusqueda;
+        set
+        {
+            if (SetProperty(ref textoBusqueda, value))// Solo si hay diferencias
+            {
+                FiltrarArticulos();
+            }
+        }
+    }
+
+    [ObservableProperty]
+    private List<string> nombresCategorias;
+
+    [ObservableProperty]
+    private Categoria? categoriaSeleccionada;
+
+    [ObservableProperty]
+    private string? categoriaSeleccionadaNombre;
+
+    [ObservableProperty]
+    private ObservableCollection<Categoria> listCategorias = [];
+
+    [ObservableProperty]
+    private ObservableCollection<ArticuloMostrar> listaArticulos = [];
+
+    [ObservableProperty]
+    private ObservableCollection<ArticuloMostrar> listaArticulosCompleta = [];
+
+    [ObservableProperty]
+    private ArticuloMostrar? articuloSeleccionadoDeListaCompleta; // Artículo seleccionado del data grid de todos los artículos
+
 
     [ObservableProperty]
     private ObservableCollection<ArticuloEnCompra> articulosSeleccionados = [];
@@ -38,14 +80,29 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
     [ObservableProperty]
     private bool estaCargando = false;
 
+    [ObservableProperty]
+    private int sizePagina;
+
+    [ObservableProperty]
+    private bool paginationEnabled;
+
     private readonly string ubicacionOrdenesGeneradas = "C:\\AppFarmacia\\OrdenesGeneradas";//Suponiendo que esta es la carpeta de la APP
 
     public PaginaGeneracionOrdenViewModel()
     {
-        EstaCargando = true;
         this.articulosService = new ArticulosService();
+        this.categoriasService = new CategoriasService();
+        TextoBusqueda = string.Empty;
+        NombresArticulos = [];
+        NombresCategorias = [];
+        PaginationEnabled = true;
+        SizePagina = 20;
+        CategoriaSeleccionadaNombre = "Todas";
+
+        // Carga inicial de los artículos
+        Task.Run(async () => await ObtenerCategorias());
+        Task.Run(async () => await ObtenerArticulos());
         Task.Run(async () => await ObtenerArticulosSugeridosParaComprar());
-        EstaCargando = false;
     }
 
     // ----------------------------- Métodos para eliminar y agregar artículos -----------------------------
@@ -69,6 +126,7 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
     [RelayCommand]
     private async Task ObtenerArticulosSugeridosParaComprar()
     {
+        EstaCargando = true;
         try
         {
             var articulosSugeridos = await articulosService.GetArticulosSugeridosParaComprar();
@@ -83,6 +141,55 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
         {
             await MainThread.InvokeOnMainThreadAsync(async () =>
                 await Shell.Current.DisplayAlert("Error", $"Hubo un problema al obtener los artículos: {ex.Message}", "OK"));
+        }
+        EstaCargando = false;
+    }
+
+    // Función que carga los artículos desde la API
+    [RelayCommand]
+    async Task ObtenerArticulos()
+    {
+        try
+        {
+            this.EstaCargando = true;
+            var articulos = await articulosService.GetArticulos();
+            ListaArticulosCompleta = new ObservableCollection<ArticuloMostrar>(articulos.Select(a => new ArticuloMostrar(a)).ToList());
+            NombresArticulos = ListaArticulosCompleta.Select(a => a.Nombre).ToList();
+            this.EstaCargando = false;
+            FiltrarArticulos();
+
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Unable to get articles: {ex.Message}");
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                Shell.Current.DisplayAlert("Error articles!", ex.Message, "OK");
+            });
+        }
+    }
+
+    // Función que carga las categorías desde la API
+    [RelayCommand]
+    async Task ObtenerCategorias()
+    {
+        try
+        {
+            // Cargo las categorías e inserto la por defecto
+            var categorias = await categoriasService.GetCategorias();
+            ListCategorias = new ObservableCollection<Categoria>(categorias);
+            var ningunaCategoria = new Categoria { Nombre = "Todas" };
+            ListCategorias.Insert(0, ningunaCategoria);
+            CategoriaSeleccionada = ningunaCategoria;
+            NombresCategorias = ListCategorias.Select(c => c.Nombre).ToList();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Unable to get categorias: {ex.Message}");
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                Shell.Current.DisplayAlert("Error categorias!", ex.Message, "OK");
+            });
         }
     }
 
@@ -109,8 +216,50 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
                 break;
         }
     }
+    [RelayCommand]
+    private void AgregarArticulo()
+    {
+        if (ArticuloSeleccionadoDeListaCompleta != null)
+        {
+            // Verificar si el artículo ya está en la lista
+            if (ListaArticulosComprar.Any(a => a.IdArticulo == ArticuloSeleccionadoDeListaCompleta.IdArticulo))
+            {
+                return;
+            }
 
-    
+            var articulo = new ArticuloEnCompra
+            {
+                IdArticulo = ArticuloSeleccionadoDeListaCompleta.IdArticulo,
+                NombreArticulo = ArticuloSeleccionadoDeListaCompleta.Nombre,
+                CantidadSugerida = ArticuloSeleccionadoDeListaCompleta.CantidadAPedir ?? 0
+            };
+            ListaArticulosComprar.Add(articulo);
+        }
+    }
+
+
+    [RelayCommand]
+    private void FiltrarArticulos()
+    {
+        var articulosFiltrados = ListaArticulosCompleta.AsEnumerable();
+
+        //Filtro por TEXTO DE BÚSQUEDA
+        if (!string.IsNullOrWhiteSpace(TextoBusqueda))
+        {  // Agregado para que se ignoren minúsculas de mayúsculas
+            articulosFiltrados = articulosFiltrados.Where(a => a.Nombre.Contains(TextoBusqueda, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+        // Filtra las CATEGORIAS, se excluye si la categoría es "Todas", nula o vacía
+        if (CategoriaSeleccionada != null && CategoriaSeleccionada.Nombre != "Todas" && CategoriaSeleccionada.Nombre != "")
+        {
+            articulosFiltrados = articulosFiltrados.Where(a => a.IdCategoria == CategoriaSeleccionada.IdCategoria).ToList();
+        }
+
+
+        this.ListaArticulos = new ObservableCollection<ArticuloMostrar>(articulosFiltrados);
+    }
+
+
     async Task GenerarOrdenCsv()
     {
         DateTime fechaActual = DateTime.Now;
