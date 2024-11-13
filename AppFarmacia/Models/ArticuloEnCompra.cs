@@ -32,7 +32,7 @@ public class ArticuloEnCompra : ObservableObject
         }
     }
 
-    // Si bien todo esto es medio cualquier cosa (lo del precio capaz no iría
+    // Si bien todo esto es medio cualquier cosa (lo del precio capaz no iría)
     [JsonPropertyName("costo")]
     public decimal Costo { get; set; }
 

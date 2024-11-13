@@ -12,9 +12,14 @@
     <uranium:UraniumContentPage.Resources>
         <ResourceDictionary>
             <converters:DateTimeToDateConverter x:Key="DateTimeToDateConverter" />
+            <converters:BoolToCheckConverter x:Key="BoolToCheckConverter"/>
         </ResourceDictionary>
     </uranium:UraniumContentPage.Resources>
 
+    <uranium:UraniumContentPage.BindingContext>
+        <viewModels:PaginaArticulosViewModel/>    
+    </uranium:UraniumContentPage.BindingContext>
+    
     <Grid RowDefinitions="Auto,*">
         <StackLayout Orientation="Horizontal" HorizontalOptions="Fill" Margin="5,5,0,5" VerticalOptions="Center" Spacing="10" Grid.Row="0">
             <material:DatePickerField Title="Fecha Inicio" 
@@ -67,6 +72,9 @@
                 <dg:DataGridColumn Title="Fecha" PropertyName="Fecha"/>
                 <dg:DataGridColumn Title="Hora" PropertyName="Hora"/>
                 <dg:DataGridColumn Title="Monto total" PropertyName="MontoTotal"/>
+                <!-- Acá va la columna checkbox (mm)-->
+                <dg:DataGridColumn Title="Realizada" PropertyName="CompraConfirmada"
+                               StringFormat="{Binding CompraConfirmada, Converter={StaticResource BoolToCheckConverter}}"/>
             </dg:DataGrid.Columns>
 
         </dg:DataGrid>

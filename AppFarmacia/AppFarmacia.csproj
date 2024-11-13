@@ -150,6 +150,9 @@
 	  <MauiXaml Update="Views\PaginaConfiguracion.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\PaginaDetalleCompra.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\PaginaDetalleVenta.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
