@@ -3,6 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             xmlns:input="clr-namespace:InputKit.Shared.Controls;assembly=InputKit.Maui"
+             xmlns:validation="clr-namespace:InputKit.Shared.Validations;assembly=InputKit.Maui"
              xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
              xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
              x:Class="AppFarmacia.Views.PaginaGeneracionOrden"
@@ -12,113 +14,126 @@
         <viewModels:PaginaGeneracionOrdenViewModel/>
     </ContentPage.BindingContext>
 
-    <ScrollView>
+    <!-- Grilla en la que se ubican los componentes principales de la pantalla (Tabla generación orden y la parte de insertar producto)-->
+    <Grid ColumnDefinitions="*,*">
 
-        <Grid RowDefinitions="Auto,Auto">
+        <!-- Componente de generación de orden - FRAME DERECHO-->
+        <Frame Grid.Column="1" Style="{StaticResource FrameGrafico}" Margin="5,5,5,5" BackgroundColor="White">
+            <Grid RowDefinitions="Auto,Auto,*,Auto"
+                    HorizontalOptions="CenterAndExpand" 
+                    VerticalOptions="FillAndExpand" BackgroundColor="White">
+                <!-- Título de la página -->
+                <Label Grid.Row="0" 
+                       Text="Orden de compra" 
+                       Style="{StaticResource TituloGrafico}" 
+                       FontSize="Medium" 
+                       HorizontalOptions="CenterAndExpand"
+                       VerticalOptions="Start"
+                       Margin="0,0,0,10"/>
+                <!-- Selector de archivo -->
+                <StackLayout Orientation="Horizontal" 
+                            Grid.Row="1" 
+                            HorizontalOptions="CenterAndExpand" 
+                            VerticalOptions="Center"
+                            Margin="0,5,0,10" 
+                            Spacing="10">
+                    <material:PickerField Title="Seleccione tipo de archivo a exportar"
+                                        ItemsSource="{Binding TiposDeArchivo}"
+                                        SelectedItem="{Binding TipoArchivoSeleccionado}"
+                                        WidthRequest="270"
+                                        HeightRequest="55"
+                                        Icon="save.png"
+                                        AllowClear="False"/>
 
-            <Grid RowDefinitions="Auto,*,Auto"
-                  ColumnDefinitions="Auto,auto"
-                  HorizontalOptions="Center" 
-                  VerticalOptions="Center"
-                  Grid.Row="0"
-                  Margin="0,30,0,40">
-                    <StackLayout Orientation="Horizontal" 
-                         Grid.Row="0" 
-                         HorizontalOptions="CenterAndExpand" 
-                         VerticalOptions="Center"
-                         Margin="5,5,0,5" 
-                         Spacing="10">
-                        <material:PickerField Title="Seleccione tipo de archivo a exportar"
-                                      ItemsSource="{Binding TiposDeArchivo}"
-                                      SelectedItem="{Binding TipoArchivoSeleccionado}"
-                                      WidthRequest="270"
-                                      HeightRequest="55"
-                                      Icon="save.png"
-                                      AllowClear="False"/>
-
-                        <Button Text="Exportar lista"
+                    <Button Text="Exportar lista"
                         Margin="0,5,0,0" 
                         HeightRequest="50"
                         Command="{Binding GenerarOrdenCommand}" 
                         StyleClass="FilledButton"
                         HorizontalOptions="Center"/>
-                    </StackLayout>
+                </StackLayout>
 
-                    <material:DataGrid Grid.Row="1" 
-                               ItemsSource="{Binding ListaArticulosComprar}" 
-                               HorizontalOptions="Center" 
-                               BackgroundColor="White" 
-                               SelectedItems="{Binding ArticulosSeleccionados}">
-                        <ActivityIndicator IsRunning="{Binding EstaCargando}"/>
+                <!-- Datagrid con los artículos en compra -->
+                <material:DataGrid Grid.Row="2" 
+                                ItemsSource="{Binding ListaArticulosComprar}" 
+                                HorizontalOptions="CenterAndExpand" 
+                                VerticalOptions="StartAndExpand"
+                                BackgroundColor="White" 
+                                SelectedItems="{Binding ArticulosSeleccionados}">
+                    <ActivityIndicator IsRunning="{Binding EstaCargando}"/>
+                    
+                    <!-- Para cuando la página no tiene data para ver-->
+                    <material:DataGrid.EmptyView>
+                        <Label FontSize="Micro" Style="{StaticResource VistaSinData}">
+                            <Label.Triggers>
+                                <!-- Mostrar el texto de carga cuando se están cargando los artículos -->
+                                <DataTrigger TargetType="Label" Binding="{Binding EstaCargando}" Value="True">
+                                    <Setter Property="Text" Value="Cargando Artículos..." />
+                                    <Setter Property="TextColor" Value="#868686" />
+                                    <Setter Property="FontSize" Value="18" />
+                                    <Setter Property="IsVisible" Value="True" />
+                                </DataTrigger>
+                                <!-- Mostrar el texto de "sin datos" cuando la carga haya terminado -->
+                                <DataTrigger TargetType="Label" Binding="{Binding EstaCargando}" Value="False">
+                                    <Setter Property="Text" Value="No hay artículos que cumplan con esos criterios" />
+                                    <Setter Property="IsVisible" Value="True" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                    </material:DataGrid.EmptyView>
 
-                        <!-- Para cuando la página no tiene data para ver-->
-                        <material:DataGrid.EmptyView>
-                            <Label FontSize="Micro" Style="{StaticResource VistaSinData}">
-                                <Label.Triggers>
-                                    <!-- Mostrar el texto de carga cuando se están cargando los artículos -->
-                                    <DataTrigger TargetType="Label" Binding="{Binding EstaCargando}" Value="True">
-                                        <Setter Property="Text" Value="Cargando Artículos..." />
-                                        <Setter Property="TextColor" Value="#868686" />
-                                        <Setter Property="FontSize" Value="18" />
-                                        <Setter Property="IsVisible" Value="True" />
-                                    </DataTrigger>
-                                    <!-- Mostrar el texto de "sin datos" cuando la carga haya terminado -->
-                                    <DataTrigger TargetType="Label" Binding="{Binding EstaCargando}" Value="False">
-                                        <Setter Property="Text" Value="No hay artículos que cumplan con esos criterios" />
-                                        <Setter Property="IsVisible" Value="True" />
-                                    </DataTrigger>
-                                </Label.Triggers>
-                            </Label>
-                        </material:DataGrid.EmptyView>
+                    <!-- Definición de cada columna-->
+                    <material:DataGrid.Columns>
+                        <material:DataGridSelectionColumn/>
 
-                        <material:DataGrid.Columns>
-                            <material:DataGridSelectionColumn/>
+                        <material:DataGridColumn Title="Nombre" Width="Auto">
+                            <material:DataGridColumn.CellItemTemplate>
+                                <DataTemplate>
+                                    <Label Text="{Binding NombreArticulo}" 
+                                        TextColor="Black" 
+                                        HorizontalOptions="Center" 
+                                        VerticalOptions="Start"/>
+                                </DataTemplate>
+                            </material:DataGridColumn.CellItemTemplate>
+                        </material:DataGridColumn>
 
-                            <material:DataGridColumn Title="Nombre" Width="*">
-                                <material:DataGridColumn.CellItemTemplate>
-                                    <DataTemplate>
-                                        <Label Text="{Binding NombreArticulo}" 
-                                       TextColor="Black" 
-                                       HorizontalOptions="Center" 
-                                       VerticalOptions="Center"/>
-                                    </DataTemplate>
-                                </material:DataGridColumn.CellItemTemplate>
-                            </material:DataGridColumn>
+                        <material:DataGridColumn Title="Cantidad sugerida" Width="Auto">
+                            <material:DataGridColumn.CellItemTemplate>
+                                <DataTemplate>
+                                    <Label Text="{Binding CantidadSugerida}" 
+                                                TextColor="Black" 
+                                                HorizontalOptions="Center" 
+                                                VerticalOptions="Start"/>
+                                </DataTemplate>
+                            </material:DataGridColumn.CellItemTemplate>
+                        </material:DataGridColumn>
 
-                            <material:DataGridColumn Title="Cantidad sugerida" Width="Auto">
-                                <material:DataGridColumn.CellItemTemplate>
-                                    <DataTemplate>
-                                        <Label Text="{Binding CantidadSugerida}" 
-                                               TextColor="Black" 
-                                               HorizontalOptions="Center" 
-                                               VerticalOptions="Center"/>
-                                    </DataTemplate>
-                                </material:DataGridColumn.CellItemTemplate>
-                            </material:DataGridColumn>
-
-                            <material:DataGridColumn Title="Cantidad encargada" Width="Auto">
-                                <material:DataGridColumn.CellItemTemplate>
-                                    <DataTemplate>
-                                        <Entry Text="{Binding CantidadEncargada, Mode=TwoWay}"
+                        <material:DataGridColumn Title="Cantidad encargada" Width="Auto">
+                            <material:DataGridColumn.CellItemTemplate>
+                                <DataTemplate>
+                                    <Entry Text="{Binding CantidadEncargada, Mode=TwoWay}"
                                         FontAttributes="Bold" 
                                         TextColor="Black" 
                                         HorizontalOptions="Center"
-                                        VerticalOptions="Center"
+                                        VerticalOptions="Start"
                                         Keyboard="Numeric"
                                         MinimumWidthRequest="80"
                                         HorizontalTextAlignment="Center"/>
-                                    </DataTemplate>
-                                </material:DataGridColumn.CellItemTemplate>
-                            </material:DataGridColumn>
-                        </material:DataGrid.Columns>
-                    </material:DataGrid>
+                                </DataTemplate>
+                            </material:DataGridColumn.CellItemTemplate>
+                        </material:DataGridColumn>
 
-                <StackLayout Grid.Row="1"
-                             Grid.Column="1"
-                             Orientation="Vertical" 
-                             HorizontalOptions="CenterAndExpand" 
-                             VerticalOptions="Center"
-                             Margin="5,5,0,5" Spacing="10">
+                        
+                    </material:DataGrid.Columns>
+                </material:DataGrid>
+
+                <!-- Botones de eliminar artículos de la compra y realizar compra -->
+                <StackLayout Grid.Row="3"
+                                Grid.Column="1"
+                                Orientation="Horizontal" 
+                                HorizontalOptions="CenterAndExpand" 
+                                VerticalOptions="Center"
+                                Margin="5,5,0,5" Spacing="10">
                     <Button Text="Eliminar Seleccionados" 
                     Margin="0,5,0,0" 
                     HeightRequest="50"
@@ -132,101 +147,43 @@
                             Command="{Binding PostCompraCommand}" 
                             StyleClass="FilledButton"
                             HorizontalOptions="Center"/>
-
-
                 </StackLayout>
-
-
-                <StackLayout Grid.Row="2" Orientation="Vertical" Margin="10,10,10,10">
-                    <!-- Proveedor Field -->
-                    <StackLayout Orientation="Horizontal" VerticalOptions="Center" Margin="0,0,0,010">
-                        <Label Text="Proveedor:" 
-                                    FontSize="Micro" 
-                                    VerticalOptions="Center" 
-                                    HorizontalOptions="Start" 
-                                    WidthRequest="90" />
-                        <Entry x:Name="ProveedorEntry" 
-                               Placeholder="Ingrese el nombre del proveedor" 
-                               VerticalOptions="Center" 
-                               HorizontalOptions="FillAndExpand" 
-                               HeightRequest="40"
-                               Background="WhiteSmoke"
-                               Text="{Binding ProveedorCompraTexto, Mode=TwoWay}"/>        
-                    </StackLayout>
-
-                    <!-- Descripción Field -->
-                    <StackLayout Orientation="Vertical" VerticalOptions="Start">
-                        <Label Text="Descripción:" 
-                               FontSize="Micro" 
-                               VerticalOptions="Center" 
-                               HorizontalOptions="Start" 
-                               Margin="0,0,0,5"/>
-                        <Editor x:Name="DescripcionEditor" 
-                                Placeholder="Ingrese la descripción de la compra" 
-                                VerticalOptions="Start" 
-                                HorizontalOptions="FillAndExpand" 
-                                HeightRequest="100" 
-                                Margin="0,0,0,10" 
-                                Background="WhiteSmoke"
-                                Text="{Binding DescripcionCompraTexto, Mode=TwoWay}"/>
-                    </StackLayout>
-                </StackLayout>
-
-
-
-
             </Grid>
-
-            <Grid RowDefinitions="Auto,*" Grid.Row="1" Margin="30,0">
-                <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" Margin="0,5,0,5">
-
-                    <!--<SearchBar Text="{Binding TextoBusqueda}" 
-                       Placeholder="Buscar..." 
-                       SearchButtonPressed="OnSearchButtonPressed" 
-                       VerticalOptions="Center" 
-                       Style="{StaticResource BarraBusqueda}"
-                       WidthRequest="550" 
-                       Margin="10,0,0,0"
-                       HeightRequest="50"/>-->
+        </Frame>
+        
+        <!-- Parte de búsqueda e inserción de artículo - FRAME IZQUIERDO-->
+        <Frame Grid.Column="0" Style="{StaticResource FrameGrafico}" Margin="5,5,5,5" BackgroundColor="White">
+            <Grid RowDefinitions="Auto,Auto,*, Auto" 
+                  VerticalOptions="FillAndExpand" 
+                  HorizontalOptions="FillAndExpand">
+                <Label Grid.Row="0" 
+                    Text="Agregar Artículo" 
+                    Style="{StaticResource TituloGrafico}" 
+                    FontSize="Medium" 
+                    HorizontalOptions="CenterAndExpand"
+                    VerticalOptions="Start"
+                    Margin="0,5,0,10"/>
+                
+                <!-- Cuadro de búsqueda de artículos -->
+                <StackLayout Orientation="Horizontal" 
+                             HorizontalOptions="CenterAndExpand" 
+                             VerticalOptions="CenterAndExpand"
+                             Grid.Row="1"
+                             Margin="0,0,0,10">
 
                     <material:AutoCompleteTextField Title="Búsqueda por nombre"
-                                            ItemsSource="{Binding NombresArticulos}"
-                                            Text="{Binding TextoBusqueda, Mode=TwoWay}"
-                                            VerticalOptions="Center"
-                                            WidthRequest="550"
-                                            Margin="5,0,0,0"
-                                            Icon="searchline2.png"
-                                            HeightRequest="55"/>
-
-                    <material:AutoCompleteTextField Title="Selecciona una categoría" 
-                                            ItemsSource="{Binding NombresCategorias}" 
-                                            Text="{Binding CategoriaSeleccionadaNombre, Mode=TwoWay}"
-                                            WidthRequest="230" 
-                                            Icon="capsulafill.png"
-                                            Margin="30,0,5,0" 
-                                            HeightRequest="55" 
-                                            AllowClear="False"/>
-
-                    <Button Text="Filtrar" 
-                        Command="{Binding FiltrarArticulosCommand}" 
-                        StyleClass="FilledButton"
-                        FontSize="Default"
-                        HeightRequest="50"
-                        Margin="10,0,10,0"/>
-
-                    <Button Text="Agregar artículo" 
-                        Margin="0,5,0,0" 
-                        HeightRequest="50"
-                        Command="{Binding AgregarArticuloCommand}" 
-                        StyleClass="FilledButton"
-                        HorizontalOptions="Center"/>
-
+                                ItemsSource="{Binding NombresArticulos}"
+                                Text="{Binding TextoBusqueda, Mode=TwoWay}"
+                                VerticalOptions="Center"
+                                WidthRequest="450"
+                                Icon="searchline2.png"
+                                HeightRequest="55"/>
                 </StackLayout>
 
-                <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ListaArticulos}" 
-                     SelectionMode="Single" SelectedItem="{Binding ArticuloSeleccionadoDeListaCompleta}"
-                     PaginationEnabled="{Binding PaginationEnabled}" PageSize="{Binding SizePagina, Mode=OneWay}" Style="{StaticResource TablaComun}"
-                     IsRefreshing="{Binding EstaCargando}" Margin="5,0,5,0">
+                <!-- Grilla de artículos -->
+                <dg:DataGrid Grid.Row="2" ItemsSource="{Binding ListaArticulos}" 
+                    SelectionMode="Single" SelectedItem="{Binding ArticuloSeleccionadoDeListaCompleta}"
+                    Style="{StaticResource TablaComun}" IsRefreshing="{Binding EstaCargando}" Margin="5,0,5,0">
                     <!-- Para cuando la página no tiene data para ver-->
                     <dg:DataGrid.NoDataView>
                         <Label Text="No hay artículos que cumplan con esos criterios" Style="{StaticResource VistaSinData}">
@@ -243,28 +200,58 @@
                         </Label>
                     </dg:DataGrid.NoDataView>
 
-                    <!-- Acá dentro se definen las columnas de la tabla -->
-                    <!-- Ver bien el tema de configurar bien las columnas con DataTemplate -->
                     <dg:DataGrid.Columns>
                         <dg:DataGridColumn Title="Nombre" PropertyName="Nombre"/>
-                        <dg:DataGridColumn Title="Marca" PropertyName="Marca"/>
-                        <dg:DataGridColumn Title="Categoría" PropertyName="Categoria"/>
-                        <dg:DataGridColumn Title="Clasificacion" PropertyName="Clasificacion"/>
                         <dg:DataGridColumn Title="Stock" PropertyName="Stock"/>
                         <dg:DataGridColumn Title="Punto de Reposición" PropertyName="PuntoReposicion"/>
-                        <dg:DataGridColumn Title="Precio" PropertyName="PrecioActual"/>
+                        <dg:DataGridColumn Title="Cantidad a pedir" PropertyName="CantidadAPedir"/>
+                        <!--<dg:DataGridColumn Title="Clasificacion" PropertyName="Clasificacion"/>-->
                     </dg:DataGrid.Columns>
 
-                    <!-- Esto sirve para darle a determinadas celdas colores especiales bajo ciertas condiciones -> usarlo para vencimientos -->
-                    <dg:DataGrid.Resources>
-                        <ResourceDictionary>
-                            <!--<conv:StreakToColorConverter x:Key="StreakToColorConverter"/>-->
-                        </ResourceDictionary>
-                    </dg:DataGrid.Resources>
                 </dg:DataGrid>
+                
+                <!-- Campos de entrada (input-validations) -->
+                <input:FormView SubmitCommand="{Binding AgregarArticuloCommand}"
+                                Grid.Row="3"
+                                HorizontalOptions="CenterAndExpand"
+                                VerticalOptions="CenterAndExpand">
+                    
+                    <StackLayout Orientation="Vertical" Spacing="20">
+
+                        <StackLayout Orientation="Horizontal" Spacing="20">
+                            <!-- Motivo -->
+                            <material:AutoCompleteTextField Title="Motivo"
+                                                    ItemsSource="{Binding Motivos}"
+                                                    WidthRequest="270"
+                                                    HeightRequest="55"
+                                                    Icon="save.png"
+                                                    AllowClear="False"/>
+                        </StackLayout>
+                        
+                        <!-- Campo descripción -->
+                        <material:TextField Title="Descripción"
+                            Text="{Binding DescripcionCompraTexto}"
+                            Icon="bag.png"
+                            WidthRequest="200">
+                            <material:TextField.Validations>
+                                <validation:LettersOnlyValidation AllowSpaces="True" Message="Solo letras"/>
+                                <validation:MinLengthValidation MinLength="1" Message="El campo no puede estar vacío"/>
+                            </material:TextField.Validations>
+                        </material:TextField>
+
+                        <Button Text="Agregar artículo" 
+                            Margin="0,5,0,0" 
+                            HeightRequest="50"
+                            Command="{Binding AgregarArticuloCommand}" 
+                            StyleClass="FilledButton"
+                            HorizontalOptions="Center"/>
+                    </StackLayout>
+                    
+                </input:FormView>
+            
             </Grid>
+        </Frame>
+    
+    </Grid>
         
-        </Grid>
-        
-    </ScrollView>
 </uranium:UraniumContentPage>

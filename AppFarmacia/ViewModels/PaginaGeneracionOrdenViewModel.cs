@@ -29,7 +29,7 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
     private ObservableCollection<ArticuloEnCompra> listaArticulosComprar = [];//La lista que se muestra y va a la orden de compra
 
     [ObservableProperty]
-    private string proveedorCompraTexto;
+    private List<String> motivos = ["Punto de reposición", "SobreStock", "Faltante"];
 
     [ObservableProperty]
     private string descripcionCompraTexto;

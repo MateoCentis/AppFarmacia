@@ -8,7 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace AppFarmacia.Models
 {
-    internal class Compra : ObservableObject
+    public partial class Compra : ObservableObject
     {
         [JsonPropertyName("idCompra")]
         public int IdCompra { get; set; }

@@ -1,10 +1,6 @@
 ﻿using AppFarmacia.Models;
-using DocumentFormat.OpenXml.Office2010.Excel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net.Http.Json;
+
 
 namespace AppFarmacia.Services;
 

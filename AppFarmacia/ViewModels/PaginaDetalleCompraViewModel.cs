@@ -1,4 +1,5 @@
 ﻿using AppFarmacia.Models;
+using AppFarmacia.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 namespace AppFarmacia.ViewModels;
 
@@ -24,7 +25,7 @@ public partial class PaginaDetalleCompraViewModel : ObservableObject
         try
         {
             ArticulosEnCompra.Clear();
-            var articulosDetalle = await ArticuloCompraService.GetArticulosEnComprasPorIdCompra(IdCompra);
+            var articulosDetalle = await ArticuloCompraService.GetArticulosEnCompraPorId(IdCompra);
             foreach (var articulo in articulosDetalle)
             {
                 articulo.calcularMonto(); // Llama al método para calcular el monto

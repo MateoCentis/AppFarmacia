@@ -17,7 +17,7 @@
     </uranium:UraniumContentPage.Resources>
 
     <uranium:UraniumContentPage.BindingContext>
-        <viewModels:PaginaArticulosViewModel/>    
+        <viewModels:PaginaComprasViewModel/>    
     </uranium:UraniumContentPage.BindingContext>
     
     <Grid RowDefinitions="Auto,*">

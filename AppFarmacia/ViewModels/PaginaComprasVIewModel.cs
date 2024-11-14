@@ -9,7 +9,7 @@ namespace AppFarmacia.ViewModels;
 
 // Esta página es como la de ventas, muestra el historial de compras con sus respectivos productos, montos y cantidades
     //También te lleva a generar la orden? (charlar esto con Lucas )
-public partial class PaginaComprasVIewModel : ObservableObject
+public partial class PaginaComprasViewModel : ObservableObject
 {
     [ObservableProperty]// Se cargan todas las compras acá
     private List<Compra> listaCompras = [];
@@ -28,24 +28,24 @@ public partial class PaginaComprasVIewModel : ObservableObject
     [ObservableProperty]
     private DateTime fechaFin = DateTime.Now;
 
-    public PaginaComprasVIewModel()
+    public PaginaComprasViewModel()
     {
         this.ComprasService = new CompraService();
         this.CompraSeleccionada = new Compra();
         this.SizePagina = 20;
 
-        //Task.Run(async () => await ObtenerCompras());
+        Task.Run(async () => await ObtenerCompras());
     }
 
     // Redirecciona a la pantalla de detalle
     [RelayCommand]
     async Task VerDetalle()
     {
-        if (compraSeleccionada != null)
+        if (CompraSeleccionada != null)
         {
             var parametroNavigation = new Dictionary<string, object>
                 {
-                    {"idCompra",this.compraSeleccionada.IdCompra}
+                    {"idCompra",CompraSeleccionada.IdCompra}
                 };
 
             await Shell.Current.GoToAsync(nameof(PaginaDetalleCompra), parametroNavigation);

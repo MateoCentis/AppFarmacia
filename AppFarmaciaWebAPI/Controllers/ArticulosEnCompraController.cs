@@ -46,6 +46,24 @@ namespace AppFarmaciaWebAPI.Controllers
             return Ok(articuloEnCompraDTO);
         }
 
+        // GET: api/ArticulosEnCompra/PorCompraId/5 (Hdp mira como le pusiste)
+        [HttpGet("PorCompraId/{id}")]
+        public async Task<ActionResult<IEnumerable<ArticuloEnCompraDTO>>> GetArticulosEnCompraPorCompra(int id)
+        {
+            var articulosEnCompra = await _context.ArticulosEnCompra
+                .Where(a => a.IdCompra == id)
+                .Include(a => a.IdArticuloNavigation)
+                .ToListAsync();
+
+            if (articulosEnCompra == null || articulosEnCompra.Count == 0)
+            {
+                return NotFound();
+            }
+
+            var articulosEnCompraDTOs = _mapper.Map<IEnumerable<ArticuloEnCompraDTO>>(articulosEnCompra);
+            return Ok(articulosEnCompraDTOs);
+        }
+
         // POST api/<ArticulosEnCompraController>
         [HttpPost]
         public async Task<ActionResult<ArticuloEnCompraDTO>> PostArticuloEnCompra([FromBody] ArticuloEnCompraDTO articuloEnCompraDTO)
