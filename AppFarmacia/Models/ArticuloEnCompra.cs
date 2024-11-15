@@ -43,9 +43,6 @@ public class ArticuloEnCompra : ObservableObject
 
     public string? NombreArticulo { get; set; }
 
-    [JsonPropertyName("motivoCompra")]
-    public string? MotivoCompra { get; set; }
-
     public decimal Monto
     {
         get => _monto;

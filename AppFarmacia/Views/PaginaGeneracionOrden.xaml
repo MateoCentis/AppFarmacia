@@ -88,7 +88,7 @@
                     <material:DataGrid.Columns>
                         <material:DataGridSelectionColumn/>
 
-                        <material:DataGridColumn Title="Nombre" Width="140">
+                        <material:DataGridColumn Title="Nombre" Width="Auto">
                             <material:DataGridColumn.CellItemTemplate>
                                 <DataTemplate>
                                     <Label Text="{Binding NombreArticulo}" 
@@ -136,7 +136,7 @@
                             </material:DataGridColumn.CellItemTemplate>
                         </material:DataGridColumn>
 
-                        <material:DataGridColumn Title="Motivo" Width="140">
+                        <material:DataGridColumn Title="Motivo" Width="Auto">
                             <material:DataGridColumn.CellItemTemplate>
                                 <DataTemplate>
                                     <Entry Text="{Binding MotivoCompra}"
