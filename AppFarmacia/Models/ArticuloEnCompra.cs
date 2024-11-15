@@ -4,7 +4,7 @@ namespace AppFarmacia.Models;
 
 public class ArticuloEnCompra : ObservableObject
 {
-    private int _cantidadEncargada;
+    private int _cantidad;
     private decimal _monto;
 
     [JsonPropertyName("idArticuloCompra")]
@@ -16,27 +16,29 @@ public class ArticuloEnCompra : ObservableObject
     [JsonPropertyName("idCompra")]
     public int IdCompra { get; set; }
 
-    [JsonPropertyName("cantidadSugerida")]
-    public int CantidadSugerida { get; set; }
-
-    [JsonPropertyName("cantidadEncargada")]
-    public int CantidadEncargada
+    [JsonPropertyName("cantidad")]
+    public int Cantidad
     {
-        get => _cantidadEncargada;
+        get => _cantidad;
         set
         {
-            if (SetProperty(ref _cantidadEncargada, value))
+            if (SetProperty(ref _cantidad, value))
             {
                 calcularMonto();
             }
         }
     }
 
+    [JsonPropertyName("motivoCompra")]
+    public string MotivoCompra { get; set; } = null!;
+
+    public int CantidadSugerida { get; set; }
+
+    
+
     // Si bien todo esto es medio cualquier cosa (lo del precio capaz no iría)
-    [JsonPropertyName("costo")]
     public decimal Costo { get; set; }
 
-    [JsonPropertyName("nombreArticulo")]
     public string? NombreArticulo { get; set; }
 
     public decimal Monto
@@ -47,6 +49,6 @@ public class ArticuloEnCompra : ObservableObject
 
     public void calcularMonto()
     {
-        this.Monto = this.Costo * this.CantidadEncargada;
+        this.Monto = this.Costo * this.Cantidad;
     }
 }

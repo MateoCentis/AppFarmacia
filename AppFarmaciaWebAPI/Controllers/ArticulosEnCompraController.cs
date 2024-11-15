@@ -66,7 +66,7 @@ namespace AppFarmaciaWebAPI.Controllers
 
         // POST api/<ArticulosEnCompraController>
         [HttpPost]
-        public async Task<ActionResult<ArticuloEnCompraDTO>> PostArticuloEnCompra([FromBody] ArticuloEnCompraDTO articuloEnCompraDTO)
+        public async Task<IActionResult> PostArticuloEnCompra([FromBody] ArticuloEnCompraDTO articuloEnCompraDTO)
         {
             var articuloEnCompra = _mapper.Map<ArticuloEnCompra>(articuloEnCompraDTO);
 
@@ -87,9 +87,8 @@ namespace AppFarmaciaWebAPI.Controllers
                 }
             }
 
-            var createdArticuloEnCompraDTO = _mapper.Map<ArticuloEnCompraDTO>(articuloEnCompra);
-
-            return CreatedAtAction(nameof(GetArticuloEnCompra), new { id = createdArticuloEnCompraDTO.IdArticuloCompra }, createdArticuloEnCompraDTO);
+            // Si no necesitas devolver ningún contenido específico, puedes usar NoContent o Ok
+            return Ok(); // O puedes usar: return Ok();
         }
 
         // PUT api/<ArticulosEnCompraController>/5

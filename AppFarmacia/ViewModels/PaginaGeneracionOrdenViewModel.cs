@@ -63,6 +63,9 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
     private string? categoriaSeleccionadaNombre;
 
     [ObservableProperty]
+    private string? proveedorCompraTexto;
+
+    [ObservableProperty]
     private ObservableCollection<Categoria> listCategorias = [];
 
     [ObservableProperty]
@@ -213,7 +216,8 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
             Fecha = DateTime.Now,
             Proveedor = ProveedorCompraTexto,
             Descripcion = DescripcionCompraTexto,
-            ArticuloEnCompra = ListaArticulosComprar.ToList()
+            ArticuloEnCompra = ListaArticulosComprar.ToList(),
+            CompraConfirmada = false
         };
 
         bool resultado = await compraService.PostCompra(compra);
@@ -319,7 +323,7 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
             writer.WriteLine("IdArticulo\tNombre\tCantidadEncargada\tCantidadSugerida");
             foreach (var articulo in ListaArticulosComprar)
             {
-                writer.WriteLine($"{articulo.IdArticulo}\t{articulo.NombreArticulo}\t{articulo.CantidadEncargada}\t{articulo.CantidadSugerida}");
+                writer.WriteLine($"{articulo.IdArticulo}\t{articulo.NombreArticulo}\t{articulo.Cantidad}\t{articulo.CantidadSugerida}");
             }
             await MainThread.InvokeOnMainThreadAsync(async () =>
                 await Shell.Current.DisplayAlert("Éxito", "Planilla exportada de forma exitosa", "OK"));
@@ -352,7 +356,7 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
             {
                 worksheet.Cell(i + 2, 1).Value = ListaArticulosComprar[i].IdArticulo;
                 worksheet.Cell(i + 2, 2).Value = ListaArticulosComprar[i].NombreArticulo;
-                worksheet.Cell(i + 2, 3).Value = ListaArticulosComprar[i].CantidadEncargada;
+                worksheet.Cell(i + 2, 3).Value = ListaArticulosComprar[i].Cantidad;
                 worksheet.Cell(i + 2, 4).Value = ListaArticulosComprar[i].CantidadSugerida;
             }
 
@@ -383,7 +387,7 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
             int yPoint = 40;
             foreach (var articulo in ListaArticulosComprar)
             {
-                graphics.DrawString($"Id: {articulo.IdArticulo}, Nombre: {articulo.NombreArticulo}, Cantidad Encargada: {articulo.CantidadEncargada}, Cantidad Sugerida: {articulo.CantidadSugerida}",
+                graphics.DrawString($"Id: {articulo.IdArticulo}, Nombre: {articulo.NombreArticulo}, Cantidad Encargada: {articulo.Cantidad}, Cantidad Sugerida: {articulo.CantidadSugerida}",
                                     font, XBrushes.Black, new XRect(40, yPoint, page.Width - 80, page.Height - 40), XStringFormats.TopLeft);
                 yPoint += 20;
             }

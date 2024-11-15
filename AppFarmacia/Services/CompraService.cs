@@ -9,6 +9,7 @@ namespace AppFarmacia.Services
         private List<Compra>? compras = new List<Compra>();
         private readonly HttpClient httpClient;
         private const string CadenaConexion = "http://localhost:83/api";
+        private ArticuloCompraService articuloCompraService = new ArticuloCompraService();
 
         public CompraService()
         {
@@ -41,11 +42,38 @@ namespace AppFarmacia.Services
         {
             try
             {
+                // Envía la compra al servidor
                 var respuesta = await httpClient.PostAsJsonAsync($"{CadenaConexion}/Compras", compra);
+
                 if (respuesta.IsSuccessStatusCode)
                 {
-                    Debug.WriteLine("Compra realizada con éxito");
-                    return true;
+                    // Lee y deserializa la respuesta como un objeto CompraDTO
+                    var compraCreada = await respuesta.Content.ReadFromJsonAsync<Compra>();
+                    if (compraCreada != null)
+                    {
+                        // Asigna el IdCompra recién creado a cada ArticuloEnCompra
+                        foreach (var articulo in compra.ArticuloEnCompra)
+                        {
+                            articulo.IdCompra = compraCreada.IdCompra;
+                            articulo.MotivoCompra = "No lo se";
+                        }
+
+                        // Llama al método PostArticulosEnCompra con la lista de artículos actualizada
+                        bool resultado = await articuloCompraService.PostArticulosEnCompra(compra.ArticuloEnCompra);
+                        if (!resultado)
+                        {
+                            Debug.WriteLine("Error al agregar los artículos en compra");
+                            return false;
+                        }
+
+                        Debug.WriteLine("Compra realizada con éxito");
+                        return true;
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Error al procesar la respuesta de la API");
+                        return false;
+                    }
                 }
                 else
                 {
