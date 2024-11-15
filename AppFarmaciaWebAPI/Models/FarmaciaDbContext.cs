@@ -207,6 +207,8 @@ namespace AppFarmaciaWebAPI.Models
 
                 entity.ToTable("ARTICULO_EN_COMPRA");
 
+                entity.ToTable(tb => tb.HasTrigger("trg_ActualizarStock_por_Compra"));
+
                 entity.Property(e => e.MotivoCompra)
                     .HasMaxLength(100)
                     .IsUnicode(false);

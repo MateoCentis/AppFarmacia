@@ -24,7 +24,7 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
     private readonly ArticulosService articulosService;
     private readonly CategoriasService categoriasService;
     private readonly CompraService compraService;
-    private readonly ArticuloCompraService articuloCompraService;
+    private readonly FaltanteService faltanteService;
 
     [ObservableProperty]
     private ObservableCollection<ArticuloEnCompra> listaArticulosComprar = [];//La lista que se muestra y va a la orden de compra
@@ -67,6 +67,9 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
     private string? categoriaSeleccionadaNombre;
 
     [ObservableProperty]
+    private string? proveedorCompraTexto;
+
+    [ObservableProperty]
     private ObservableCollection<Categoria> listCategorias = [];
 
     [ObservableProperty]
@@ -104,6 +107,7 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
         this.articulosService = new ArticulosService();
         this.categoriasService = new CategoriasService();
         this.compraService = new CompraService();
+        this.faltanteService = new FaltanteService();
         TextoBusqueda = string.Empty;
         NombresArticulos = [];
         NombresCategorias = [];
@@ -144,12 +148,16 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
         try
         {
             var articulosSugeridos = await articulosService.GetArticulosSugeridosParaComprar();
-            ListaArticulosComprar = new ObservableCollection<ArticuloEnCompra>(articulosSugeridos.Select(a => new ArticuloEnCompra
+            var articulosEnCompraTasks = articulosSugeridos.Select(async a => new ArticuloEnCompra
             {
                 IdArticulo = a.IdArticulo,         // Asigna el IdArticulo desde Articulo
                 NombreArticulo = a.Nombre,         // Asigna el Nombre desde Articulo
-                CantidadSugerida = a.CantidadAPedir ?? 0 // Asigna CantidadAPedir o 0 si es null
-            }));
+                CantidadSugerida = a.CantidadAPedir ?? 0, // Asigna CantidadAPedir o 0 si es null
+                CantidadFaltante = await faltanteService.ObtenerFaltanteDeArticulo(a.IdArticulo)
+            });
+
+            var articulosEnCompra = await Task.WhenAll(articulosEnCompraTasks); // Espera a que todas las tareas se completen por el "await faltanteService.ObtenerFaltanteDeArticulo"
+            ListaArticulosComprar = new ObservableCollection<ArticuloEnCompra>(articulosEnCompra);
         }
         catch (Exception ex)
         {
@@ -216,8 +224,8 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
         {
             Fecha = DateTime.Now,
             Descripcion = DescripcionCompraTexto,
-            Proveedor = ProveedorCompra,
-            ArticuloEnCompra = ListaArticulosComprar.ToList()
+            ArticuloEnCompra = ListaArticulosComprar.ToList(),
+            CompraConfirmada = false
         };
 
         // Se guarda la compra
@@ -249,7 +257,7 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
         }
     }
     [RelayCommand]
-    private void AgregarArticulo()
+    private async Task AgregarArticulo() // Marcar el método como async
     {
         if (ArticuloSeleccionadoDeListaCompleta != null)
         {
@@ -259,15 +267,21 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
                 return;
             }
 
+            // Llamar a ObtenerFaltanteDeArticulo de manera asincrónica
+            int cantidadFaltante = await faltanteService.ObtenerFaltanteDeArticulo(ArticuloSeleccionadoDeListaCompleta.IdArticulo);
+
             var articulo = new ArticuloEnCompra
             {
                 IdArticulo = ArticuloSeleccionadoDeListaCompleta.IdArticulo,
                 NombreArticulo = ArticuloSeleccionadoDeListaCompleta.Nombre,
-                CantidadSugerida = ArticuloSeleccionadoDeListaCompleta.CantidadAPedir ?? 0
+                CantidadSugerida = ArticuloSeleccionadoDeListaCompleta.CantidadAPedir ?? 0,
+                CantidadFaltante = cantidadFaltante // Asignar el resultado de la tarea asincrónica
             };
+
             ListaArticulosComprar.Add(articulo);
         }
     }
+
 
 
     [RelayCommand]
@@ -324,7 +338,7 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
             writer.WriteLine("IdArticulo\tNombre\tCantidadEncargada\tCantidadSugerida");
             foreach (var articulo in ListaArticulosComprar)
             {
-                writer.WriteLine($"{articulo.IdArticulo}\t{articulo.NombreArticulo}\t{articulo.CantidadEncargada}\t{articulo.CantidadSugerida}");
+                writer.WriteLine($"{articulo.IdArticulo}\t{articulo.NombreArticulo}\t{articulo.Cantidad}\t{articulo.CantidadSugerida}");
             }
             await MainThread.InvokeOnMainThreadAsync(async () =>
                 await Shell.Current.DisplayAlert("Éxito", "Planilla exportada de forma exitosa", "OK"));
@@ -357,7 +371,7 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
             {
                 worksheet.Cell(i + 2, 1).Value = ListaArticulosComprar[i].IdArticulo;
                 worksheet.Cell(i + 2, 2).Value = ListaArticulosComprar[i].NombreArticulo;
-                worksheet.Cell(i + 2, 3).Value = ListaArticulosComprar[i].CantidadEncargada;
+                worksheet.Cell(i + 2, 3).Value = ListaArticulosComprar[i].Cantidad;
                 worksheet.Cell(i + 2, 4).Value = ListaArticulosComprar[i].CantidadSugerida;
             }
 
@@ -388,7 +402,7 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
             int yPoint = 40;
             foreach (var articulo in ListaArticulosComprar)
             {
-                graphics.DrawString($"Id: {articulo.IdArticulo}, Nombre: {articulo.NombreArticulo}, Cantidad Encargada: {articulo.CantidadEncargada}, Cantidad Sugerida: {articulo.CantidadSugerida}",
+                graphics.DrawString($"Id: {articulo.IdArticulo}, Nombre: {articulo.NombreArticulo}, Cantidad Encargada: {articulo.Cantidad}, Cantidad Sugerida: {articulo.CantidadSugerida}",
                                     font, XBrushes.Black, new XRect(40, yPoint, page.Width - 80, page.Height - 40), XStringFormats.TopLeft);
                 yPoint += 20;
             }

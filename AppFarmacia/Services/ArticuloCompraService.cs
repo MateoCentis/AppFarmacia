@@ -1,4 +1,5 @@
 ﻿using AppFarmacia.Models;
+using System.Diagnostics;
 using System.Net.Http.Json;
 
 
@@ -32,5 +33,33 @@ public class ArticuloCompraService
 
         return this.ArticulosEnCompra!;
     }
+
+    public async Task<bool> PostArticulosEnCompra(ICollection<ArticuloEnCompra> articulosEnCompra)
+    {
+        try
+        {
+            foreach (var articuloEnCompra in articulosEnCompra)
+            {
+                var respuesta = await httpClient.PostAsJsonAsync("http://LocalHost:83/api/ArticulosEnCompra", articuloEnCompra);
+                if (!respuesta.IsSuccessStatusCode)
+                {
+                    Debug.WriteLine($"Error en la solicitud: {respuesta.ReasonPhrase}");
+                    return false;
+                }
+            }
+            Debug.WriteLine("Artículos en compra agregados con éxito");
+            return true;
+
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            return false;
+        }
+
+        return true;
+    }
+
+    
 
 }

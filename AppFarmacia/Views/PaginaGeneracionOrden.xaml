@@ -110,10 +110,21 @@
                             </material:DataGridColumn.CellItemTemplate>
                         </material:DataGridColumn>
 
+                        <material:DataGridColumn Title="Cantidad Faltante" Width="Auto">
+                            <material:DataGridColumn.CellItemTemplate>
+                                <DataTemplate>
+                                    <Label Text="{Binding CantidadFaltante}" 
+                                            TextColor="Black" 
+                                            HorizontalOptions="Center" 
+                                            VerticalOptions="Start"/>
+                                </DataTemplate>
+                            </material:DataGridColumn.CellItemTemplate>
+                        </material:DataGridColumn>
+
                         <material:DataGridColumn Title="Cantidad encargada" Width="Auto">
                             <material:DataGridColumn.CellItemTemplate>
                                 <DataTemplate>
-                                    <Entry Text="{Binding CantidadEncargada, Mode=TwoWay}"
+                                    <Entry Text="{Binding Cantidad, Mode=TwoWay}"
                                         FontAttributes="Bold" 
                                         TextColor="Black" 
                                         HorizontalOptions="Center"
