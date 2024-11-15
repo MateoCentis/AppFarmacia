@@ -63,6 +63,7 @@ namespace AppFarmaciaWebAPI.Controllers
             var articulosEnCompraDTOs = _mapper.Map<IEnumerable<ArticuloEnCompraDTO>>(articulosEnCompra);
             return Ok(articulosEnCompraDTOs);
         }
+ 
 
         // POST api/<ArticulosEnCompraController>
         [HttpPost]

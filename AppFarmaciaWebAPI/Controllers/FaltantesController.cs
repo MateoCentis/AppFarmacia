@@ -43,23 +43,56 @@ namespace AppFarmaciaWebAPI.Controllers
             return Ok(faltanteDTO);
         }
 
-        //Localhost/api/Faltantes/Articulo/5
+        // GET: api/ArticulosEnCompra/PorCompraId/5 (Hdp mira como le pusiste)
         [HttpGet("Articulo/{id}")]
-        public async Task<ActionResult<IEnumerable<FaltanteDTO>>> GetFaltantesArticulo(int id)
+        public async Task<ActionResult<int>> GetFaltantePorArticulo(int id)
         {
-            var faltantes = await _context.Faltantes
-                .Where(p => p.IdArticulo == id)
-                .OrderBy(p => p.Fecha) // Ordenar por fecha
-                .ToListAsync();
-
-            if (faltantes == null || faltantes.Count == 0)
+            try
             {
-                return NotFound();
+                // 1. Obtener el último registro de STOCK para el artículo con el idArticulo
+                var ultimoStock = await _context.Stocks
+                    .Where(s => s.IdArticulo == id)
+                    .OrderByDescending(s => s.Fecha)  // Ordenar por fecha descendente
+                    .FirstOrDefaultAsync();
+
+                if (ultimoStock == null)
+                {
+                    return NotFound("No se encontró el último stock para este artículo.");
+                }
+
+                // 2. Buscar los faltantes entre la fecha de stock más reciente y la fecha actual
+                var faltantes = await _context.Faltantes
+                    .Where(f => f.IdArticulo == id && f.Fecha >= ultimoStock.Fecha)
+                    .ToListAsync();
+
+                if (faltantes == null || faltantes.Count == 0)
+                {
+                    return 0;
+                }
+
+                // 3. Agrupar los faltantes por IdArticulo y sumar las cantidades faltantes
+                var cantidadFaltanteTotal = faltantes
+                    .GroupBy(f => f.IdArticulo)
+                    .Select(g => new
+                    {
+                        IdArticulo = g.Key,
+                        TotalFaltante = g.Sum(f => f.CantidadFaltante)
+                    })
+                    .FirstOrDefault();
+
+                if (cantidadFaltanteTotal == null)
+                {
+                    return 0;
+                }
+
+                return cantidadFaltanteTotal.TotalFaltante;
             }
+            catch (Exception ex)
+            {
 
-            var faltantesDTO = _mapper.Map<IEnumerable<FaltanteDTO>>(faltantes);
-
-            return Ok(faltantesDTO);
+                return StatusCode(500, $"Error al eliminar el faltante: {ex.Message}");
+            }
+            
         }
 
 

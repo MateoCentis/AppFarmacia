@@ -24,6 +24,7 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
     private readonly ArticulosService articulosService;
     private readonly CategoriasService categoriasService;
     private readonly CompraService compraService;
+    private readonly FaltanteService faltanteService;
 
     [ObservableProperty]
     private ObservableCollection<ArticuloEnCompra> listaArticulosComprar = [];//La lista que se muestra y va a la orden de compra
@@ -103,6 +104,7 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
         this.articulosService = new ArticulosService();
         this.categoriasService = new CategoriasService();
         this.compraService = new CompraService();
+        this.faltanteService = new FaltanteService();
         TextoBusqueda = string.Empty;
         NombresArticulos = [];
         NombresCategorias = [];
@@ -143,12 +145,16 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
         try
         {
             var articulosSugeridos = await articulosService.GetArticulosSugeridosParaComprar();
-            ListaArticulosComprar = new ObservableCollection<ArticuloEnCompra>(articulosSugeridos.Select(a => new ArticuloEnCompra
+            var articulosEnCompraTasks = articulosSugeridos.Select(async a => new ArticuloEnCompra
             {
                 IdArticulo = a.IdArticulo,         // Asigna el IdArticulo desde Articulo
                 NombreArticulo = a.Nombre,         // Asigna el Nombre desde Articulo
-                CantidadSugerida = a.CantidadAPedir ?? 0 // Asigna CantidadAPedir o 0 si es null
-            }));
+                CantidadSugerida = a.CantidadAPedir ?? 0, // Asigna CantidadAPedir o 0 si es null
+                CantidadFaltante = await faltanteService.ObtenerFaltanteDeArticulo(a.IdArticulo)
+            });
+
+            var articulosEnCompra = await Task.WhenAll(articulosEnCompraTasks); // Espera a que todas las tareas se completen por el "await faltanteService.ObtenerFaltanteDeArticulo"
+            ListaArticulosComprar = new ObservableCollection<ArticuloEnCompra>(articulosEnCompra);
         }
         catch (Exception ex)
         {
@@ -248,7 +254,7 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
         }
     }
     [RelayCommand]
-    private void AgregarArticulo()
+    private async Task AgregarArticulo() // Marcar el método como async
     {
         if (ArticuloSeleccionadoDeListaCompleta != null)
         {
@@ -258,15 +264,21 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
                 return;
             }
 
+            // Llamar a ObtenerFaltanteDeArticulo de manera asincrónica
+            int cantidadFaltante = await faltanteService.ObtenerFaltanteDeArticulo(ArticuloSeleccionadoDeListaCompleta.IdArticulo);
+
             var articulo = new ArticuloEnCompra
             {
                 IdArticulo = ArticuloSeleccionadoDeListaCompleta.IdArticulo,
                 NombreArticulo = ArticuloSeleccionadoDeListaCompleta.Nombre,
-                CantidadSugerida = ArticuloSeleccionadoDeListaCompleta.CantidadAPedir ?? 0
+                CantidadSugerida = ArticuloSeleccionadoDeListaCompleta.CantidadAPedir ?? 0,
+                CantidadFaltante = cantidadFaltante // Asignar el resultado de la tarea asincrónica
             };
+
             ListaArticulosComprar.Add(articulo);
         }
     }
+
 
 
     [RelayCommand]

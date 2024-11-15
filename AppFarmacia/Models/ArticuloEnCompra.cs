@@ -32,6 +32,8 @@ public class ArticuloEnCompra : ObservableObject
     [JsonPropertyName("motivoCompra")]
     public string MotivoCompra { get; set; } = null!;
 
+    public int CantidadFaltante { get; set; }
+
     public int CantidadSugerida { get; set; }
 
     
