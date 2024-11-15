@@ -18,10 +18,11 @@
     <Grid ColumnDefinitions="*,*">
 
         <!-- Componente de generación de orden - FRAME DERECHO-->
-        <Frame Grid.Column="1" Style="{StaticResource FrameGrafico}" Margin="5,5,5,5" BackgroundColor="White">
-            <Grid RowDefinitions="Auto,Auto,*,Auto"
-                    HorizontalOptions="CenterAndExpand" 
-                    VerticalOptions="FillAndExpand" BackgroundColor="White">
+        <Frame Grid.Column="1" Style="{StaticResource FrameGrafico}" Margin="5,10,10,10" BackgroundColor="White">
+            <Grid RowDefinitions="Auto,Auto,*,Auto,Auto"
+                    HorizontalOptions="FillAndExpand" 
+                    VerticalOptions="FillAndExpand" 
+                  BackgroundColor="White">
                 <!-- Título de la página -->
                 <Label Grid.Row="0" 
                        Text="Orden de compra" 
@@ -34,7 +35,7 @@
                 <StackLayout Orientation="Horizontal" 
                             Grid.Row="1" 
                             HorizontalOptions="CenterAndExpand" 
-                            VerticalOptions="Center"
+                            VerticalOptions="StartAndExpand"
                             Margin="0,5,0,10" 
                             Spacing="10">
                     <material:PickerField Title="Seleccione tipo de archivo a exportar"
@@ -56,8 +57,9 @@
                 <!-- Datagrid con los artículos en compra -->
                 <material:DataGrid Grid.Row="2" 
                                 ItemsSource="{Binding ListaArticulosComprar}" 
-                                HorizontalOptions="CenterAndExpand" 
+                                HorizontalOptions="FillAndExpand" 
                                 VerticalOptions="StartAndExpand"
+                                Margin="0,0,0,10"
                                 BackgroundColor="White" 
                                 SelectedItems="{Binding ArticulosSeleccionados}">
                     <ActivityIndicator IsRunning="{Binding EstaCargando}"/>
@@ -86,7 +88,7 @@
                     <material:DataGrid.Columns>
                         <material:DataGridSelectionColumn/>
 
-                        <material:DataGridColumn Title="Nombre" Width="Auto">
+                        <material:DataGridColumn Title="Nombre" Width="140">
                             <material:DataGridColumn.CellItemTemplate>
                                 <DataTemplate>
                                     <Label Text="{Binding NombreArticulo}" 
@@ -123,12 +125,52 @@
                             </material:DataGridColumn.CellItemTemplate>
                         </material:DataGridColumn>
 
+                        <material:DataGridColumn Title="Motivo" Width="140">
+                            <material:DataGridColumn.CellItemTemplate>
+                                <DataTemplate>
+                                    <Entry Text="{Binding MotivoCompra}"
+                                        FontAttributes="Bold" 
+                                        TextColor="Black" 
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="Start"/>
+                                </DataTemplate>
+                            </material:DataGridColumn.CellItemTemplate>
+                        </material:DataGridColumn>
                         
                     </material:DataGrid.Columns>
                 </material:DataGrid>
 
+                <StackLayout Grid.Row="3" 
+                Orientation="Horizontal" 
+                Spacing="10"
+                Margin="0,0,0,10"
+                HorizontalOptions="Center">
+                    <!-- Campo proveedor -->
+                    <material:TextField Title="Proveedor"
+                                        Text="{Binding ProveedorCompra}"
+                                        Icon="user.png"
+                                        HorizontalOptions="Center"
+                                        WidthRequest="200">
+                        <material:TextField.Validations>
+                            <validation:LettersOnlyValidation AllowSpaces="True" Message="Solo letras"/>
+                            <validation:MinLengthValidation MinLength="1" Message="El campo no puede estar vacío"/>
+                        </material:TextField.Validations>
+                    </material:TextField>
+
+                    <!-- Campo descripción -->
+                    <material:TextField Title="Descripción"
+               Text="{Binding DescripcionCompraTexto}"
+               Icon="descripcion.png"
+               WidthRequest="200">
+                        <material:TextField.Validations>
+                            <validation:LettersOnlyValidation AllowSpaces="True" Message="Solo letras"/>
+                            <validation:MinLengthValidation MinLength="1" Message="El campo no puede estar vacío"/>
+                        </material:TextField.Validations>
+                    </material:TextField>
+                </StackLayout>
+                
                 <!-- Botones de eliminar artículos de la compra y realizar compra -->
-                <StackLayout Grid.Row="3"
+                <StackLayout Grid.Row="4"
                                 Grid.Column="1"
                                 Orientation="Horizontal" 
                                 HorizontalOptions="CenterAndExpand" 
@@ -152,7 +194,7 @@
         </Frame>
         
         <!-- Parte de búsqueda e inserción de artículo - FRAME IZQUIERDO-->
-        <Frame Grid.Column="0" Style="{StaticResource FrameGrafico}" Margin="5,5,5,5" BackgroundColor="White">
+        <Frame Grid.Column="0" Style="{StaticResource FrameGrafico}" Margin="10,10,5,10" BackgroundColor="White">
             <Grid RowDefinitions="Auto,Auto,*, Auto" 
                   VerticalOptions="FillAndExpand" 
                   HorizontalOptions="FillAndExpand">
@@ -162,12 +204,12 @@
                     FontSize="Medium" 
                     HorizontalOptions="CenterAndExpand"
                     VerticalOptions="Start"
-                    Margin="0,5,0,10"/>
+                    Margin="0,0,0,10"/>
                 
                 <!-- Cuadro de búsqueda de artículos -->
                 <StackLayout Orientation="Horizontal" 
                              HorizontalOptions="CenterAndExpand" 
-                             VerticalOptions="CenterAndExpand"
+                             VerticalOptions="StartAndExpand"
                              Grid.Row="1"
                              Margin="0,0,0,10">
 
@@ -183,7 +225,7 @@
                 <!-- Grilla de artículos -->
                 <dg:DataGrid Grid.Row="2" ItemsSource="{Binding ListaArticulos}" 
                     SelectionMode="Single" SelectedItem="{Binding ArticuloSeleccionadoDeListaCompleta}"
-                    Style="{StaticResource TablaComun}" IsRefreshing="{Binding EstaCargando}" Margin="5,0,5,0">
+                    Style="{StaticResource TablaComun}" IsRefreshing="{Binding EstaCargando}" Margin="0,0,0,10">
                     <!-- Para cuando la página no tiene data para ver-->
                     <dg:DataGrid.NoDataView>
                         <Label Text="No hay artículos que cumplan con esos criterios" Style="{StaticResource VistaSinData}">
@@ -205,44 +247,32 @@
                         <dg:DataGridColumn Title="Stock" PropertyName="Stock"/>
                         <dg:DataGridColumn Title="Punto de Reposición" PropertyName="PuntoReposicion"/>
                         <dg:DataGridColumn Title="Cantidad a pedir" PropertyName="CantidadAPedir"/>
-                        <!--<dg:DataGridColumn Title="Clasificacion" PropertyName="Clasificacion"/>-->
                     </dg:DataGrid.Columns>
 
                 </dg:DataGrid>
-                
+
                 <!-- Campos de entrada (input-validations) -->
                 <input:FormView SubmitCommand="{Binding AgregarArticuloCommand}"
                                 Grid.Row="3"
                                 HorizontalOptions="CenterAndExpand"
                                 VerticalOptions="CenterAndExpand">
                     
-                    <StackLayout Orientation="Vertical" Spacing="20">
+                    <StackLayout Orientation="Horizontal" Spacing="20">
 
-                        <StackLayout Orientation="Horizontal" Spacing="20">
-                            <!-- Motivo -->
-                            <material:AutoCompleteTextField Title="Motivo"
-                                                    ItemsSource="{Binding Motivos}"
-                                                    WidthRequest="270"
-                                                    HeightRequest="55"
-                                                    Icon="save.png"
-                                                    AllowClear="False"/>
-                        </StackLayout>
+                        <!-- Motivo -->
+                        <material:AutoCompleteTextField Title="Motivo"
+                                                ItemsSource="{Binding Motivos}"
+                                                WidthRequest="270"
+                                                HeightRequest="55"
+                                                Icon="motivo.png"
+                                                AllowClear="False"/>
                         
-                        <!-- Campo descripción -->
-                        <material:TextField Title="Descripción"
-                            Text="{Binding DescripcionCompraTexto}"
-                            Icon="bag.png"
-                            WidthRequest="200">
-                            <material:TextField.Validations>
-                                <validation:LettersOnlyValidation AllowSpaces="True" Message="Solo letras"/>
-                                <validation:MinLengthValidation MinLength="1" Message="El campo no puede estar vacío"/>
-                            </material:TextField.Validations>
-                        </material:TextField>
+
 
                         <Button Text="Agregar artículo" 
                             Margin="0,5,0,0" 
                             HeightRequest="50"
-                            Command="{Binding AgregarArticuloCommand}" 
+                            input:FormView.IsSubmitButton="True" 
                             StyleClass="FilledButton"
                             HorizontalOptions="Center"/>
                     </StackLayout>

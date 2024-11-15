@@ -77,6 +77,7 @@
 	  <None Remove="Resources\Images\calendarline6.svg" />
 	  <None Remove="Resources\Images\calendarline7.svg" />
 	  <None Remove="Resources\Images\capsulafill.svg" />
+	  <None Remove="Resources\Images\descripcion.svg" />
 	  <None Remove="Resources\Images\descuento.svg" />
 	  <None Remove="Resources\Images\donutchartfill.svg" />
 	  <None Remove="Resources\Images\farmaciaaput.png" />
@@ -84,6 +85,7 @@
 	  <None Remove="Resources\Images\graficotorta.svg" />
 	  <None Remove="Resources\Images\layers.svg" />
 	  <None Remove="Resources\Images\medicinebottleline.svg" />
+	  <None Remove="Resources\Images\motivo.svg" />
 	  <None Remove="Resources\Images\pluscircle.svg" />
 	  <None Remove="Resources\Images\pricetag.png" />
 	  <None Remove="Resources\Images\refrescar.svg" />

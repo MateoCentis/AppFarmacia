@@ -24,6 +24,7 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
     private readonly ArticulosService articulosService;
     private readonly CategoriasService categoriasService;
     private readonly CompraService compraService;
+    private readonly ArticuloCompraService articuloCompraService;
 
     [ObservableProperty]
     private ObservableCollection<ArticuloEnCompra> listaArticulosComprar = [];//La lista que se muestra y va a la orden de compra
@@ -33,6 +34,9 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
 
     [ObservableProperty]
     private string descripcionCompraTexto;
+
+    [ObservableProperty]
+    private string proveedorCompra;
 
     [ObservableProperty]
     private ObservableCollection<ArticuloEnCompra> listaArticulosFiltrados = [];
@@ -107,7 +111,7 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
         SizePagina = 20;
         CategoriaSeleccionadaNombre = "Todas";
         DescripcionCompraTexto = string.Empty;
-        ProveedorCompraTexto = string.Empty;
+        ProveedorCompra = string.Empty;
 
         // Carga inicial de los artículos
         Task.Run(async () => await ObtenerCategorias());
@@ -174,7 +178,7 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
             Debug.WriteLine($"Unable to get articles: {ex.Message}");
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
-                Shell.Current.DisplayAlert("Error articles!", ex.Message, "OK");
+                Shell.Current.DisplayAlert("Error en artículos!", ex.Message, "OK");
             });
         }
     }
@@ -195,10 +199,10 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Unable to get categorias: {ex.Message}");
+            Debug.WriteLine($"Unable to get categorias: {ex.Message }");
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
-                Shell.Current.DisplayAlert("Error categorias!", ex.Message, "OK");
+                Shell.Current.DisplayAlert("Error en categorias!", ex.Message, "OK");
             });
         }
     }
@@ -211,13 +215,14 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
         Compra compra = new Compra
         {
             Fecha = DateTime.Now,
-            Proveedor = ProveedorCompraTexto,
             Descripcion = DescripcionCompraTexto,
+            Proveedor = ProveedorCompra,
             ArticuloEnCompra = ListaArticulosComprar.ToList()
         };
 
-        bool resultado = await compraService.PostCompra(compra);
-        if (resultado) { await Shell.Current.DisplayAlert("Éxito", "Compra realizada con éxito", "OK"); }
+        // Se guarda la compra
+        bool resultadoCompra = await compraService.PostCompra(compra);
+        if (resultadoCompra) { await Shell.Current.DisplayAlert("Éxito", "Compra realizada con éxito", "OK"); }
         else { await Shell.Current.DisplayAlert("Error", "Hubo un problema al realizar la compra", "OK"); }
     }
 
