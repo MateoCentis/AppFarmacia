@@ -30,6 +30,7 @@ namespace AppFarmaciaWebAPI.Models
         public virtual DbSet<Compra> Compras { get; set; }
         public virtual DbSet<Faltante> Faltantes { get; set; }
         public virtual DbSet<ArticuloEnCompra> ArticulosEnCompra { get; set; }
+        public virtual DbSet<Notificacion> Notificaciones { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -222,6 +223,24 @@ namespace AppFarmaciaWebAPI.Models
                     .HasForeignKey(d => d.IdCompra)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ARTICULO_EN_COMPRA_COMPRA");
+            });
+
+            modelBuilder.Entity<Notificacion>(entity =>
+            {
+                entity.HasKey(e => e.IdNotificacion);
+
+                entity.ToTable("NOTIFICACION");
+
+                entity.Property(e => e.Titulo)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+                entity.Property(e => e.Detalle)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Fecha)
+                    .HasDefaultValueSql("(getdate())")
+                    .HasColumnType("datetime");
             });
 
 

@@ -89,6 +89,12 @@ namespace AppFarmaciaWebAPI.Mapping
             // Mapeo entre FaltanteDTO y Faltante
             CreateMap<FaltanteDTO, Faltante>();
 
+            // Mapeo entre Notificacion y NotificacionDTO
+            CreateMap<Notificacion, NotificacionDTO>();
+
+            // Mapeo entre NotificacionDTO y Notificacion
+            CreateMap<NotificacionDTO, Notificacion>();
+
         }
     }
 }
