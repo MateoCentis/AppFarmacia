@@ -22,7 +22,7 @@ public partial class PaginaComprasViewModel : ObservableObject
     [ObservableProperty]
     private int sizePagina;
 
-    [ObservableProperty]//Inicio de las ventas
+    [ObservableProperty]//Inicio de las compras
     private DateTime fechaInicio = new DateTime(2017, 6, 1);
 
     [ObservableProperty]
@@ -52,12 +52,12 @@ public partial class PaginaComprasViewModel : ObservableObject
         }
         else
         {
-            await Shell.Current.DisplayAlert("Error!", "No se ha seleccionado ninguna venta.", "OK");
+            await Shell.Current.DisplayAlert("Error!", "No se ha seleccionado ninguna compra.", "OK");
         }
 
     }
 
-    // Carga las ventas del sistema a la ListaCompletaVentas
+    // Carga las compras del sistema a la lista de compras
     [RelayCommand]
     private async Task ObtenerCompras()
     {

@@ -86,6 +86,7 @@
 	  <None Remove="Resources\Images\layers.svg" />
 	  <None Remove="Resources\Images\medicinebottleline.svg" />
 	  <None Remove="Resources\Images\motivo.svg" />
+	  <None Remove="Resources\Images\notification.svg" />
 	  <None Remove="Resources\Images\pluscircle.svg" />
 	  <None Remove="Resources\Images\pricetag.png" />
 	  <None Remove="Resources\Images\refrescar.svg" />
@@ -163,6 +164,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\PaginaGraficos.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\PaginaNotificaciones.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\PaginaPrediccionStock.xaml">

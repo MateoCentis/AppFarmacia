@@ -3,7 +3,7 @@ using AppFarmacia.Models;
 
 namespace AppFarmacia.Services
 {
-    class StockService
+    public class StockService
     {
         private List<Stock>? historial_Stock = new List<Stock>();
         private Stock? stock = new Stock();

@@ -31,6 +31,13 @@
             ContentTemplate="{DataTemplate local:PaginaGraficos}"
             Route="PaginaGraficos"
                 Icon="barchart.png"/>
+
+        <ShellContent
+            Title="Notificaciones"
+            ContentTemplate="{DataTemplate local:PaginaNotificaciones}"
+            Route="PaginaNotificaciones"
+                Icon="notification.png"/>
+
         <ShellContent
         Title="Artículos"
         ContentTemplate="{DataTemplate local:PaginaArticulos}"

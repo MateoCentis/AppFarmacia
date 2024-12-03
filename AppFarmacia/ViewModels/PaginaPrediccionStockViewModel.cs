@@ -16,7 +16,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace AppFarmacia.ViewModels
 {
-    internal partial class PaginaPrediccionStockViewModel : ObservableObject
+    public partial class PaginaPrediccionStockViewModel : ObservableObject
     {
         private readonly ArticulosService articulosService;
         private readonly CategoriasService categoriasService;

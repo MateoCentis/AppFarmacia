@@ -90,9 +90,9 @@
             <!-- Acá dentro se definen las columnas de la tabla -->
             <!-- Ver bien el tema de configurar bien las columnas con DataTemplate -->
             <dg:DataGrid.Columns>
-                   
+                <dg:DataGridColumn Title="ID"  PropertyName="IdArticulo"/>
                 <dg:DataGridColumn Title="Nombre" PropertyName="Nombre"/>
-                <dg:DataGridColumn Title="Marca" PropertyName="Marca"/>
+                <!--<dg:DataGridColumn Title="Marca" PropertyName="Marca"/>-->
                 <dg:DataGridColumn Title="Categoría" PropertyName="Categoria"/>
                 <dg:DataGridColumn Title="Stock" PropertyName="Stock"/>
                 <dg:DataGridColumn Title="Precio" PropertyName="PrecioActual"/>
