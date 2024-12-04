@@ -1,18 +1,59 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <uranium:UraniumContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
-             xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
-             xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
-             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
-             x:Class="AppFarmacia.Views.PaginaNotificaciones"
-             Shell.NavBarIsVisible="False">
+                            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                            xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
+                            xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
+                            xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+                            xmlns:converters="clr-namespace:AppFarmacia.Converters"
+                            x:Class="AppFarmacia.Views.PaginaNotificaciones"
+                            Shell.NavBarIsVisible="False">
+
+    <uranium:UraniumContentPage.Resources>
+        <ResourceDictionary>
+            <converters:LeidoToColorConverter x:Key="LeidoToColorConverter" />
+        </ResourceDictionary>
+    </uranium:UraniumContentPage.Resources>
 
     <uranium:UraniumContentPage.BindingContext>
         <viewModels:PaginaNotificacionesViewModel/>
     </uranium:UraniumContentPage.BindingContext>
 
-    <Grid RowDefinitions="*,*" Padding="1">
-        <Label Text="HOLA"/>
+    <Grid RowDefinitions="Auto, *" Padding="10">
+        <!-- Encabezado -->
+        <Label Text="Notificaciones"
+               FontSize="24"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"
+               VerticalOptions="Center" />
+
+        <!-- Lista de Notificaciones -->
+        <CollectionView Grid.Row="1"
+                ItemsSource="{Binding ListaNotificaciones}"
+                SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="10"
+                   Margin="5,10"
+                   CornerRadius="10"
+                   HasShadow="True"
+                   BorderColor="White"
+                   BackgroundColor="{Binding Leido, Converter={StaticResource LeidoToColorConverter}}">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:PaginaNotificacionesViewModel}}, Path=MarcarComoLeidaCommand}"
+                                          CommandParameter="{Binding}" />
+                        </Frame.GestureRecognizers>
+                        <VerticalStackLayout>
+                            <Label Text="{Binding Titulo}"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="Black" />
+                            <Label Text="{Binding Detalle}"
+                           FontSize="14"
+                           TextColor="Gray" />
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
     </Grid>
 </uranium:UraniumContentPage>

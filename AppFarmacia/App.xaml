@@ -11,9 +11,10 @@
                 <ResourceDictionary x:Name="appColors"  Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary x:Name="appStyles"  Source="Resources/Styles/Styles.xaml" />
                 <ResourceDictionary x:Name="MisEstilos" Source="Resources/Styles/MyStyles.xaml"/>
-
                 <material:StyleResource/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
+
+
 </Application>

@@ -84,8 +84,8 @@ namespace AppFarmacia.Services
             try
             {
                 // Formateo a string para request (YYYY-MM-dd) 
-                string fechaInicioStr = fechaInicio.ToString("yyyy-MM-dd");
-                string fechaFinStr = fechaFin.ToString("yyyy-MM-dd");
+                string fechaInicioStr = fechaInicio.Date.ToString("yyyy-MM-dd") + " 00:00:00";  // Inicio del día
+                string fechaFinStr = fechaFin.Date.AddDays(1).AddTicks(-1).ToString("yyyy-MM-dd HH:mm:ss");  // Final del día
 
                 var url = $"{CadenaConexion}/Ventas?fechaInicio={fechaInicioStr}&fechaFin={fechaFinStr}";
                 // Obtengo respuesta  
