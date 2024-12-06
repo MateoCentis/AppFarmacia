@@ -15,11 +15,27 @@ namespace AppFarmacia.ViewModels
         [ObservableProperty]
         private ObservableCollection<Notificacion> listaNotificaciones = new();
 
+        [ObservableProperty]
+        private ObservableCollection<Notificacion> listaNotificacionesCompleta = new();
+
         [ObservableProperty]// 1 mes antes de hoy, para no trer todas las notificaciones
         private DateTime fechaInicio = DateTime.Now.AddMonths(-1);
 
         [ObservableProperty]
         private DateTime fechaFin = DateTime.Now;
+
+        private string textoBusqueda = string.Empty;
+        public string TextoBusqueda
+        {
+            get => textoBusqueda;
+            set
+            {
+                if (SetProperty(ref textoBusqueda, value))// Solo si hay diferencias
+                {
+                    ListaNotificaciones = new ObservableCollection<Notificacion>(ListaNotificacionesCompleta.Where(a => a.Titulo.Contains(TextoBusqueda, StringComparison.OrdinalIgnoreCase)).ToList());
+                }
+            }
+        }
 
         private readonly NotificacionesService NotificaiconesService;
         public PaginaNotificacionesViewModel()
@@ -36,7 +52,15 @@ namespace AppFarmacia.ViewModels
             try
             {
                 var notificaciones = await this.NotificaiconesService.GetNotificaciones(FechaFin, FechaInicio);
-                ListaNotificaciones = new ObservableCollection<Notificacion>(notificaciones);
+
+                // Ordenar por fecha y si es leído o no
+                var notificacionesOrdenadas = notificaciones
+                    .OrderBy(n => n.Leido) // Primero las no leídas
+                    .ThenByDescending(n => n.Fecha) // Luego por fecha descendente
+                    .ToList();
+
+                ListaNotificaciones = new ObservableCollection<Notificacion>(notificacionesOrdenadas);
+                ListaNotificacionesCompleta = new ObservableCollection<Notificacion>(notificacionesOrdenadas);
             }
             catch (Exception ex)
             {

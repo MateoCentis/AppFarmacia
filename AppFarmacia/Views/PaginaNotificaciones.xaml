@@ -18,16 +18,61 @@
         <viewModels:PaginaNotificacionesViewModel/>
     </uranium:UraniumContentPage.BindingContext>
 
-    <Grid RowDefinitions="Auto, *" Padding="10">
+    <Grid RowDefinitions="Auto, Auto, *" Padding="10">
         <!-- Encabezado -->
         <Label Text="Notificaciones"
                FontSize="24"
                FontAttributes="Bold"
                HorizontalOptions="Center"
-               VerticalOptions="Center" />
+               VerticalOptions="Center"
+               Grid.Row="0"/>
+
+
+        <StackLayout Orientation="Horizontal" HorizontalOptions="Fill" Margin="5,5,0,5" VerticalOptions="Center" Spacing="10" Grid.Row="1">
+
+            <material:DatePickerField Title="Fecha Inicio" 
+                                Icon="calendarline7.png"
+                                WidthRequest="200"
+                                AllowClear="False"
+                                HeightRequest="55"
+                                Date="{Binding FechaInicio}"
+                                Format="dd/MM/yyyy"/>
+            <!--Date="{Binding Fecha_Ingreso, Converter={StaticResource DateTimeToDateOnlyConverter}}"-->
+
+            <material:DatePickerField Title="Fecha Fin" 
+                                Icon="calendarline5.png"
+                                WidthRequest="200"
+                                HeightRequest="55"
+                                AllowClear="False"
+                                Date="{Binding FechaFin}"
+                                Format="dd/MM/yyyy"/>
+            <!--Date="{Binding Fecha_Ingreso, Converter={StaticResource DateTimeToDateOnlyConverter}}"-->
+
+
+            <Button Text="Filtrar"
+            Command="{Binding ObtenerNotificacionesCommand}"
+            StyleClass="FilledButton"
+            WidthRequest="115"
+            FontSize="Default"
+            Margin="0,5,0,0"
+            HeightRequest="50"
+            VerticalOptions="Center"/>
+
+            <material:AutoCompleteTextField Title="Búsqueda por nombre"
+                                Text="{Binding TextoBusqueda, Mode=TwoWay}"
+                                VerticalOptions="Center"
+                                WidthRequest="550"
+                                Margin="5,0,0,0"
+                                Icon="searchline2.png"
+                                HeightRequest="55"/>
+
+
+        </StackLayout>
+
+
 
         <!-- Lista de Notificaciones -->
-        <CollectionView Grid.Row="1"
+        <CollectionView Grid.Row="2"
                 ItemsSource="{Binding ListaNotificaciones}"
                 SelectionMode="None">
             <CollectionView.ItemTemplate>
@@ -42,15 +87,23 @@
                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:PaginaNotificacionesViewModel}}, Path=MarcarComoLeidaCommand}"
                                           CommandParameter="{Binding}" />
                         </Frame.GestureRecognizers>
-                        <VerticalStackLayout>
-                            <Label Text="{Binding Titulo}"
-                           FontSize="18"
-                           FontAttributes="Bold"
-                           TextColor="Black" />
-                            <Label Text="{Binding Detalle}"
-                           FontSize="14"
-                           TextColor="Gray" />
-                        </VerticalStackLayout>
+                        <HorizontalStackLayout>
+                            <!-- Mostramos la fecha de la notificacion -->
+                            <Label Text="{Binding Fecha}"
+                                   FontSize="14"
+                                   TextColor="Gray" 
+                                   Margin="0,0,20,0"/>
+                            <VerticalStackLayout>
+                                <Label Text="{Binding Titulo}"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="Black" />
+                                <Label Text="{Binding Detalle}"
+                                       FontSize="14"
+                                       TextColor="Gray" />
+                            </VerticalStackLayout>
+                        </HorizontalStackLayout>
+                        
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
