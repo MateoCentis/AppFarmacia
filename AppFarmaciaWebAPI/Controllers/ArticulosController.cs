@@ -22,30 +22,42 @@ namespace AppFarmaciaWebAPI.Controllers
         // GET: api/Articulos
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ArticuloDTO>>> GetArticulos(int size = 0)
-        {
-            var articulos = new List<Articulo>();
-            // Acá cambié para que muestre todos, no solo los activos, de última del front sacamos los no activos
-            if (size==0)
-            {
-                articulos = await _context.Articulos
-                 //.Include(a => a.Precios)
-                 //.Include(a => a.Vencimientos)
-                 //.Include(a => a.Stocks)
-                 //.Include(a => a.ArticulosEnVenta)
-                 .ToListAsync();
-            }
-            else
-            {
-                // Tomas los primero "size"
-                articulos = await _context.Articulos
-                    .Take(size)
-                    .ToListAsync();
-            }
-            
+        { //Cambié la query completamente por esta que trae los valores correspondientes 
+            var query = _context.Articulos
+                .Select(a => new ArticuloDTO
+                {
+                    IdArticulo = a.IdArticulo,
+                    Nombre = a.Nombre,
+                    Marca = a.Marca,
+                    Descripcion = a.Descripcion,
+                    Codigo = a.Codigo,
+                    IdCategoria = a.IdCategoria,
+                    Activo = a.Activo,
+                    Clasificacion = a.Clasificacion,
+                    DemandaAnual = a.DemandaAnual,
+                    PuntoReposicion = a.PuntoReposicion,
+                    CantidadAPedir = a.CantidadAPedir,
+                    DemandaAnualHistorica = a.DemandaAnualHistorica,
+                    NombresDrogas = a.NombresDrogas,
 
-            var articuloDTOs = _mapper.Map<IEnumerable<ArticuloDTO>>(articulos);
+                    // Proyección directa para obtener los últimos valores
+                    UltimoVencimiento = a.Vencimientos.OrderByDescending(v => v.Fecha).Select(v => v.Fecha).FirstOrDefault(),
+                    UltimoPrecio = a.Precios.OrderByDescending(p => p.Fecha).Select(p => p.Valor).FirstOrDefault(),
+                    UltimoStock = a.Stocks.OrderByDescending(s => s.Fecha).Select(s => s.CantidadActual).FirstOrDefault()
+                });
+
+            // Limitar el tamaño de los resultados si se especifica
+            if (size > 0)
+            {
+                query = query.Take(size);
+            }
+
+            var articuloDTOs = await query.ToListAsync();
+
             return Ok(articuloDTOs);
         }
+
+
         [HttpGet("ArticulosSugeridosParaComprar")]
         public async Task<ActionResult<IEnumerable<ArticuloDTO>>> GetArticulosSugeridosParaComprar()
         {

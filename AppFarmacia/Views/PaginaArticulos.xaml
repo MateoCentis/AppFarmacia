@@ -92,10 +92,9 @@
             <dg:DataGrid.Columns>
                 <dg:DataGridColumn Title="ID"  PropertyName="IdArticulo"/>
                 <dg:DataGridColumn Title="Nombre" PropertyName="Nombre"/>
-                <!--<dg:DataGridColumn Title="Marca" PropertyName="Marca"/>-->
                 <dg:DataGridColumn Title="Categoría" PropertyName="Categoria"/>
-                <dg:DataGridColumn Title="Stock" PropertyName="Stock"/>
-                <dg:DataGridColumn Title="Precio" PropertyName="PrecioActual"/>
+                <dg:DataGridColumn Title="Stock" PropertyName="UltimoStock"/>
+                <dg:DataGridColumn Title="Precio" PropertyName="UltimoPrecio"/>
                 <dg:DataGridColumn Title="Vencimiento" PropertyName="UltimoVencimiento"/>
                 <dg:DataGridColumn Title="Descripción" PropertyName="Descripcion"/>
             </dg:DataGrid.Columns>

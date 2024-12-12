@@ -62,6 +62,13 @@ namespace AppFarmacia.Models
         [JsonPropertyName("ultimoStock")]
         public int? UltimoStock { get; set; }
 
+        [JsonPropertyName("ultimoPrecio")]
+        public decimal? UltimoPrecio { get; set; }
+
+        [JsonPropertyName("ultimoVencimiento")]
+        public DateOnly? UltimoVencimiento { get; set; }
+
+
     }
 }
 

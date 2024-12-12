@@ -25,7 +25,9 @@ namespace AppFarmaciaWebAPI.ModelsDTO
         public int? DemandaAnualHistorica { get; set; }
         public string? NombresDrogas { get; set; }
         public DateOnly UltimoVencimiento { get; set; }
-        
+        public decimal UltimoPrecio { get; set; }
+        public int UltimoStock { get; set; }
+
         public ICollection<PrecioDTO> PreciosDTO { get; set; } = [];
         public ICollection<VencimientoDTO> VencimientosDTO { get; set; } = [];
         public ICollection<StockDTO> StocksDTO { get; set; } = [];
