@@ -4,20 +4,18 @@ using AppFarmacia.ViewModels;
 
 public partial class PaginaDetalleCompra : UraniumContentPage
 {
-    private readonly PaginaDetalleCompraViewModel viewModel;
-    public PaginaDetalleCompra(PaginaDetalleCompraViewModel viewModel)
+    public PaginaDetalleCompra()
 	{
 		InitializeComponent();
-        BindingContext = viewModel;
-        this.viewModel = viewModel;
     }
 
-    protected override async void OnAppearing()
+    protected async override void OnAppearing()
     {
         base.OnAppearing();
-        if (viewModel != null)
+        if (BindingContext is PaginaDetalleCompraViewModel vm)
         {
-            await this.viewModel.ObtenerDetalles();
+            await vm.ObtenerDetalles();
         }
     }
+
 }

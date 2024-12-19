@@ -12,30 +12,34 @@
     <uranium:UraniumContentPage.BindingContext>
         <viewModels:PaginaDetalleCompraViewModel/>
     </uranium:UraniumContentPage.BindingContext>
-    
+
     <!-- Agregar botón de realizar la compra y la tabla con los artículos (ver bien que poner)-->
     <Grid RowDefinitions="Auto,*">
-        
-        <Button Text="Realizar compra" 
-                StyleClass="FilledButton"
-                VerticalOptions="Center" 
-                HorizontalOptions="Start" 
-                Command="{Binding RealizarCompraCommand}"/>
+
+        <HorizontalStackLayout>
+            <ImageButton Source="arrowleftcircle.png" VerticalOptions="Center" HorizontalOptions="Start" Command="{Binding HaciaAtrasCommand}"/>
+            <Button Text="Realizar compra" 
+                    StyleClass="FilledButton"
+                    VerticalOptions="Center" 
+                    HorizontalOptions="Start"
+                    Margin="20,20,20,20"/>
+        </HorizontalStackLayout>
+
 
         <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ArticulosEnCompra}" 
               SelectionMode="Single" Style="{StaticResource TablaComun}">
-            <!-- Para cuando la página no tiene data para ver-->
+
             <dg:DataGrid.NoDataView>
                 <Label Text="Esta compra no tiene detalles" Style="{StaticResource VistaSinData}"/>
             </dg:DataGrid.NoDataView>
 
-            <!-- Ver bien que poner del artículo en compra y si poner algo más -->
+
             <dg:DataGrid.Columns>
                 <dg:DataGridColumn Title="Id Artículo" PropertyName="IdArticulo" />
                 <dg:DataGridColumn Title="Nombre" PropertyName="NombreArticulo"/>
-                <dg:DataGridColumn Title="Cantidad" PropertyName="Cantidad"/>
-                <dg:DataGridColumn Title="Precio" PropertyName="Precio"/>
-                <dg:DataGridColumn Title="Monto" PropertyName="Monto"/>
+                <dg:DataGridColumn Title="Cantidad encargada" PropertyName="Cantidad"/>
+                <dg:DataGridColumn Title="Motivo" PropertyName="MotivoCompra"/>
+                <dg:DataGridColumn Title="Stock actual" PropertyName="stockActual"/>
             </dg:DataGrid.Columns>
 
         </dg:DataGrid>

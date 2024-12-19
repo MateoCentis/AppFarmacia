@@ -78,7 +78,10 @@ namespace AppFarmaciaWebAPI.Mapping
             CreateMap<CompraDTO, Compra>();
 
             // Mapeo entre ArticuloEnCompra y ArticuloEnCompraDTO
-            CreateMap<ArticuloEnCompra, ArticuloEnCompraDTO>();
+            CreateMap<ArticuloEnCompra, ArticuloEnCompraDTO>()
+                .ForMember(dest => dest.NombreArticulo, opt => opt.MapFrom(src => src.IdArticuloNavigation.Nombre));
+
+
 
             // Mapeo entre ArticuloEnCompraDTO y ArticuloEnCompra
             CreateMap<ArticuloEnCompraDTO, ArticuloEnCompra>();

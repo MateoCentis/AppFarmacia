@@ -22,5 +22,11 @@ namespace AppFarmacia.Models
         public bool CompraConfirmada { get; set; }
 
         public ICollection<ArticuloEnCompra> ArticuloEnCompra { get; set; } = [];
+
+        // Dividir entre fecha y hora
+        public string FechaStr => Fecha.ToString("dd/MM/yyyy");
+        public string HoraStr => Fecha.ToString("HH:mm:ss");
+
+
     }
 }

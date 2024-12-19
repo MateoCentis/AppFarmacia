@@ -60,24 +60,32 @@
         
         <!-- Grilla con compras -->
         <dg:DataGrid ItemsSource="{Binding ListaCompras}" 
-                     SelectionMode="Single" SelectedItem="{Binding CompraSeleccionada}"
-                     Style="{StaticResource TablaComun}" Margin="5,0,5,0"
-                     PaginationEnabled="{Binding PaginationEnabled}" PageSize="{Binding SizePagina}" Grid.Row="1">
+             SelectionMode="Single" SelectedItem="{Binding CompraSeleccionada}"
+             Style="{StaticResource TablaComun}" Margin="5,0,5,0"
+             PaginationEnabled="{Binding PaginationEnabled}" PageSize="{Binding SizePagina}" Grid.Row="1">
 
             <dg:DataGrid.NoDataView>
                 <Label Text="No existen compras cargadas aún" Style="{StaticResource VistaSinData}"/>
             </dg:DataGrid.NoDataView>
 
             <dg:DataGrid.Columns>
-                <dg:DataGridColumn Title="Fecha" PropertyName="Fecha"/>
-                <dg:DataGridColumn Title="Hora" PropertyName="Hora"/>
-                <dg:DataGridColumn Title="Monto total" PropertyName="MontoTotal"/>
-                <!-- Acá va la columna checkbox (mm)-->
-                <dg:DataGridColumn Title="Realizada" PropertyName="CompraConfirmada"
-                               StringFormat="{Binding CompraConfirmada, Converter={StaticResource BoolToCheckConverter}}"/>
+                <dg:DataGridColumn Title="Fecha" PropertyName="FechaStr"/>
+                <dg:DataGridColumn Title="Hora" PropertyName="HoraStr"/>
+
+                <!-- Columna personalizada con una celda que usa el convertidor -->
+                <dg:DataGridColumn Title="Realizada">
+                    <dg:DataGridColumn.CellTemplate>
+                        <DataTemplate>
+                            <Label Text="{Binding CompraConfirmada, Converter={StaticResource BoolToCheckConverter}}" 
+                           HorizontalOptions="Center" VerticalOptions="Center" />
+                        </DataTemplate>
+                    </dg:DataGridColumn.CellTemplate>
+                </dg:DataGridColumn>
             </dg:DataGrid.Columns>
 
         </dg:DataGrid>
+
+
     </Grid>
 
 </uranium:UraniumContentPage>

@@ -11,4 +11,7 @@ public class ArticuloEnCompraDTO
     public int IdCompra { get; set; }
 
     public string? MotivoCompra { get; set; }
+
+    public string NombreArticulo { get; set; } = null!;
+
 }

@@ -1,40 +1,54 @@
 ﻿using AppFarmacia.Models;
 using AppFarmacia.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
-namespace AppFarmacia.ViewModels;
+using CommunityToolkit.Mvvm.Input;
 
-[QueryProperty(nameof(IdCompra), "idCompra")]
-public partial class PaginaDetalleCompraViewModel : ObservableObject
+namespace AppFarmacia.ViewModels
 {
-    //Falta implementar el servicio
-    private readonly ArticuloCompraService ArticuloCompraService;
-
-    [ObservableProperty]
-    private int idCompra;
-
-    [ObservableProperty]
-    private List<ArticuloEnCompra> articulosEnCompra = [];
-
-    public PaginaDetalleCompraViewModel()
+    [QueryProperty(nameof(IdCompra), "idCompra")]
+    public partial class PaginaDetalleCompraViewModel : ObservableObject
     {
-        ArticuloCompraService = new ArticuloCompraService();
-    }
+        //Falta implementar el servicio
+        private readonly ArticuloCompraService ArticuloCompraService;
 
-    public async Task ObtenerDetalles()
-    {
-        try
+        [ObservableProperty]
+        private int idCompra;
+
+        [ObservableProperty]
+        private List<ArticuloEnCompra> articulosEnCompra = [];
+
+        public PaginaDetalleCompraViewModel()
         {
-            ArticulosEnCompra.Clear();
-            var articulosDetalle = await ArticuloCompraService.GetArticulosEnCompraPorId(IdCompra);
-            foreach (var articulo in articulosDetalle)
+            ArticuloCompraService = new ArticuloCompraService();
+
+        }
+
+        public async Task ObtenerDetalles()
+        {
+            try
             {
-                articulo.calcularMonto(); // Llama al método para calcular el monto
+                ArticulosEnCompra.Clear();
+                var articulosDetalle = await ArticuloCompraService.GetArticulosEnCompraPorId(IdCompra);
+                foreach (var articulo in articulosDetalle)
+                {
+                    articulo.ObtenerStockActual(); // Llama al método para calcular el monto
+                }
+                ArticulosEnCompra = new List<ArticuloEnCompra>(articulosDetalle);
             }
-            ArticulosEnCompra = new List<ArticuloEnCompra>(articulosDetalle);
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
+            }
         }
-        catch (Exception ex)
+
+
+        [RelayCommand]
+        static async Task HaciaAtras()
         {
-            await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
+            await Shell.Current.GoToAsync("..");
         }
+
     }
 }
+
+

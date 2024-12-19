@@ -2,10 +2,11 @@
 using System.Text.Json.Serialization;
 namespace AppFarmacia.Models;
 
+using AppFarmacia.Services;
+
 public class ArticuloEnCompra : ObservableObject
 {
-    private int _cantidad;
-    private decimal _monto;
+    private readonly StockService stockService = new();
 
     [JsonPropertyName("idArticuloCompra")]
     public int IdArticuloCompra { get; set; }
@@ -17,40 +18,23 @@ public class ArticuloEnCompra : ObservableObject
     public int IdCompra { get; set; }
 
     [JsonPropertyName("cantidad")]
-    public int Cantidad
-    {
-        get => _cantidad;
-        set
-        {
-            if (SetProperty(ref _cantidad, value))
-            {
-                calcularMonto();
-            }
-        }
-    }
+    public int Cantidad { get; set; }
 
     [JsonPropertyName("motivoCompra")]
     public string MotivoCompra { get; set; } = null!;
 
-    public int CantidadFaltante { get; set; }
+    [JsonPropertyName("nombreArticulo")]
+    public string NombreArticulo { get; set; } = null!;
 
     public int CantidadSugerida { get; set; }
+    public int CantidadFaltante { get; set; }
 
-    
+    public int stockActual { get; set; }
 
-    // Si bien todo esto es medio cualquier cosa (lo del precio capaz no iría)
-    public decimal Costo { get; set; }
-
-    public string? NombreArticulo { get; set; }
-
-    public decimal Monto
+    public async Task ObtenerStockActual()
     {
-        get => _monto;
-        private set => SetProperty(ref _monto, value);
+        var stock = await stockService.GetUltimoStockPorArticulo(IdArticulo);
+        stockActual = stock?.CantidadActual ?? 0;
     }
 
-    public void calcularMonto()
-    {
-        this.Monto = this.Costo * this.Cantidad;
-    }
 }
