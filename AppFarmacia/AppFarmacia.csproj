@@ -1,17 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
-		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
-		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
-		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
-
-		<!-- Note for MacCatalyst:
-		The default runtime is maccatalyst-x64, except in Release config, in which case the default is maccatalyst-x64;maccatalyst-arm64.
-		When specifying both architectures, use the plural <RuntimeIdentifiers> instead of the singular <RuntimeIdentifier>.
-		The Mac App Store will NOT accept apps with ONLY maccatalyst-arm64 indicated;
-		either BOTH runtimes must be indicated or ONLY macatalyst-x64. -->
-		<!-- For example: <RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers> -->
+		<!-- Solo Windows -->
+		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
 
 		<OutputType>Exe</OutputType>
 		<RootNamespace>AppFarmacia</RootNamespace>
@@ -30,84 +21,17 @@
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
 
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
-		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<!-- App Icon -->
+		<!-- Icon, splash, images, fonts, assets -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
-
-		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
-
-		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
-
-		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
-
-		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Remove="Resources\Fonts\Lexend-Black.ttf" />
-	  <None Remove="Resources\Fonts\Lexend-Bold.ttf" />
-	  <None Remove="Resources\Fonts\Lexend-Medium.ttf" />
-	  <None Remove="Resources\Fonts\Lexend-Regular.ttf" />
-	  <None Remove="Resources\Fonts\times.ttf" />
-	  <None Remove="Resources\Fonts\timesbd.ttf" />
-	  <None Remove="Resources\Images\alignjustify.svg" />
-	  <None Remove="Resources\Images\arrowleftcircle.svg" />
-	  <None Remove="Resources\Images\barchart.svg" />
-	  <None Remove="Resources\Images\barcharthorizontal.svg" />
-	  <None Remove="Resources\Images\box.svg" />
-	  <None Remove="Resources\Images\calculator.svg" />
-	  <None Remove="Resources\Images\calculatorline.svg" />
-	  <None Remove="Resources\Images\calendarline.svg" />
-	  <None Remove="Resources\Images\calendarline2.svg" />
-	  <None Remove="Resources\Images\calendarline3.svg" />
-	  <None Remove="Resources\Images\calendarline4.svg" />
-	  <None Remove="Resources\Images\calendarline5.svg" />
-	  <None Remove="Resources\Images\calendarline6.svg" />
-	  <None Remove="Resources\Images\calendarline7.svg" />
-	  <None Remove="Resources\Images\capsulafill.svg" />
-	  <None Remove="Resources\Images\descripcion.svg" />
-	  <None Remove="Resources\Images\descuento.svg" />
-	  <None Remove="Resources\Images\donutchartfill.svg" />
-	  <None Remove="Resources\Images\farmaciaaput.png" />
-	  <None Remove="Resources\Images\graficolineaslleno.svg" />
-	  <None Remove="Resources\Images\graficotorta.svg" />
-	  <None Remove="Resources\Images\layers.svg" />
-	  <None Remove="Resources\Images\medicinebottleline.svg" />
-	  <None Remove="Resources\Images\motivo.svg" />
-	  <None Remove="Resources\Images\notification.svg" />
-	  <None Remove="Resources\Images\pluscircle.svg" />
-	  <None Remove="Resources\Images\pricetag.png" />
-	  <None Remove="Resources\Images\refrescar.svg" />
-	  <None Remove="Resources\Images\refresh.svg" />
-	  <None Remove="Resources\Images\save.svg" />
-	  <None Remove="Resources\Images\searchline.svg" />
-	  <None Remove="Resources\Images\searchline2.svg" />
-	  <None Remove="Resources\Images\searchmenuline.svg" />
-	  <None Remove="Resources\Images\settings.svg" />
-	  <None Remove="Resources\Images\settingss.svg" />
-	  <None Remove="Resources\Images\shoppingbag.svg" />
-	  <None Remove="Resources\Images\shoppingcart.svg" />
-	  <None Remove="Resources\Images\sidebar.svg" />
-	  <None Remove="Resources\Images\stackelementos.svg" />
-	  <None Remove="Resources\Images\tool.svg" />
-	  <None Remove="Resources\Images\user.svg" />
-	  <None Remove="Resources\Images\usercheck.svg" />
-	  <None Remove="Resources\Images\userminus.svg" />
-	  <None Remove="Resources\Images\userplus.svg" />
-	  <None Remove="Resources\Images\userx.svg" />
-	  <None Remove="Resources\Images\xcircle.svg" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -120,79 +44,20 @@
 		<PackageReference Include="Microcharts.Maui" Version="1.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.63.0" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.80" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.80" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.100" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.100" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
 		<PackageReference Include="PdfSharpCore" Version="1.3.65" />
-		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="2.88.8" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="2.88.9" />
 		<PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
 		<PackageReference Include="UraniumUI.Material" Version="2.10.2" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <MauiXaml Update="Resources\Styles\MyStyles.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\PaginaArticuloInformacion.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\PaginaArticulos.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\PaginaCompras.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\PaginaConfiguracion.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\PaginaDetalleCompra.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\PaginaDetalleVenta.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\PaginaGeneracionOrden.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\PaginaGraficos.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\PaginaNotificaciones.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\PaginaPrediccionStock.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\PaginaSpinnerPopup.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\PaginaVentas.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <MauiAsset Include="Resources\AppIcon\appicon.svg" />
-	  <MauiAsset Include="Resources\AppIcon\appiconfg.svg" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Update="Configuration\configuracion.txt">
-	    <CustomToolNamespace></CustomToolNamespace>
-	  </None>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
 	</ItemGroup>
 
 </Project>
