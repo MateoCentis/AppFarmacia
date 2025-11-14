@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microcharts;
 using SkiaSharp;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace AppFarmacia.ViewModels;
 
@@ -38,6 +39,9 @@ public partial class PaginaArticuloInformacionViewModel : ObservableObject
     [ObservableProperty]
     private int yearSeleccionado = DateTime.Now.Year;
 
+    [ObservableProperty]
+    private bool estaCargando;
+
     private readonly List<string> Meses = new List<string>
     {
         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
@@ -62,18 +66,56 @@ public partial class PaginaArticuloInformacionViewModel : ObservableObject
             IdArticulo = value.IdArticulo;
             NombreArticulo = value.Nombre;
 
-            // Obtengo precios y vencimientos a partir del IdArticulo
-            Task.Run(async () => await CargarListasArticulo());
+            // Cargar datos de forma asíncrona y optimizada
+            _ = CargarListasArticuloAsync();
         }
     }
 
-    private async Task CargarListasArticulo()
+    private async Task CargarListasArticuloAsync()
     {
-        PreciosArticulo = await PrecioService.GetPreciosArticulo(IdArticulo);
-        VencimientosArticulo = await VencimientoService.GetVencimientosArticulo(IdArticulo);
-        DemandasMensuales = await ArticuloService.GetDemandasMensualesArticulo(IdArticulo, YearSeleccionado);
-        // Una vez que tengo las demandas genero el gráfico
-        GenerarGraficoDemandas();
+        try
+        {
+            EstaCargando = true;
+
+            // Cargar los tres datos en paralelo para mejorar el rendimiento
+            var preciosTask = PrecioService.GetPreciosArticulo(IdArticulo);
+            var vencimientosTask = VencimientoService.GetVencimientosArticulo(IdArticulo);
+            var demandasTask = ArticuloService.GetDemandasMensualesArticulo(IdArticulo, YearSeleccionado);
+
+            // Esperar a que todas las tareas se completen
+            await Task.WhenAll(preciosTask, vencimientosTask, demandasTask);
+
+            // Actualizar propiedades en el hilo principal
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                PreciosArticulo = preciosTask.Result;
+                VencimientosArticulo = vencimientosTask.Result;
+                DemandasMensuales = demandasTask.Result;
+
+                // Generar el gráfico siempre, incluso si todos los valores son cero
+                // Esto asegura que el gráfico se muestre aunque no haya datos
+                if (DemandasMensuales != null && DemandasMensuales.Count >= 12)
+                {
+                    GenerarGraficoDemandas();
+                }
+                else
+                {
+                    // Si no hay suficientes datos, crear un gráfico con valores por defecto (ceros)
+                    DemandasMensuales = Enumerable.Repeat(0, 12).ToList();
+                    GenerarGraficoDemandas();
+                }
+
+                EstaCargando = false;
+            });
+        }
+        catch (Exception ex)
+        {
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                EstaCargando = false;
+                Shell.Current.DisplayAlert("Error", $"Error al cargar los datos del artículo: {ex.Message}", "OK");
+            });
+        }
     }
 
     [RelayCommand]
@@ -87,16 +129,30 @@ public partial class PaginaArticuloInformacionViewModel : ObservableObject
     [RelayCommand]
     private void GenerarGraficoDemandas()
     {
+        // Validar que tenemos datos suficientes
+        if (DemandasMensuales == null || DemandasMensuales.Count < 12)
+        {
+            // Si no hay datos, crear un gráfico con ceros
+            DemandasMensuales = Enumerable.Repeat(0, 12).ToList();
+        }
+
         //Definir las entries del gráfico
         var entries = new List<ChartEntry>();
+        var maxDemanda = DemandasMensuales.Any() ? DemandasMensuales.Max() : 1;
 
-        for (int i = 0; i < this.Meses.Count; ++i)
+        for (int i = 0; i < this.Meses.Count && i < DemandasMensuales.Count; ++i)
         {
-            var entry = new ChartEntry(DemandasMensuales[i])
+            var demanda = DemandasMensuales[i];
+            // Usar un color más suave cuando el valor es cero
+            var color = demanda > 0 
+                ? SKColor.Parse(GetColorForIndex(i)) 
+                : SKColor.Parse("#CCCCCC"); // Gris claro para valores cero
+            
+            var entry = new ChartEntry(demanda)
             {
                 Label = Meses[i],
-                ValueLabel = DemandasMensuales[i].ToString(),
-                Color = SKColor.Parse(GetColorForIndex(i))
+                ValueLabel = demanda.ToString(),
+                Color = color
             };
             entries.Add(entry);
         }
@@ -124,8 +180,10 @@ public partial class PaginaArticuloInformacionViewModel : ObservableObject
             // Colores
             EnableYFadeOutGradient = false,
             BackgroundColor = SKColor.Parse("FFFFFF"),
+            // Asegurar que el gráfico se muestre incluso si todos los valores son cero
+            MinValue = 0,
+            MaxValue = maxDemanda > 0 ? maxDemanda : 10, // Si todos son cero, usar un máximo de 10 para que se vea el gráfico
         };
-
     }
 
     private string GetColorForIndex(int index)

@@ -2,6 +2,7 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              x:Class="AppFarmacia.Resources.Styles.MyStyles">
 
     <Style TargetType="Entry" x:Key="EntryComun">
@@ -177,6 +178,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+
 
 
 

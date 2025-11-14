@@ -140,29 +140,21 @@ namespace AppFarmaciaWebAPI.Controllers
         [HttpGet("{id}/Demandas/{year}")]
         public async Task<ActionResult<List<int>>> GetDemandaMensual(int id, int year)
         {
-            // Nos traemos las ventas que tienen artículos en venta con ese id de artículo
-            var ventas = await _context.Ventas
-                .Where(v => _context.ArticulosEnVenta.Any(aev => aev.IdArticulo == id && aev.IdVenta == v.IdVenta))
-                .Where(v => v.Fecha.Year == year)
-                .ToListAsync();
-
-            if (ventas == null || ventas.Count == 0)
-            {
-                return NotFound();
-            }
-
+            // Inicializar la lista de demanda mensual con ceros
             var demandaMensual = Enumerable.Repeat(0, 12).ToList();
 
-            var articulosEnVenta = await _context.ArticulosEnVenta
-                .Where(aev => aev.IdArticulo == id && ventas.Select(v => v.IdVenta).Contains(aev.IdVenta))
-                .ToListAsync();
-
-            // Agrupa los artículos en venta por mes de la fecha de la venta y cuenta la cantidad de artículos vendidos en cada mes
-            var cantidadesPorMes = articulosEnVenta
-                .Join(ventas, aev => aev.IdVenta, v => v.IdVenta, (aev, v) => new { aev, v.Fecha })
+            // Consulta optimizada: hacer todo en una sola consulta SQL
+            // Agrupa directamente en la base de datos por mes y suma las cantidades
+            var cantidadesPorMes = await _context.ArticulosEnVenta
+                .Where(aev => aev.IdArticulo == id)
+                .Join(_context.Ventas,
+                    aev => aev.IdVenta,
+                    v => v.IdVenta,
+                    (aev, v) => new { aev.Cantidad, v.Fecha })
+                .Where(av => av.Fecha.Year == year)
                 .GroupBy(av => av.Fecha.Month)
-                .Select(g => new { Mes = g.Key, Cantidad = g.Count() })
-                .ToList();
+                .Select(g => new { Mes = g.Key, Cantidad = g.Sum(av => av.Cantidad) })
+                .ToListAsync();
 
             // Actualiza la lista de demanda mensual con las cantidades
             foreach (var cantidad in cantidadesPorMes)
@@ -170,6 +162,7 @@ namespace AppFarmaciaWebAPI.Controllers
                 demandaMensual[cantidad.Mes - 1] = cantidad.Cantidad; // Mes - 1 porque la lista es 0-indexada
             }
 
+            // Siempre retornar la lista, incluso si está vacía (con ceros)
             return Ok(demandaMensual);
         }
 

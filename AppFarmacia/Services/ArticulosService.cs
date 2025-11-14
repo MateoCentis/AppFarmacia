@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
 using AppFarmacia.Models;
+using System.Linq;
 
 namespace AppFarmacia.Services
 {
@@ -56,15 +57,27 @@ namespace AppFarmacia.Services
 
         public async Task<List<int>> GetDemandasMensualesArticulo(int id, int year)
         {
-            var demandas = new List<int>();
-            var respuesta = await httpClient.GetAsync($"{CadenaConexion}/Articulos/{id}/Demandas/{year}");
-
-            if (respuesta.IsSuccessStatusCode)
+            try
             {
-                demandas = await respuesta.Content.ReadFromJsonAsync<List<int>>() ?? [];
-            }
+                var respuesta = await httpClient.GetAsync($"{CadenaConexion}/Articulos/{id}/Demandas/{year}");
 
-            return demandas;
+                if (respuesta.IsSuccessStatusCode)
+                {
+                    var demandas = await respuesta.Content.ReadFromJsonAsync<List<int>>(jsonOptions);
+                    // Si la respuesta es exitosa pero no hay datos, retornar lista con 12 ceros
+                    return demandas ?? Enumerable.Repeat(0, 12).ToList();
+                }
+                else
+                {
+                    // Para cualquier error (404, 500, etc.), retornar lista con ceros
+                    return Enumerable.Repeat(0, 12).ToList();
+                }
+            }
+            catch (Exception)
+            {
+                // En caso de error de red u otro, retornar lista con ceros para evitar crashes
+                return Enumerable.Repeat(0, 12).ToList();
+            }
         }
 
         public async Task<List<Articulo>> GetArticulosSugeridosParaComprar()

@@ -212,14 +212,19 @@ namespace AppFarmaciaWebAPI.Controllers
                     .ToListAsync();
                 */
                 
+                // Consulta optimizada: hacer el join explícitamente para evitar problemas de navegación
                 var ventasPorMes = await _context.ArticulosEnVenta
-                    .Where(a => a.IdVentaNavigation.Fecha.Year == year)
+                    .Join(_context.Ventas,
+                        articulo => articulo.IdVenta,
+                        venta => venta.IdVenta,
+                        (articulo, venta) => new { Articulo = articulo, Venta = venta })
+                    .Where(v => v.Venta.Fecha.Year == year)
                     .AsNoTracking()
-                    .GroupBy(a => a.IdVentaNavigation.Fecha.Month)
+                    .GroupBy(v => v.Venta.Fecha.Month)
                     .Select(g => new
                     {
                         Mes = g.Key,
-                        TotalCantidadVendida = g.Sum(a => a.Cantidad)
+                        TotalCantidadVendida = g.Sum(v => v.Articulo.Cantidad)
                     })
                     .ToListAsync();
                 

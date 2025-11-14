@@ -50,6 +50,7 @@ namespace AppFarmacia
             builder.Services.AddTransient<PaginaArticuloInformacionViewModel>();
 
             //Servicios
+            builder.Services.AddSingleton<LoggerService>();
             builder.Services.AddSingleton<VentasService>();
             builder.Services.AddSingleton<ArticulosService>();
             builder.Services.AddSingleton<CategoriasService>();

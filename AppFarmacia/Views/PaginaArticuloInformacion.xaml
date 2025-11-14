@@ -15,10 +15,9 @@
 
     <ScrollView VerticalOptions="FillAndExpand" Orientation="Vertical" Scrolled="ScrollView_Scrolled">
         <!-- Grilla de toda la pantalla-->
-        <Grid RowDefinitions="Auto,Auto,*">
-            <ImageButton Source="arrowleftcircle.png" VerticalOptions="Center" HorizontalOptions="Start" Command="{Binding HaciaAtrasCommand}"/>
+        <Grid RowDefinitions="Auto,*">
             <!-- Grilla para las dos tablas-->
-            <Grid ColumnDefinitions="*,*" Grid.Row="1">
+            <Grid ColumnDefinitions="*,*" Grid.Row="0">
 
                 <Frame Grid.Column="0" Style="{StaticResource FrameGrafico}" Margin="5,5,5,5" BackgroundColor="White" MaximumHeightRequest="700">
                     <VerticalStackLayout  HorizontalOptions="FillAndExpand" VerticalOptions="StartAndExpand" Spacing="5">
@@ -57,7 +56,7 @@
                     </VerticalStackLayout>
                 </Frame>
             </Grid>
-            <Frame Style="{StaticResource FrameGrafico}" Grid.Row="2" Margin="5,10,5,10" BackgroundColor="White">
+            <Frame Style="{StaticResource FrameGrafico}" Grid.Row="1" Margin="5,10,5,10" BackgroundColor="White">
                 <VerticalStackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"> 
                     <Label Text="{Binding NombreArticulo, StringFormat='Demanda mensual de {0}'}" Style="{StaticResource TituloGrafico}" FontSize="Medium"/>
                     <micro:ChartView Chart="{Binding DemandaMensualChart}" HeightRequest="450"/>

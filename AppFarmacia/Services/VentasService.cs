@@ -7,7 +7,9 @@ using AppFarmacia.Models;
 // Tipos de datos para obtener las respuestas de la API ---------------------------------------------
 public class VentaMesDto
 {
+    [JsonPropertyName("mes")]
     public int Mes { get; set; }
+    [JsonPropertyName("totalCantidadVendida")]
     public int TotalCantidadVendida { get; set; }
 }
 
@@ -73,10 +75,22 @@ namespace AppFarmacia.Services
     {
         private List<Venta>? Ventas = [];
         private readonly HttpClient httpClient;
+        private readonly LoggerService? logger;
         private const string CadenaConexion = "http://localhost:83/api";
-        public VentasService()
+        
+        // Opciones JSON para deserialización correcta
+        private static readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions
         {
-            this.httpClient = new HttpClient();
+            PropertyNameCaseInsensitive = true // Permite mapeo flexible, JsonPropertyName tiene prioridad
+        };
+        
+        public VentasService(LoggerService? logger = null)
+        {
+            this.httpClient = new HttpClient
+            {
+                Timeout = TimeSpan.FromMinutes(5) // Configurar timeout en el constructor
+            };
+            this.logger = logger ?? new LoggerService();
         }
 
         public async Task<List<Venta>> GetVentas(DateTime fechaInicio, DateTime fechaFin)
@@ -124,13 +138,51 @@ namespace AppFarmacia.Services
         {
             try
             {
-                httpClient.Timeout = TimeSpan.FromMinutes(5);
-                var response = await httpClient.GetAsync($"{CadenaConexion}/Ventas/cantidad-por-mes/{year}");
-                response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<List<VentaMesDto>>() ?? [];
+                logger?.LogInfo($"GetCantidadVendidaPorMes: Iniciando solicitud para año {year}");
+                
+                // Timeout ya está configurado en el constructor, no se puede cambiar después de usar el cliente
+                var url = $"{CadenaConexion}/Ventas/cantidad-por-mes/{year}";
+                logger?.LogDebug($"GetCantidadVendidaPorMes: URL: {url}");
+                
+                var response = await httpClient.GetAsync(url);
+                
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    logger?.LogError($"Error en API: {response.StatusCode} - {errorContent}");
+                    System.Diagnostics.Debug.WriteLine($"Error en API: {response.StatusCode} - {errorContent}");
+                    throw new Exception($"Error en la solicitud: {response.StatusCode} - {errorContent}");
+                }
+                
+                // Leer el contenido JSON como string primero para logging
+                var jsonContent = await response.Content.ReadAsStringAsync();
+                logger?.LogInfo($"Respuesta JSON recibida para año {year}: {jsonContent}");
+                System.Diagnostics.Debug.WriteLine($"Respuesta JSON recibida para año {year}: {jsonContent}");
+                
+                // Deserializar desde el string
+                var result = JsonSerializer.Deserialize<List<VentaMesDto>>(jsonContent, jsonOptions) ?? [];
+                
+                logger?.LogInfo($"Datos deserializados: {result.Count} registros");
+                System.Diagnostics.Debug.WriteLine($"Datos deserializados: {result.Count} registros");
+                
+                foreach (var item in result)
+                {
+                    logger?.LogDebug($"  - Mes: {item.Mes}, TotalCantidadVendida: {item.TotalCantidadVendida}");
+                    System.Diagnostics.Debug.WriteLine($"  - Mes: {item.Mes}, TotalCantidadVendida: {item.TotalCantidadVendida}");
+                }
+                
+                if (result.Count == 0)
+                {
+                    logger?.LogWarning($"No se recibieron datos para el año {year}");
+                }
+                
+                return result;
             }
             catch (Exception ex)
             {
+                logger?.LogError($"Excepción en GetCantidadVendidaPorMes: {ex.Message}", ex);
+                System.Diagnostics.Debug.WriteLine($"Excepción en GetCantidadVendidaPorMes: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
                 throw new Exception($"Error en la solicitud: {ex.Message}");
             }
             

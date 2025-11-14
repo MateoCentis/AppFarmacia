@@ -11,6 +11,7 @@ using AppFarmacia.Services;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Azure;
+using Microsoft.Maui.ApplicationModel;
 
 namespace AppFarmacia.ViewModels
 {
@@ -25,6 +26,9 @@ namespace AppFarmacia.ViewModels
 
         [ObservableProperty]
         private LineChart? ventasMensualesChart;
+
+        [ObservableProperty]
+        private bool estaCargandoVentasMensuales;
 
         //Propiedades - Gráfico VENTAS DIARIAS --------------------------------------------
         [ObservableProperty]
@@ -132,6 +136,7 @@ namespace AppFarmacia.ViewModels
         public List<int> YearsDisponibles { get; } = Enumerable.Range(2017, 13).ToList(); // Años desde 2017 hasta 2030
 
         private readonly VentasService VentaService;
+        private readonly LoggerService? logger;
 
         private readonly int ValueLabelSize = 16;
         private readonly int LineSize = 6;
@@ -155,70 +160,232 @@ namespace AppFarmacia.ViewModels
             YearSeleccionadoArticulosMasVendidos = DateTime.Now.Year;
             NombreMesSeleccionadoArticulosMasVendidos = Meses[MesSeleccionadoArticulosMasVendidos - 1];
 
-            VentaService = new VentasService();
+            logger = new LoggerService();
+            VentaService = new VentasService(logger);
 
             // TODO: Inicializar los gráficos (tirar los comandos necesarios o hacerlo bien -> que paja)
 
-            Task.Run(async () => await GenerarGraficoVentasDiarias());
-            Task.Run(async () => await GenerarGraficoVentasMensuales());
-            Task.Run(async () => await GenerarGraficoCategorias());
-            Task.Run(async () => await GenerarGraficoHorarios());
-            Task.Run(async () => await GenerarGraficoFacturacionMensual());
-            Task.Run(async () => await LlenarTablaArticulosMasVendidos());
-            Task.Run(async () => await GenerarGraficoHistoricoFarmacia());
+            Task.Run(async () => 
+            {
+                await GenerarGraficoVentasDiarias();
+                await GenerarGraficoVentasMensuales();
+                await GenerarGraficoCategorias();
+                await GenerarGraficoHorarios();
+                await GenerarGraficoFacturacionMensual();
+                await LlenarTablaArticulosMasVendidos();
+                await GenerarGraficoHistoricoFarmacia();
+                
+                // Marcar como inicializado después de cargar todos los gráficos
+                _isInitialized = true;
+            });
         }
 
+
+        // Método que se ejecuta cuando cambia el año seleccionado
+        partial void OnYearSeleccionadoGraficoVentasMensualesChanged(int value)
+        {
+            // Solo regenerar el gráfico si ya se inicializó (evitar ejecución durante la inicialización)
+            if (_isInitialized && value > 0)
+            {
+                // Regenerar el gráfico cuando cambia el año
+                _ = GenerarGraficoVentasMensualesAsync();
+            }
+        }
 
         //--------------Gráfico que muestra monto total de ventas por mes para un determinado año--------------------
         [RelayCommand]
         private async Task GenerarGraficoVentasMensuales()
         {
-            // Llama a la API que obtiene las ventas mensuales para el año seleccionado
-            var ventasPorMes = await VentaService.GetCantidadVendidaPorMes(YearSeleccionadoGraficoVentasMensuales);
+            await GenerarGraficoVentasMensualesAsync();
+        }
 
-            var ventasMonto = new float[12];
-
-            // Asignar los valores obtenidos al array de ventas
-            foreach (var venta in ventasPorMes)
+        private async Task GenerarGraficoVentasMensualesAsync()
+        {
+            try
             {
-                ventasMonto[venta.Mes - 1] = venta.TotalCantidadVendida;
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    EstaCargandoVentasMensuales = true;
+                });
+
+                // Llama a la API que obtiene las ventas mensuales para el año seleccionado
+                var ventasPorMes = await VentaService.GetCantidadVendidaPorMes(YearSeleccionadoGraficoVentasMensuales);
+
+                var ventasMonto = new float[12];
+
+                // Asignar los valores obtenidos al array de ventas
+                if (ventasPorMes != null && ventasPorMes.Any())
+                {
+                    foreach (var venta in ventasPorMes)
+                    {
+                        // Validar que el mes esté en el rango correcto
+                        if (venta.Mes >= 1 && venta.Mes <= 12)
+                        {
+                            // Asignar la cantidad vendida (convertir a float)
+                            ventasMonto[venta.Mes - 1] = (float)venta.TotalCantidadVendida;
+                        }
+                    }
+                }
+                else
+                {
+                    // Si no hay datos, inicializar con ceros
+                    for (int i = 0; i < 12; i++)
+                    {
+                        ventasMonto[i] = 0f;
+                    }
+                }
+
+                // Debug: verificar que los datos se están recibiendo
+                logger?.LogInfo($"GenerarGraficoVentasMensualesAsync: Año seleccionado: {YearSeleccionadoGraficoVentasMensuales}");
+                logger?.LogInfo($"Cantidad de registros recibidos: {ventasPorMes?.Count ?? 0}");
+                System.Diagnostics.Debug.WriteLine($"Año seleccionado: {YearSeleccionadoGraficoVentasMensuales}");
+                System.Diagnostics.Debug.WriteLine($"Cantidad de registros recibidos: {ventasPorMes?.Count ?? 0}");
+                
+                if (ventasPorMes != null && ventasPorMes.Any())
+                {
+                    foreach (var v in ventasPorMes)
+                    {
+                        logger?.LogDebug($"Mes: {v.Mes}, Cantidad: {v.TotalCantidadVendida}");
+                        System.Diagnostics.Debug.WriteLine($"Mes: {v.Mes}, Cantidad: {v.TotalCantidadVendida}");
+                    }
+                }
+                
+                logger?.LogInfo($"Array ventasMonto: [{string.Join(", ", ventasMonto)}]");
+                System.Diagnostics.Debug.WriteLine($"Array ventasMonto: [{string.Join(", ", ventasMonto)}]");
+
+                // Calcular el máximo para asegurar que el gráfico se muestre correctamente
+                // Si todos los valores son 0, usar un máximo de 10 para que el gráfico se vea
+                var maxVentas = ventasMonto.Max() > 0 ? ventasMonto.Max() : 10;
+
+                // Crear las entradas del gráfico
+                var entries = new List<ChartEntry>();
+                for (int i = 0; i < 12; i++)
+                {
+                    var value = ventasMonto[i];
+                    // Asegurar que el valor sea al menos 0.1 para que se vea en el gráfico cuando es cero
+                    // Esto ayuda a que la línea se muestre en la parte inferior del gráfico
+                    var displayValue = value > 0 ? value : 0f;
+                    entries.Add(new ChartEntry(displayValue)
+                    {
+                        Label = Meses[i],
+                        ValueLabel = value.ToString("F0"),
+                        Color = value > 0 ? SKColor.Parse("#3498db") : SKColor.Parse("#CCCCCC")
+                    });
+                }
+
+                // Crear el gráfico antes de actualizar en el hilo principal
+                var chartEntries = entries.ToArray();
+                
+                logger?.LogInfo($"Creando gráfico con {chartEntries.Length} entradas");
+                logger?.LogInfo($"Max ventas: {maxVentas}");
+                logger?.LogInfo($"Primeros valores: {ventasMonto[0]}, {ventasMonto[1]}, {ventasMonto[2]}");
+                logger?.LogDebug($"Primeras entradas - Label: {chartEntries[0].Label}, Value: {chartEntries[0].Value}, Color: {chartEntries[0].Color}");
+                System.Diagnostics.Debug.WriteLine($"Creando gráfico con {chartEntries.Length} entradas");
+                System.Diagnostics.Debug.WriteLine($"Max ventas: {maxVentas}");
+                System.Diagnostics.Debug.WriteLine($"Primeros valores: {ventasMonto[0]}, {ventasMonto[1]}, {ventasMonto[2]}");
+                System.Diagnostics.Debug.WriteLine($"Primeras entradas - Label: {chartEntries[0].Label}, Value: {chartEntries[0].Value}, Color: {chartEntries[0].Color}");
+                
+                // Crear el nuevo gráfico
+                var nuevoChart = new LineChart
+                {
+                    Entries = chartEntries,
+                    //Lineas
+                    LineMode = LineMode.Straight,
+                    LineSize = LineSize,
+                    //Puntos
+                    PointMode = PointMode.Square,
+                    PointSize = PointSize,
+                    //Labels
+                    LabelTextSize = LabelTextSize,
+                    ValueLabelTextSize = ValueLabelSize,
+                    LabelOrientation = Orientation.Horizontal,
+                    ValueLabelOrientation = Orientation.Horizontal,
+                    ValueLabelOption = ValueLabelOption.TopOfElement,
+                    // Lineas
+                    ShowYAxisLines = true,
+                    ShowYAxisText = true,
+                    YAxisPosition = Position.Left,
+                    // Colores
+                    EnableYFadeOutGradient = false,
+                    BackgroundColor = SKColor.Parse("FFFFFF"),
+                    // Asegurar que el gráfico se muestre incluso si todos los valores son cero
+                    MinValue = 0,
+                    MaxValue = maxVentas,
+                    // Forzar que el gráfico siempre muestre el eje Y
+                    AnimationDuration = TimeSpan.FromMilliseconds(800)
+                };
+
+                logger?.LogInfo($"Gráfico creado. Entries count: {nuevoChart.Entries?.Count() ?? 0}");
+                System.Diagnostics.Debug.WriteLine($"Gráfico creado. Entries count: {nuevoChart.Entries?.Count() ?? 0}");
+                
+                // Actualizar en el hilo principal
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    // Primero establecer a null para forzar actualización del ChartView
+                    VentasMensualesChart = null;
+                    OnPropertyChanged(nameof(VentasMensualesChart));
+                    
+                    // Pequeño delay para asegurar que el ChartView detecte el cambio
+                    Task.Delay(50).ContinueWith(_ =>
+                    {
+                        MainThread.BeginInvokeOnMainThread(() =>
+                        {
+                            // Establecer el nuevo gráfico
+                            VentasMensualesChart = nuevoChart;
+                            EstaCargandoVentasMensuales = false;
+                            
+                            // Forzar actualización de la propiedad
+                            OnPropertyChanged(nameof(VentasMensualesChart));
+                            
+                            logger?.LogInfo($"Gráfico asignado a la propiedad. Chart es null: {VentasMensualesChart == null}");
+                            logger?.LogInfo($"Gráfico tiene {VentasMensualesChart?.Entries?.Count() ?? 0} entradas");
+                            System.Diagnostics.Debug.WriteLine($"Gráfico asignado a la propiedad. Chart es null: {VentasMensualesChart == null}");
+                            System.Diagnostics.Debug.WriteLine($"Gráfico tiene {VentasMensualesChart?.Entries?.Count() ?? 0} entradas");
+                        });
+                    });
+                });
             }
-
-            var entries = ventasMonto.Select((value, index) => new ChartEntry(value)
+            catch (Exception ex)
             {
-                Label = Meses[index], // Mostrar el nombre del mes
-                ValueLabel = value.ToString("F0"), // Monto del mes
-                Color = SKColor.Parse("#3498db") // Color de la línea (azul)
-            }).ToArray();
+                logger?.LogError($"Error en GenerarGraficoVentasMensualesAsync: {ex.Message}", ex);
+                System.Diagnostics.Debug.WriteLine($"Error en GenerarGraficoVentasMensualesAsync: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    EstaCargandoVentasMensuales = false;
+                    // Crear un gráfico vacío con ceros en caso de error
+                    var entries = Enumerable.Repeat(0f, 12).Select((value, index) => new ChartEntry(value)
+                    {
+                        Label = Meses[index],
+                        ValueLabel = "0",
+                        Color = SKColor.Parse("#CCCCCC")
+                    }).ToArray();
 
-            // Definición del gráfico ya cargados los datos
-            VentasMensualesChart = new LineChart
-            {
-                Entries = entries,
-                //Lineas
-                LineMode = LineMode.Straight,
-                LineSize = LineSize,
-                //Puntos
-                PointMode = PointMode.Square,
-                PointSize = PointSize,
-                //Labels
-                LabelTextSize = LabelTextSize,
-                ValueLabelTextSize = ValueLabelSize,
-                LabelOrientation = Orientation.Horizontal,
-                ValueLabelOrientation = Orientation.Horizontal,
-                ValueLabelOption = ValueLabelOption.TopOfElement,
-                // Lineas
-                ShowYAxisLines = true,
-                ShowYAxisText = true,
-                YAxisPosition = Position.Left,
-                // Colores
-                EnableYFadeOutGradient = false,
-                BackgroundColor = SKColor.Parse("FFFFFF"),
-                // Animación
-                //AnimationDuration = TimeSpan.FromMilliseconds(1500)
-            };
-
-
+                    VentasMensualesChart = new LineChart
+                    {
+                        Entries = entries,
+                        LineMode = LineMode.Straight,
+                        LineSize = LineSize,
+                        PointMode = PointMode.Square,
+                        PointSize = PointSize,
+                        LabelTextSize = LabelTextSize,
+                        ValueLabelTextSize = ValueLabelSize,
+                        LabelOrientation = Orientation.Horizontal,
+                        ValueLabelOrientation = Orientation.Horizontal,
+                        ValueLabelOption = ValueLabelOption.TopOfElement,
+                        ShowYAxisLines = true,
+                        ShowYAxisText = true,
+                        YAxisPosition = Position.Left,
+                        EnableYFadeOutGradient = false,
+                        BackgroundColor = SKColor.Parse("FFFFFF"),
+                        MinValue = 0,
+                        MaxValue = 10
+                    };
+                    
+                    logger?.LogWarning("Gráfico de error creado con valores en cero");
+                });
+            }
         }
 
         //-------------------Gráfico que muestras las ventas diarias para un mes y año determinados---------------------
