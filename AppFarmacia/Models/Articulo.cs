@@ -56,7 +56,7 @@ namespace AppFarmacia.Models
         public ICollection<Stock> Stocks { get; set; } = [];
 
         // Parametros adicionales
-        [JsonPropertyName("nomCategoria")]
+        [JsonPropertyName("nombreCategoria")]
         public string? NombreCategoria { get; set; }
 
         [JsonPropertyName("ultimoStock")]

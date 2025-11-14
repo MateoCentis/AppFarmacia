@@ -4,9 +4,15 @@
              xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
+             xmlns:converters="clr-namespace:AppFarmacia.Converters"
              x:Class="AppFarmacia.Views.PaginaArticulos"
              Shell.NavBarIsVisible="False">
 
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:DateOnlyToStringConverter x:Key="DateOnlyToStringConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <ContentPage.BindingContext>
         <viewModels:PaginaArticulosViewModel/>
@@ -95,7 +101,13 @@
                 <dg:DataGridColumn Title="Categoría" PropertyName="Categoria"/>
                 <dg:DataGridColumn Title="Stock" PropertyName="UltimoStock"/>
                 <dg:DataGridColumn Title="Precio" PropertyName="UltimoPrecio"/>
-                <dg:DataGridColumn Title="Vencimiento" PropertyName="UltimoVencimiento"/>
+                <dg:DataGridColumn Title="Vencimiento" PropertyName="UltimoVencimiento">
+                    <dg:DataGridColumn.CellTemplate>
+                        <DataTemplate>
+                            <Label Text="{Binding UltimoVencimiento, Converter={StaticResource DateOnlyToStringConverter}}" />
+                        </DataTemplate>
+                    </dg:DataGridColumn.CellTemplate>
+                </dg:DataGridColumn>
                 <dg:DataGridColumn Title="Descripción" PropertyName="Descripcion"/>
             </dg:DataGrid.Columns>
 

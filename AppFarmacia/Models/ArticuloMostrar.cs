@@ -20,7 +20,7 @@ namespace AppFarmacia.Models
         public int? DemandaAnualHistorica { get; set; }
         public string? NombresDrogas { get; set; }
 
-        public DateOnly UltimoVencimiento {  get; set; }
+        public DateOnly? UltimoVencimiento {  get; set; }
         public Decimal UltimoPrecio { get; set; }
         public int UltimoStock { get; set; }
 
@@ -28,14 +28,10 @@ namespace AppFarmacia.Models
         {
         }
 
+        // Constructor optimizado: ya no hace llamadas HTTP individuales
         public ArticuloMostrar(Articulo articulo)
         {
-            InicializarAsync(articulo).Wait();
-        }
-
-        public async Task InicializarAsync(Articulo articulo)
-        {
-            // Van derecho
+            // Mapeo directo sin llamadas HTTP - la categoría viene del DTO
             this.IdArticulo = articulo.IdArticulo;
             this.Nombre = articulo.Nombre;
             this.Descripcion = articulo.Descripcion ?? string.Empty;
@@ -47,19 +43,13 @@ namespace AppFarmacia.Models
             this.DemandaAnualHistorica = articulo.DemandaAnualHistorica.HasValue ? articulo.DemandaAnualHistorica.Value : (int?)null;
             this.NombresDrogas = articulo.NombresDrogas ?? string.Empty;
             this.UltimoPrecio = articulo.UltimoPrecio ?? 0;
-            this.UltimoVencimiento = articulo.UltimoVencimiento ?? new DateOnly();
+            this.UltimoVencimiento = articulo.UltimoVencimiento; // Mantener null si no hay vencimiento
             this.UltimoStock = articulo.UltimoStock ?? 0;
-
-            // Si tiene categoría
-            if (articulo.IdCategoria.HasValue)
-            {
-                CategoriasService categoriasService = new CategoriasService();
-                Categoria categoria = await categoriasService.GetCategoriaPorId(articulo.IdCategoria.Value);
-                this.Categoria = categoria.Nombre ?? "no cargó";// Acá siempre rompe cuando la API no carga, habría que hacer la validación de null?
-            }
-            else
-                this.Categoria = "-";
             
+            // Usar el nombre de categoría que viene del DTO (evita N+1 queries)
+            this.Categoria = !string.IsNullOrWhiteSpace(articulo.NombreCategoria) 
+                ? articulo.NombreCategoria 
+                : "-";
         }
     }
 }

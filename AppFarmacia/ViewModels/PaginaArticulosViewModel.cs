@@ -68,9 +68,17 @@ namespace AppFarmacia.ViewModels
             SizePagina = 20;
             CategoriaSeleccionadaNombre = "Todas";
 
-            // Carga inicial de los artículos
-            Task.Run(async () => await ObtenerCategorias());
-            Task.Run(async () => await ObtenerArticulos());
+            // Carga inicial de forma asíncrona correcta (sin Task.Run)
+            _ = CargarDatosInicialesAsync();
+        }
+
+        // Método privado para cargar datos iniciales de forma asíncrona
+        private async Task CargarDatosInicialesAsync()
+        {
+            // Cargar categorías primero para que estén disponibles cuando se carguen los artículos
+            await ObtenerCategorias();
+            // Luego cargar artículos (que pueden usar las categorías en el fallback)
+            await ObtenerArticulos();
         }
 
         // Código de mierdddda ----------------------------------------
@@ -135,18 +143,53 @@ namespace AppFarmacia.ViewModels
             try
             {
                 this.EstaCargando = true; 
+                
+                // Obtener artículos desde la API (ya incluyen el nombre de categoría)
                 var articulos = await articulosService.GetArticulos();
-                ListaArticulosCompleta = new ObservableCollection<ArticuloMostrar>(articulos.Select(a => new ArticuloMostrar(a)).ToList());
-                NombresArticulos = ListaArticulosCompleta.Select(a => a.Nombre).ToList();
-                this.EstaCargando = false;
-                FiltrarArticulos();
-
+                
+                // Mapeo optimizado: el constructor ya no hace llamadas HTTP
+                // Convertir a lista primero para evitar múltiples enumeraciones
+                var articulosList = articulos.ToList();
+                var articulosMostrar = articulosList.Select(a => new ArticuloMostrar(a)).ToList();
+                
+                // Siempre usar las categorías cargadas para asegurar que tengamos el nombre correcto
+                // Esto es más confiable que depender solo del NombreCategoria del backend
+                if (ListCategorias.Any())
+                {
+                    foreach (var articuloMostrar in articulosMostrar)
+                    {
+                        if (articuloMostrar.IdCategoria.HasValue)
+                        {
+                            var categoria = ListCategorias.FirstOrDefault(c => c.IdCategoria == articuloMostrar.IdCategoria.Value);
+                            if (categoria != null && !string.IsNullOrWhiteSpace(categoria.Nombre))
+                            {
+                                // Siempre usar el nombre de la categoría cargada (más confiable)
+                                articuloMostrar.Categoria = categoria.Nombre;
+                            }
+                            else if (string.IsNullOrWhiteSpace(articuloMostrar.Categoria) || articuloMostrar.Categoria == "-")
+                            {
+                                // Si no se encontró la categoría, mantener "-"
+                                articuloMostrar.Categoria = "-";
+                            }
+                        }
+                    }
+                }
+                
+                // Actualizar en el hilo principal
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    ListaArticulosCompleta = new ObservableCollection<ArticuloMostrar>(articulosMostrar);
+                    NombresArticulos = articulosMostrar.Select(a => a.Nombre).ToList();
+                    this.EstaCargando = false;
+                    FiltrarArticulos();
+                });
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Unable to get articles: {ex.Message}");
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {
+                    this.EstaCargando = false;
                     Shell.Current.DisplayAlert("Error articles!", ex.Message, "OK");
                 });
             }
@@ -194,7 +237,7 @@ namespace AppFarmacia.ViewModels
                 articulosFiltrados = articulosFiltrados.Where(a => a.IdCategoria == CategoriaSeleccionada.IdCategoria).ToList();
             }
 
-            //Filtro por VENCIMIENTOS(el problema de esto es que no nos traemos los vencimientos, deberíamos traernos el último
+            //Filtro por VENCIMIENTOS - ahora maneja correctamente los valores null
             if (TipoVencimientoSeleccionado != "Todos" && TipoVencimientoSeleccionado != null && TipoVencimientoSeleccionado != "")
             {
                 DateOnly fechaActual = DateOnly.FromDateTime(DateTime.Now); // Convertir DateTime a DateOnly
@@ -203,15 +246,17 @@ namespace AppFarmacia.ViewModels
                 if (TipoVencimientoSeleccionado == "Por vencer")
                 {
                     articulosFiltrados = articulosFiltrados
-                        .Where(a => a.UltimoVencimiento >= fechaActual &&// Si es mayor a la fecha actual pero menor a dentro de un mes
-                                    a.UltimoVencimiento <= fechaActual.AddDays(30))
+                        .Where(a => a.UltimoVencimiento.HasValue && // Solo artículos con vencimiento
+                                    a.UltimoVencimiento.Value >= fechaActual && // Si es mayor a la fecha actual pero menor a dentro de un mes
+                                    a.UltimoVencimiento.Value <= fechaActual.AddDays(30))
                         .ToList();
                 }
                 // "Vencidos" -> Vencimientos menores a la fecha actual
                 else if (TipoVencimientoSeleccionado == "Vencidos")
                 {
                     articulosFiltrados = articulosFiltrados
-                        .Where(a => a.UltimoVencimiento < fechaActual)// Si es antes de la fecha actual -> vencido
+                        .Where(a => a.UltimoVencimiento.HasValue && // Solo artículos con vencimiento
+                                    a.UltimoVencimiento.Value < fechaActual) // Si es antes de la fecha actual -> vencido
                         .ToList();
                 }
             }

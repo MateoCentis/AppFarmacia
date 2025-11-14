@@ -17,9 +17,9 @@ namespace AppFarmaciaWebAPI.Mapping
                 .ForMember(dest => dest.ArticulosEnCompraDTO, opt => opt.MapFrom(src => src.ArticulosEnCompra))
                 .ForMember(dest => dest.ArticulosEnVentaDTO, opt => opt.MapFrom(src => src.ArticulosEnVenta))
                 .ForMember(dest => dest.UltimoVencimiento, opt => opt.MapFrom(src =>
-                    src.Vencimientos.Count() > 0 // Si existen vencimientos devuelve el último, sino devuelve la fecha mínima
-                        ? src.Vencimientos.OrderByDescending(v => v.Fecha).FirstOrDefault().Fecha // Esto no tiene que ser null 
-                        : DateOnly.MinValue));
+                    src.Vencimientos.Any() // Si existen vencimientos devuelve el último, sino devuelve null
+                        ? (DateOnly?)src.Vencimientos.OrderByDescending(v => v.Fecha).FirstOrDefault().Fecha
+                        : null));
 
             CreateMap<ArticuloDTO, Articulo>()
                 .ForMember(dest => dest.Precios, opt => opt.MapFrom(src => src.PreciosDTO))

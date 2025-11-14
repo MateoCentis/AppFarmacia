@@ -22,7 +22,13 @@ namespace AppFarmaciaWebAPI.Controllers
         // GET: api/Articulos
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ArticuloDTO>>> GetArticulos(int size = 0)
-        { //Cambié la query completamente por esta que trae los valores correspondientes 
+        {
+            // Cargar todas las categorías en un diccionario para mapeo eficiente
+            var categoriasDict = await _context.Categorias
+                .AsNoTracking()
+                .ToDictionaryAsync(c => c.IdCategoria, c => c.Nombre);
+
+            // Consulta principal de artículos
             var query = _context.Articulos
                 .Select(a => new ArticuloDTO
                 {
@@ -32,6 +38,7 @@ namespace AppFarmaciaWebAPI.Controllers
                     Descripcion = a.Descripcion,
                     Codigo = a.Codigo,
                     IdCategoria = a.IdCategoria,
+                    NombreCategoria = null, // Se asignará después
                     Activo = a.Activo,
                     Clasificacion = a.Clasificacion,
                     DemandaAnual = a.DemandaAnual,
@@ -40,11 +47,23 @@ namespace AppFarmaciaWebAPI.Controllers
                     DemandaAnualHistorica = a.DemandaAnualHistorica,
                     NombresDrogas = a.NombresDrogas,
 
-                    // Proyección directa para obtener los últimos valores
-                    UltimoVencimiento = a.Vencimientos.OrderByDescending(v => v.Fecha).Select(v => v.Fecha).FirstOrDefault(),
-                    UltimoPrecio = a.Precios.OrderByDescending(p => p.Fecha).Select(p => p.Valor).FirstOrDefault(),
-                    UltimoStock = a.Stocks.OrderByDescending(s => s.Fecha).Select(s => s.CantidadActual).FirstOrDefault()
-                });
+                    // Optimización: Usar subconsultas para obtener los últimos valores
+                    UltimoVencimiento = a.Vencimientos.Any()
+                        ? (DateOnly?)a.Vencimientos
+                            .OrderByDescending(v => v.Fecha)
+                            .Select(v => v.Fecha)
+                            .FirstOrDefault()
+                        : null,
+                    UltimoPrecio = a.Precios
+                        .OrderByDescending(p => p.Fecha)
+                        .Select(p => p.Valor)
+                        .FirstOrDefault(),
+                    UltimoStock = a.Stocks
+                        .OrderByDescending(s => s.Fecha)
+                        .Select(s => s.CantidadActual)
+                        .FirstOrDefault()
+                })
+                .AsNoTracking();
 
             // Limitar el tamaño de los resultados si se especifica
             if (size > 0)
@@ -53,6 +72,15 @@ namespace AppFarmaciaWebAPI.Controllers
             }
 
             var articuloDTOs = await query.ToListAsync();
+
+            // Asignar nombres de categorías desde el diccionario
+            foreach (var articulo in articuloDTOs)
+            {
+                if (articulo.IdCategoria.HasValue && categoriasDict.TryGetValue(articulo.IdCategoria.Value, out var nombreCategoria))
+                {
+                    articulo.NombreCategoria = nombreCategoria;
+                }
+            }
 
             return Ok(articuloDTOs);
         }
