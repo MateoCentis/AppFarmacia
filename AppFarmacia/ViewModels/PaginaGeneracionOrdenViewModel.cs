@@ -33,6 +33,9 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
     private List<String> motivos = ["Punto de reposición", "SobreStock", "Faltante"];
 
     [ObservableProperty]
+    private string? motivoSeleccionado;
+
+    [ObservableProperty]
     private string descripcionCompraTexto;
 
     [ObservableProperty]
@@ -275,10 +278,15 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
                 IdArticulo = ArticuloSeleccionadoDeListaCompleta.IdArticulo,
                 NombreArticulo = ArticuloSeleccionadoDeListaCompleta.Nombre,
                 CantidadSugerida = ArticuloSeleccionadoDeListaCompleta.CantidadAPedir ?? 0,
-                CantidadFaltante = cantidadFaltante // Asignar el resultado de la tarea asincrónica
+                CantidadFaltante = cantidadFaltante, // Asignar el resultado de la tarea asincrónica
+                MotivoCompra = MotivoSeleccionado ?? "Punto de reposición" // Asignar el motivo seleccionado
             };
 
             ListaArticulosComprar.Add(articulo);
+            
+            // Limpiar la selección después de agregar
+            ArticuloSeleccionadoDeListaCompleta = null;
+            MotivoSeleccionado = null;
         }
     }
 

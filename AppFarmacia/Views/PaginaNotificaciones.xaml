@@ -75,6 +75,25 @@
         <CollectionView Grid.Row="2"
                 ItemsSource="{Binding ListaNotificaciones}"
                 SelectionMode="None">
+            <CollectionView.EmptyView>
+                <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="10">
+                    <ActivityIndicator IsRunning="{Binding EstaCargando}" IsVisible="{Binding EstaCargando}"/>
+                    <Label FontSize="18" 
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding EstaCargando}" Value="True">
+                                <Setter Property="Text" Value="Cargando notificaciones..." />
+                                <Setter Property="TextColor" Value="#868686" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding EstaCargando}" Value="False">
+                                <Setter Property="Text" Value="No hay notificaciones" />
+                                <Setter Property="TextColor" Value="Black" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                </StackLayout>
+            </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Frame Padding="10"

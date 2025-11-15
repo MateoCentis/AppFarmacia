@@ -135,18 +135,6 @@
                                 </DataTemplate>
                             </material:DataGridColumn.CellItemTemplate>
                         </material:DataGridColumn>
-
-                        <material:DataGridColumn Title="Motivo" Width="*">
-                            <material:DataGridColumn.CellItemTemplate>
-                                <DataTemplate>
-                                    <Entry Text="{Binding MotivoCompra}"
-                                        FontAttributes="Bold" 
-                                        TextColor="Black" 
-                                        HorizontalOptions="Center"
-                                        VerticalOptions="Center"/>
-                                </DataTemplate>
-                            </material:DataGridColumn.CellItemTemplate>
-                        </material:DataGridColumn>
                         
                     </material:DataGrid.Columns>
                 </material:DataGrid>
@@ -273,6 +261,7 @@
                         <!-- Motivo -->
                         <material:AutoCompleteTextField Title="Motivo"
                                                 ItemsSource="{Binding Motivos}"
+                                                Text="{Binding MotivoSeleccionado, Mode=TwoWay}"
                                                 WidthRequest="270"
                                                 HeightRequest="55"
                                                 Icon="motivo.png"

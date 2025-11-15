@@ -24,6 +24,9 @@ namespace AppFarmacia.ViewModels
         [ObservableProperty]
         private DateTime fechaFin = DateTime.Now;
 
+        [ObservableProperty]
+        private bool estaCargando = false;
+
         private string textoBusqueda = string.Empty;
         public string TextoBusqueda
         {
@@ -42,8 +45,44 @@ namespace AppFarmacia.ViewModels
         {
             this.NotificaiconesService = new NotificacionesService();
 
-            Task.Run(async () => await ObtenerNotificaciones());
+            // Cargar las últimas 10 notificaciones por defecto
+            _ = CargarUltimasNotificacionesAsync();
+        }
 
+        // Método para cargar las últimas 10 notificaciones por defecto
+        private async Task CargarUltimasNotificacionesAsync()
+        {
+            try
+            {
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    EstaCargando = true;
+                });
+
+                // Obtener las últimas 10 notificaciones (sin filtro de fecha, solo cantidad)
+                var notificaciones = await this.NotificaiconesService.GetNotificaciones(DateTime.Now, DateTime.Now.AddYears(-10), 10);
+
+                // Ordenar por fecha y si es leído o no
+                var notificacionesOrdenadas = notificaciones
+                    .OrderBy(n => n.Leido) // Primero las no leídas
+                    .ThenByDescending(n => n.Fecha) // Luego por fecha descendente
+                    .ToList();
+
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    ListaNotificaciones = new ObservableCollection<Notificacion>(notificacionesOrdenadas);
+                    ListaNotificacionesCompleta = new ObservableCollection<Notificacion>(notificacionesOrdenadas);
+                    EstaCargando = false;
+                });
+            }
+            catch (Exception ex)
+            {
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    EstaCargando = false;
+                });
+                Debug.WriteLine(ex.Message);
+            }
         }
 
         [RelayCommand]
@@ -51,6 +90,11 @@ namespace AppFarmacia.ViewModels
         {
             try
             {
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    EstaCargando = true;
+                });
+
                 var notificaciones = await this.NotificaiconesService.GetNotificaciones(FechaFin, FechaInicio);
 
                 // Ordenar por fecha y si es leído o no
@@ -59,11 +103,19 @@ namespace AppFarmacia.ViewModels
                     .ThenByDescending(n => n.Fecha) // Luego por fecha descendente
                     .ToList();
 
-                ListaNotificaciones = new ObservableCollection<Notificacion>(notificacionesOrdenadas);
-                ListaNotificacionesCompleta = new ObservableCollection<Notificacion>(notificacionesOrdenadas);
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    ListaNotificaciones = new ObservableCollection<Notificacion>(notificacionesOrdenadas);
+                    ListaNotificacionesCompleta = new ObservableCollection<Notificacion>(notificacionesOrdenadas);
+                    EstaCargando = false;
+                });
             }
             catch (Exception ex)
             {
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    EstaCargando = false;
+                });
                 Debug.WriteLine(ex.Message);
             }
         }

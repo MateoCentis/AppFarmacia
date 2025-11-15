@@ -22,14 +22,24 @@ namespace AppFarmaciaWebAPI.Controllers
 
         // GET: api/Notificacion
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<NotificacionDTO>>> GetNotificaciones([FromQuery] DateTime? fechaInicio = null, [FromQuery] DateTime? fechaFin = null)
+        public async Task<ActionResult<IEnumerable<NotificacionDTO>>> GetNotificaciones([FromQuery] DateTime? fechaInicio = null, [FromQuery] DateTime? fechaFin = null, [FromQuery] int? cantidad = null)
         {
             try
             {
                 fechaInicio ??= new DateTime(2017, 6, 1); // 01/06/2017
                 fechaFin ??= DateTime.Now; // Fecha actual
 
-                var notificaciones = await _context.Notificaciones.Where(n => n.Fecha >= fechaInicio.Value && n.Fecha <= fechaFin.Value).ToListAsync();
+                var query = _context.Notificaciones
+                    .Where(n => n.Fecha >= fechaInicio.Value && n.Fecha <= fechaFin.Value)
+                    .OrderByDescending(n => n.Fecha) as IQueryable<AppFarmaciaWebAPI.Models.Notificacion>; // Ordenar por fecha descendente
+
+                // Si se especifica cantidad, limitar los resultados
+                if (cantidad.HasValue && cantidad.Value > 0)
+                {
+                    query = query.Take(cantidad.Value);
+                }
+
+                var notificaciones = await query.ToListAsync();
                 var notificacionesDTO = _mapper.Map<IEnumerable<NotificacionDTO>>(notificaciones);
                 return Ok(notificacionesDTO);
             }

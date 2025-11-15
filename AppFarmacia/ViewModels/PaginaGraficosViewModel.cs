@@ -172,7 +172,8 @@ namespace AppFarmacia.ViewModels
                 await GenerarGraficoCategorias();
                 await GenerarGraficoHorarios();
                 await GenerarGraficoFacturacionMensual();
-                await LlenarTablaArticulosMasVendidos();
+                // No cargar artículos más vendidos en la inicialización - solo cuando el usuario lo solicite
+                // await LlenarTablaArticulosMasVendidos();
                 await GenerarGraficoHistoricoFarmacia();
                 
                 // Marcar como inicializado después de cargar todos los gráficos

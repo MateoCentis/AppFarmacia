@@ -16,7 +16,7 @@ public class NotificacionesService
         this.httpClient = new HttpClient();
     }
 
-    public async Task<List<Notificacion>> GetNotificaciones(DateTime FechaFin, DateTime FechaInicio)
+    public async Task<List<Notificacion>> GetNotificaciones(DateTime FechaFin, DateTime FechaInicio, int? cantidad = null)
     {
         try
         {
@@ -25,6 +25,10 @@ public class NotificacionesService
             string fechaFinStr = FechaFin.Date.AddDays(1).AddTicks(-1).ToString("yyyy-MM-dd HH:mm:ss");  // Final del día
 
             var url = $"{CadenaConexion}/Notificacion?fechaInicio={fechaInicioStr}&fechaFin={fechaFinStr}";
+            if (cantidad.HasValue && cantidad.Value > 0)
+            {
+                url += $"&cantidad={cantidad.Value}";
+            }
 
             var respuesta = await httpClient.GetAsync(url);
 
