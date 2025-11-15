@@ -19,8 +19,6 @@
         <viewModels:PaginaPrediccionStockViewModel/>
     </uranium:UraniumContentPage.BindingContext>
 
-    <!-- ESTA PÁGINA ES UNA VERRRRRRRGA NO SE PORQUE ANDA TODO RARO-->
-    
     <!-- Grilla general de la página -->
     <Grid RowDefinitions="Auto,*">
         <!-- Carga de cantidad de artículos-->
@@ -89,21 +87,33 @@
                 <dg:DataGridColumn Title="Punto de reposición" PropertyName="PuntoReposicion">
                     <dg:DataGridColumn.CellTemplate>
                         <DataTemplate>
-                            <Label Text="{Binding PuntoReposicion, Converter={StaticResource NullableIntToStringConverter}}" />
+                            <Label Text="{Binding ., Converter={StaticResource NullableIntToStringConverter}}" 
+                                   HorizontalOptions="Center" 
+                                   VerticalOptions="Center"
+                                   HorizontalTextAlignment="Center"
+                                   VerticalTextAlignment="Center" />
                         </DataTemplate>
                     </dg:DataGridColumn.CellTemplate>
                 </dg:DataGridColumn>
                 <dg:DataGridColumn Title="Cantidad a pedir" PropertyName="CantidadAPedir">
                     <dg:DataGridColumn.CellTemplate>
                         <DataTemplate>
-                            <Label Text="{Binding CantidadAPedir, Converter={StaticResource NullableIntToStringConverter}}" />
+                            <Label Text="{Binding ., Converter={StaticResource NullableIntToStringConverter}}" 
+                                   HorizontalOptions="Center" 
+                                   VerticalOptions="Center"
+                                   HorizontalTextAlignment="Center"
+                                   VerticalTextAlignment="Center" />
                         </DataTemplate>
                     </dg:DataGridColumn.CellTemplate>
                 </dg:DataGridColumn>
                 <dg:DataGridColumn Title="Stock" PropertyName="UltimoStock">
                     <dg:DataGridColumn.CellTemplate>
                         <DataTemplate>
-                            <Label Text="{Binding UltimoStock, Converter={StaticResource NullableIntToStringConverter}}" />
+                            <Label Text="{Binding ., Converter={StaticResource NullableIntToStringConverter}}" 
+                                   HorizontalOptions="Center" 
+                                   VerticalOptions="Center"
+                                   HorizontalTextAlignment="Center"
+                                   VerticalTextAlignment="Center" />
                         </DataTemplate>
                     </dg:DataGridColumn.CellTemplate>
                 </dg:DataGridColumn>

@@ -58,10 +58,12 @@ namespace AppFarmaciaWebAPI.Controllers
                         .OrderByDescending(p => p.Fecha)
                         .Select(p => p.Valor)
                         .FirstOrDefault(),
-                    UltimoStock = a.Stocks
-                        .OrderByDescending(s => s.Fecha)
-                        .Select(s => s.CantidadActual)
-                        .FirstOrDefault()
+                    UltimoStock = a.Stocks.Any()
+                        ? a.Stocks
+                            .OrderByDescending(s => s.Fecha)
+                            .Select(s => s.CantidadActual)
+                            .FirstOrDefault()
+                        : 0
                 })
                 .AsNoTracking();
 

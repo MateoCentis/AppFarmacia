@@ -21,7 +21,6 @@ namespace AppFarmacia.ViewModels
     {
         private readonly ArticulosService articulosService;
         private readonly CategoriasService categoriasService;
-        private readonly StockService stocksService;
 
         [ObservableProperty]
         private int sizePagina;
@@ -56,7 +55,6 @@ namespace AppFarmacia.ViewModels
 
             this.articulosService = new ArticulosService();
             this.categoriasService = new CategoriasService();
-            this.stocksService = new StockService();
             ListaArticulos = [];
             ListaArticulosMostrar = [];
 
@@ -91,10 +89,9 @@ namespace AppFarmacia.ViewModels
                     return;
                 }
 
-                // Obtener todas las categorías y stocks en paralelo para mejorar el rendimiento
-                var categoriasTask = categoriasService.GetCategorias();
-                
-                // Crear tareas para obtener categorías y stocks en paralelo
+                // Obtener todas las categorías en paralelo para mejorar el rendimiento
+                // Nota: Los valores de PuntoReposicion, CantidadAPedir y UltimoStock ya vienen de la API
+                // No es necesario hacer llamadas adicionales que pueden sobrescribir estos valores
                 var tareasCategoria = articulos
                     .Where(a => a.IdCategoria.HasValue)
                     .Select(async articulo =>
@@ -113,26 +110,8 @@ namespace AppFarmacia.ViewModels
                     })
                     .ToList();
 
-                var tareasStock = articulos
-                    .Select(async articulo =>
-                    {
-                        try
-                        {
-                            var stock = await stocksService.GetUltimoStockPorArticulo(articulo.IdArticulo);
-                            articulo.UltimoStock = stock?.CantidadActual;
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine($"Error obteniendo stock para artículo {articulo.IdArticulo}: {ex.Message}");
-                            articulo.UltimoStock = null;
-                        }
-                        return articulo;
-                    })
-                    .ToList();
-
                 // Esperar a que todas las tareas se completen
                 await Task.WhenAll(tareasCategoria);
-                await Task.WhenAll(tareasStock);
 
                 // Asignar "Sin categoría" a los artículos que no tienen categoría
                 foreach (var articulo in articulos.Where(a => !a.IdCategoria.HasValue))
