@@ -62,26 +62,19 @@
                                 Margin="0,0,0,10"
                                 BackgroundColor="White" 
                                 SelectedItems="{Binding ArticulosSeleccionados}">
-                    <ActivityIndicator IsRunning="{Binding EstaCargando}"/>
-                    
-                    <!-- Para cuando la página no tiene data para ver-->
                     <material:DataGrid.EmptyView>
-                        <Label FontSize="Micro" Style="{StaticResource VistaSinData}">
-                            <Label.Triggers>
-                                <!-- Mostrar el texto de carga cuando se están cargando los artículos -->
-                                <DataTrigger TargetType="Label" Binding="{Binding EstaCargando}" Value="True">
-                                    <Setter Property="Text" Value="Cargando Artículos..." />
-                                    <Setter Property="TextColor" Value="#868686" />
-                                    <Setter Property="FontSize" Value="18" />
-                                    <Setter Property="IsVisible" Value="True" />
-                                </DataTrigger>
-                                <!-- Mostrar el texto de "sin datos" cuando la carga haya terminado -->
-                                <DataTrigger TargetType="Label" Binding="{Binding EstaCargando}" Value="False">
-                                    <Setter Property="Text" Value="No hay artículos que cumplan con esos criterios" />
-                                    <Setter Property="IsVisible" Value="True" />
-                                </DataTrigger>
-                            </Label.Triggers>
-                        </Label>
+                        <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="10">
+                            <ActivityIndicator IsRunning="{Binding EstaCargando}" IsVisible="{Binding EstaCargando}"/>
+                            <Label Text="No hay artículos en la orden de compra" 
+                                   Style="{StaticResource VistaSinData}">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding EstaCargando}" Value="True">
+                                        <Setter Property="Text" Value="Cargando artículos..." />
+                                        <Setter Property="TextColor" Value="#868686" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                        </StackLayout>
                     </material:DataGrid.EmptyView>
 
                     <!-- Definición de cada columna-->

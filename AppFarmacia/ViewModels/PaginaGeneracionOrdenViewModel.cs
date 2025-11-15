@@ -223,40 +223,99 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
     [RelayCommand]
     private async Task PostCompra()
     {
+        // Validar que hay artículos en la lista
+        if (ListaArticulosComprar == null || ListaArticulosComprar.Count == 0)
+        {
+            await Shell.Current.DisplayAlert("Error", "No se ha seleccionado ningún artículo para la orden de compra", "OK");
+            return;
+        }
+
+        // Filtrar solo los artículos seleccionados (si hay selección)
+        var articulosParaCompra = ArticulosSeleccionados != null && ArticulosSeleccionados.Count > 0
+            ? ArticulosSeleccionados.ToList()
+            : ListaArticulosComprar.ToList();
+
+        if (articulosParaCompra.Count == 0)
+        {
+            await Shell.Current.DisplayAlert("Error", "No se ha seleccionado ningún artículo para la orden de compra", "OK");
+            return;
+        }
+
         Compra compra = new Compra
         {
             Fecha = DateTime.Now,
             Descripcion = DescripcionCompraTexto,
-            ArticuloEnCompra = ListaArticulosComprar.ToList(),
+            Proveedor = ProveedorCompra, // Agregar proveedor
+            ArticuloEnCompra = articulosParaCompra, // Solo artículos seleccionados
             CompraConfirmada = false
         };
 
         // Se guarda la compra
         bool resultadoCompra = await compraService.PostCompra(compra);
-        if (resultadoCompra) { await Shell.Current.DisplayAlert("Éxito", "Compra realizada con éxito", "OK"); }
-        else { await Shell.Current.DisplayAlert("Error", "Hubo un problema al realizar la compra", "OK"); }
+        if (resultadoCompra) 
+        { 
+            await Shell.Current.DisplayAlert("Éxito", "Compra realizada con éxito", "OK");
+            // Limpiar la lista después de crear la compra
+            ListaArticulosComprar.Clear();
+            ArticulosSeleccionados?.Clear();
+        }
+        else 
+        { 
+            await Shell.Current.DisplayAlert("Error", "Hubo un problema al realizar la compra", "OK"); 
+        }
     }
 
 
     [RelayCommand]
-    private void GenerarOrden()
+    private async Task GenerarOrden()
     {
-        switch (TipoArchivoSeleccionado)
+        // Validar que hay artículos para exportar
+        if (ListaArticulosComprar == null || ListaArticulosComprar.Count == 0)
         {
-            case "csv":
-                Task.Run(async () => await GenerarOrdenCsv());
-                break;
-            case "xlsx":
-                Task.Run(async () => await GenerarOrdenExcel());
-                break;
-            case "txt":
-                Task.Run(async () => await GenerarOrdenTxt());
-                break;
-            case "pdf":
-                Task.Run(async () => await GenerarOrdenPdf());
-                break;
-            default:
-                break;
+            await Shell.Current.DisplayAlert("Error", "No hay artículos para exportar", "OK");
+            return;
+        }
+
+        // Filtrar solo los artículos seleccionados (si hay selección)
+        var articulosParaExportar = ArticulosSeleccionados != null && ArticulosSeleccionados.Count > 0
+            ? ArticulosSeleccionados.ToList()
+            : ListaArticulosComprar.ToList();
+
+        if (articulosParaExportar.Count == 0)
+        {
+            await Shell.Current.DisplayAlert("Error", "No se ha seleccionado ningún artículo para exportar", "OK");
+            return;
+        }
+
+        // Guardar la lista original y usar la filtrada temporalmente
+        var listaOriginal = ListaArticulosComprar.ToList();
+        ListaArticulosComprar = new ObservableCollection<ArticuloEnCompra>(articulosParaExportar);
+
+        try
+        {
+            switch (TipoArchivoSeleccionado)
+            {
+                case "csv":
+                    await GenerarOrdenCsv();
+                    break;
+                case "xlsx":
+                    await GenerarOrdenExcel();
+                    break;
+                case "txt":
+                    await GenerarOrdenTxt();
+                    break;
+                case "pdf":
+                    await GenerarOrdenPdf();
+                    break;
+                default:
+                    await Shell.Current.DisplayAlert("Error", "Formato de archivo no válido", "OK");
+                    break;
+            }
+        }
+        finally
+        {
+            // Restaurar la lista original
+            ListaArticulosComprar = new ObservableCollection<ArticuloEnCompra>(listaOriginal);
         }
     }
     [RelayCommand]
@@ -319,14 +378,17 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
     async Task GenerarOrdenCsv()
     {
         DateTime fechaActual = DateTime.Now;
-        var destino = Path.Combine(ubicacionOrdenesGeneradas, $"OrdenGenerada_{fechaActual:dd_MM_yyyy_HH.mm}Hs.csv");
         try
         {
+            // Crear el directorio si no existe
+            Directory.CreateDirectory(ubicacionOrdenesGeneradas);
+            var destino = Path.Combine(ubicacionOrdenesGeneradas, $"OrdenGenerada_{fechaActual:dd_MM_yyyy_HH.mm}Hs.csv");
+            
             using var writer = new StreamWriter(destino);
             using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
-            csv.WriteRecords(ListaArticulosComprar);//Parece que no hay que especificar nada, escribe los atributos y chau
+            csv.WriteRecords(ListaArticulosComprar);
             await MainThread.InvokeOnMainThreadAsync(async () =>
-                await Shell.Current.DisplayAlert("Éxito", "Planilla exportada de forma exitosa", "OK"));
+                await Shell.Current.DisplayAlert("Éxito", $"Planilla exportada exitosamente a:\n{destino}", "OK"));
         }
         catch (Exception ex)
         {
@@ -338,18 +400,20 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
     async Task GenerarOrdenTxt()
     {
         DateTime fechaActual = DateTime.Now;
-        var destino = Path.Combine(ubicacionOrdenesGeneradas, $"OrdenGenerada_{fechaActual:dd_MM_yyyy_HH.mm}Hs.txt");
-
         try
         {
+            // Crear el directorio si no existe
+            Directory.CreateDirectory(ubicacionOrdenesGeneradas);
+            var destino = Path.Combine(ubicacionOrdenesGeneradas, $"OrdenGenerada_{fechaActual:dd_MM_yyyy_HH.mm}Hs.txt");
+
             using var writer = new StreamWriter(destino);
-            writer.WriteLine("IdArticulo\tNombre\tCantidadEncargada\tCantidadSugerida");
+            writer.WriteLine("IdArticulo\tNombre\tCantidadEncargada\tCantidadSugerida\tMotivo");
             foreach (var articulo in ListaArticulosComprar)
             {
-                writer.WriteLine($"{articulo.IdArticulo}\t{articulo.NombreArticulo}\t{articulo.Cantidad}\t{articulo.CantidadSugerida}");
+                writer.WriteLine($"{articulo.IdArticulo}\t{articulo.NombreArticulo}\t{articulo.Cantidad}\t{articulo.CantidadSugerida}\t{articulo.MotivoCompra ?? "N/A"}");
             }
             await MainThread.InvokeOnMainThreadAsync(async () =>
-                await Shell.Current.DisplayAlert("Éxito", "Planilla exportada de forma exitosa", "OK"));
+                await Shell.Current.DisplayAlert("Éxito", $"Planilla exportada exitosamente a:\n{destino}", "OK"));
         }
         catch (Exception ex)
         {
@@ -362,10 +426,12 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
     async Task GenerarOrdenExcel()
     {
         DateTime fechaActual = DateTime.Now;
-        var destino = Path.Combine(ubicacionOrdenesGeneradas, $"OrdenGenerada_{fechaActual:dd_MM_yyyy_HH.mm}Hs.xlsx");
-
         try
         {
+            // Crear el directorio si no existe
+            Directory.CreateDirectory(ubicacionOrdenesGeneradas);
+            var destino = Path.Combine(ubicacionOrdenesGeneradas, $"OrdenGenerada_{fechaActual:dd_MM_yyyy_HH.mm}Hs.xlsx");
+
             using var workbook = new XLWorkbook();
             // Impresión del título
             var worksheet = workbook.Worksheets.Add("Orden de Compra");
@@ -373,6 +439,7 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
             worksheet.Cell(1, 2).Value = "Nombre";
             worksheet.Cell(1, 3).Value = "CantidadEncargada";
             worksheet.Cell(1, 4).Value = "CantidadSugerida";
+            worksheet.Cell(1, 5).Value = "Motivo";
 
             // Impresión de cada uno de los artículos
             for (int i = 0; i < ListaArticulosComprar.Count; i++)
@@ -381,14 +448,17 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
                 worksheet.Cell(i + 2, 2).Value = ListaArticulosComprar[i].NombreArticulo;
                 worksheet.Cell(i + 2, 3).Value = ListaArticulosComprar[i].Cantidad;
                 worksheet.Cell(i + 2, 4).Value = ListaArticulosComprar[i].CantidadSugerida;
+                worksheet.Cell(i + 2, 5).Value = ListaArticulosComprar[i].MotivoCompra ?? "N/A";
             }
 
             workbook.SaveAs(destino);
-            await Shell.Current.DisplayAlert("Éxito", "Planilla exportada de forma exitosa", "OK");
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+                await Shell.Current.DisplayAlert("Éxito", $"Planilla exportada exitosamente a:\n{destino}", "OK"));
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Error", $"Hubo un problema al exportar la planilla: {ex.Message}", "OK");
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+                await Shell.Current.DisplayAlert("Error", $"Hubo un problema al exportar la planilla: {ex.Message}", "OK"));
         }
     }
 
@@ -396,10 +466,12 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
     async Task GenerarOrdenPdf()
     {
         DateTime fechaActual = DateTime.Now;
-        var destino = Path.Combine(ubicacionOrdenesGeneradas, $"OrdenGenerada_{fechaActual:dd_MM_yyyy_HH.mm}Hs.pdf");
-
         try
         {
+            // Crear el directorio si no existe
+            Directory.CreateDirectory(ubicacionOrdenesGeneradas);
+            var destino = Path.Combine(ubicacionOrdenesGeneradas, $"OrdenGenerada_{fechaActual:dd_MM_yyyy_HH.mm}Hs.pdf");
+
             using var document = new PdfDocument();
             var page = document.AddPage();
             var graphics = XGraphics.FromPdfPage(page);
@@ -407,20 +479,31 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
 
             graphics.DrawString("Orden de Compra", new XFont("Arial", 14, XFontStyle.Bold), XBrushes.Black, new XRect(0, 0, page.Width, 40), XStringFormats.TopCenter);
 
-            int yPoint = 40;
+            int yPoint = 60;
             foreach (var articulo in ListaArticulosComprar)
             {
-                graphics.DrawString($"Id: {articulo.IdArticulo}, Nombre: {articulo.NombreArticulo}, Cantidad Encargada: {articulo.Cantidad}, Cantidad Sugerida: {articulo.CantidadSugerida}",
+                var texto = $"Id: {articulo.IdArticulo}, Nombre: {articulo.NombreArticulo}, Cantidad Encargada: {articulo.Cantidad}, Cantidad Sugerida: {articulo.CantidadSugerida}, Motivo: {articulo.MotivoCompra ?? "N/A"}";
+                graphics.DrawString(texto,
                                     font, XBrushes.Black, new XRect(40, yPoint, page.Width - 80, page.Height - 40), XStringFormats.TopLeft);
                 yPoint += 20;
+                
+                // Agregar nueva página si es necesario
+                if (yPoint > page.Height - 40)
+                {
+                    page = document.AddPage();
+                    graphics = XGraphics.FromPdfPage(page);
+                    yPoint = 40;
+                }
             }
 
             document.Save(destino);
-            await Shell.Current.DisplayAlert("Éxito", "Planilla exportada de forma exitosa", "OK");
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+                await Shell.Current.DisplayAlert("Éxito", $"Planilla exportada exitosamente a:\n{destino}", "OK"));
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Error", $"Hubo un problema al exportar la planilla: {ex.Message}", "OK");
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+                await Shell.Current.DisplayAlert("Error", $"Hubo un problema al exportar la planilla: {ex.Message}", "OK"));
         }
     }
     

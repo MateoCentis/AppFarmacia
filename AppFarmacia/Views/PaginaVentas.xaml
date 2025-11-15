@@ -68,7 +68,7 @@
         <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ListaVentas}" 
                      SelectionMode="Single" SelectedItem="{Binding VentaSeleccionada}"
                      Style="{StaticResource TablaComun}" Margin="5,0,5,0"
-                     PaginationEnabled="{Binding PaginationEnabled}" PageSize="{Binding SizePagina}">
+                     PaginationEnabled="{Binding PaginationEnabled}" PageSize="{Binding SizePagina, Mode=TwoWay}">
             
             <dg:DataGrid.NoDataView>
                 <Label Text="No existen ventas cargadas aún" Style="{StaticResource VistaSinData}"/>

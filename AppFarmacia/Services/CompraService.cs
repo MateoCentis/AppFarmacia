@@ -80,7 +80,8 @@ namespace AppFarmacia.Services
                         foreach (var articulo in compra.ArticuloEnCompra)
                         {
                             articulo.IdCompra = compraCreada.IdCompra;
-                            articulo.MotivoCompra = "No lo se";
+                            // El motivo ya viene asignado desde el ViewModel, no lo sobrescribimos
+                            // articulo.MotivoCompra ya tiene el valor correcto
                         }
 
                         // Llama al método PostArticulosEnCompra con la lista de artículos actualizada

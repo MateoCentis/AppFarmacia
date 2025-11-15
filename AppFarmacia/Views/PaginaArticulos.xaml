@@ -75,7 +75,7 @@
 
         <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ListaArticulos}" 
                      SelectionMode="Single" SelectedItem="{Binding ArticuloSeleccionado}"
-                     PaginationEnabled="{Binding PaginationEnabled}" PageSize="{Binding SizePagina, Mode=OneWay}" Style="{StaticResource TablaComun}"
+                     PaginationEnabled="{Binding PaginationEnabled}" PageSize="{Binding SizePagina, Mode=TwoWay}" Style="{StaticResource TablaComun}"
                      IsRefreshing="{Binding EstaCargando}" Margin="5,0,5,0">
             <!-- Para cuando la página no tiene data para ver-->
             <dg:DataGrid.NoDataView>
@@ -104,7 +104,11 @@
                 <dg:DataGridColumn Title="Vencimiento" PropertyName="UltimoVencimiento">
                     <dg:DataGridColumn.CellTemplate>
                         <DataTemplate>
-                            <Label Text="{Binding UltimoVencimiento, Converter={StaticResource DateOnlyToStringConverter}}" />
+                            <Label>
+                                <Label.Text>
+                                    <Binding Path="UltimoVencimiento" Converter="{StaticResource DateOnlyToStringConverter}"/>
+                                </Label.Text>
+                            </Label>
                         </DataTemplate>
                     </dg:DataGridColumn.CellTemplate>
                 </dg:DataGridColumn>

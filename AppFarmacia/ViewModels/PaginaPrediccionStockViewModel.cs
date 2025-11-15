@@ -91,15 +91,17 @@ namespace AppFarmacia.ViewModels
                     return;
                 }
 
-                // Iterar sobre cada artículo para obtener y asignar el nombre de la categoría
-                foreach (var articulo in articulos)
-                {
-                    // Obtener el nombre de la categoría usando el IdCategoria
-                    if (articulo.IdCategoria.HasValue)
+                // Obtener todas las categorías y stocks en paralelo para mejorar el rendimiento
+                var categoriasTask = categoriasService.GetCategorias();
+                
+                // Crear tareas para obtener categorías y stocks en paralelo
+                var tareasCategoria = articulos
+                    .Where(a => a.IdCategoria.HasValue)
+                    .Select(async articulo =>
                     {
                         try
                         {
-                            Categoria categoria = await categoriasService.GetCategoriaPorId(articulo.IdCategoria.Value);
+                            var categoria = await categoriasService.GetCategoriaPorId(articulo.IdCategoria!.Value);
                             articulo.NombreCategoria = categoria?.Nombre ?? "Sin categoría";
                         }
                         catch (Exception ex)
@@ -107,22 +109,35 @@ namespace AppFarmacia.ViewModels
                             Debug.WriteLine($"Error obteniendo categoría para artículo {articulo.IdArticulo}: {ex.Message}");
                             articulo.NombreCategoria = "Sin categoría";
                         }
-                    }
-                    else
-                    {
-                        articulo.NombreCategoria = "Sin categoría";
-                    }
+                        return articulo;
+                    })
+                    .ToList();
 
-                    try
+                var tareasStock = articulos
+                    .Select(async articulo =>
                     {
-                        Stock? stock = await stocksService.GetUltimoStockPorArticulo(articulo.IdArticulo);
-                        articulo.UltimoStock = stock?.CantidadActual;
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"Error obteniendo stock para artículo {articulo.IdArticulo}: {ex.Message}");
-                        articulo.UltimoStock = null;
-                    }
+                        try
+                        {
+                            var stock = await stocksService.GetUltimoStockPorArticulo(articulo.IdArticulo);
+                            articulo.UltimoStock = stock?.CantidadActual;
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"Error obteniendo stock para artículo {articulo.IdArticulo}: {ex.Message}");
+                            articulo.UltimoStock = null;
+                        }
+                        return articulo;
+                    })
+                    .ToList();
+
+                // Esperar a que todas las tareas se completen
+                await Task.WhenAll(tareasCategoria);
+                await Task.WhenAll(tareasStock);
+
+                // Asignar "Sin categoría" a los artículos que no tienen categoría
+                foreach (var articulo in articulos.Where(a => !a.IdCategoria.HasValue))
+                {
+                    articulo.NombreCategoria = "Sin categoría";
                 }
 
                 await MainThread.InvokeOnMainThreadAsync(() =>
