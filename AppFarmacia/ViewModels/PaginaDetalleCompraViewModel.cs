@@ -24,6 +24,9 @@ namespace AppFarmacia.ViewModels
         [ObservableProperty]
         private string? descripcion;
 
+        [ObservableProperty]
+        private bool compraConfirmada;
+
         public PaginaDetalleCompraViewModel()
         {
             ArticuloCompraService = new ArticuloCompraService();
@@ -40,6 +43,7 @@ namespace AppFarmacia.ViewModels
                 {
                     Proveedor = compra.Proveedor ?? "-";
                     Descripcion = compra.Descripcion ?? "-";
+                    CompraConfirmada = compra.CompraConfirmada;
                 }
 
                 // Obtener los artículos de la compra
@@ -62,6 +66,28 @@ namespace AppFarmacia.ViewModels
         static async Task HaciaAtras()
         {
             await Shell.Current.GoToAsync("..");
+        }
+
+        [RelayCommand]
+        private async Task ConfirmarCompra()
+        {
+            try
+            {
+                var resultado = await CompraService.ConfirmarCompra(IdCompra);
+                if (resultado)
+                {
+                    CompraConfirmada = true;
+                    await Shell.Current.DisplayAlert("Éxito", "Compra confirmada con éxito", "OK");
+                }
+                else
+                {
+                    await Shell.Current.DisplayAlert("Error", "No se pudo confirmar la compra", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
+            }
         }
 
     }

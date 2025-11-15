@@ -5,16 +5,23 @@
              xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
              xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
              xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
+             xmlns:converters="clr-namespace:AppFarmacia.Converters"
              Shell.NavBarIsVisible="False"
              Shell.TabBarIsVisible="False"
              Shell.FlyoutBehavior="Disabled">
+
+    <uranium:UraniumContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+        </ResourceDictionary>
+    </uranium:UraniumContentPage.Resources>
 
     <uranium:UraniumContentPage.BindingContext>
         <viewModels:PaginaDetalleCompraViewModel/>
     </uranium:UraniumContentPage.BindingContext>
 
     <!-- Agregar botón de realizar la compra y la tabla con los artículos (ver bien que poner)-->
-    <Grid RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto,Auto,*">
 
         <!-- Información de la compra: Proveedor y Descripción -->
         <StackLayout Grid.Row="0" Orientation="Horizontal" Spacing="20" Margin="10,10,10,10" HorizontalOptions="Start">
@@ -24,7 +31,22 @@
             <Label Text="{Binding Descripcion}" VerticalOptions="Center"/>
         </StackLayout>
 
-        <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ArticulosEnCompra}" 
+        <!-- Botón para confirmar la compra -->
+        <StackLayout Grid.Row="1" Orientation="Horizontal" HorizontalOptions="End" Margin="10,0,10,10">
+            <Button Text="Confirmar Compra" 
+                    Command="{Binding ConfirmarCompraCommand}"
+                    StyleClass="FilledButton"
+                    HeightRequest="50"
+                    IsEnabled="{Binding CompraConfirmada, Converter={StaticResource InverseBoolConverter}}"
+                    Margin="0,0,10,0"/>
+            <Label Text="Compra Confirmada" 
+                   FontAttributes="Bold" 
+                   TextColor="Green"
+                   VerticalOptions="Center"
+                   IsVisible="{Binding CompraConfirmada}"/>
+        </StackLayout>
+
+        <dg:DataGrid Grid.Row="2" ItemsSource="{Binding ArticulosEnCompra}" 
               SelectionMode="Single" Style="{StaticResource TablaComun}">
 
             <dg:DataGrid.NoDataView>

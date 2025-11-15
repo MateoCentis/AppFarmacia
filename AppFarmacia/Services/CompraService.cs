@@ -113,5 +113,35 @@ namespace AppFarmacia.Services
                 return false;
             }
         }
+
+        public async Task<bool> ConfirmarCompra(int idCompra)
+        {
+            try
+            {
+                var compra = await GetCompraPorId(idCompra);
+                if (compra == null)
+                {
+                    return false;
+                }
+
+                compra.CompraConfirmada = true;
+                var respuesta = await httpClient.PutAsJsonAsync($"{CadenaConexion}/Compras/{idCompra}", compra);
+
+                if (respuesta.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Error en la solicitud: {respuesta.ReasonPhrase}");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return false;
+            }
+        }
     }
 }

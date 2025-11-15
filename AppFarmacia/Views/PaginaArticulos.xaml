@@ -104,11 +104,7 @@
                 <dg:DataGridColumn Title="Vencimiento" PropertyName="UltimoVencimiento">
                     <dg:DataGridColumn.CellTemplate>
                         <DataTemplate>
-                            <Label>
-                                <Label.Text>
-                                    <Binding Path="UltimoVencimiento" Converter="{StaticResource DateOnlyToStringConverter}"/>
-                                </Label.Text>
-                            </Label>
+                            <Label Text="{Binding UltimoVencimiento, Converter={StaticResource DateOnlyToStringConverter}}" />
                         </DataTemplate>
                     </dg:DataGridColumn.CellTemplate>
                 </dg:DataGridColumn>

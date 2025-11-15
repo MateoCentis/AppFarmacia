@@ -223,23 +223,15 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
     [RelayCommand]
     private async Task PostCompra()
     {
-        // Validar que hay artículos en la lista
-        if (ListaArticulosComprar == null || ListaArticulosComprar.Count == 0)
+        // Validar que hay artículos seleccionados
+        if (ArticulosSeleccionados == null || ArticulosSeleccionados.Count == 0)
         {
-            await Shell.Current.DisplayAlert("Error", "No se ha seleccionado ningún artículo para la orden de compra", "OK");
+            await Shell.Current.DisplayAlert("Error", "No se ha seleccionado ningún artículo para la orden de compra. Por favor, seleccione al menos un artículo de la lista.", "OK");
             return;
         }
 
-        // Filtrar solo los artículos seleccionados (si hay selección)
-        var articulosParaCompra = ArticulosSeleccionados != null && ArticulosSeleccionados.Count > 0
-            ? ArticulosSeleccionados.ToList()
-            : ListaArticulosComprar.ToList();
-
-        if (articulosParaCompra.Count == 0)
-        {
-            await Shell.Current.DisplayAlert("Error", "No se ha seleccionado ningún artículo para la orden de compra", "OK");
-            return;
-        }
+        // Usar solo los artículos seleccionados
+        var articulosParaCompra = ArticulosSeleccionados.ToList();
 
         Compra compra = new Compra
         {
