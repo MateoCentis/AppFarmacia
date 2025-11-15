@@ -104,7 +104,11 @@
                 <dg:DataGridColumn Title="Vencimiento" PropertyName="UltimoVencimiento">
                     <dg:DataGridColumn.CellTemplate>
                         <DataTemplate>
-                            <Label Text="{Binding UltimoVencimiento, Converter={StaticResource DateOnlyToStringConverter}}" />
+                            <Label Text="{Binding ., Converter={StaticResource DateOnlyToStringConverter}}" 
+                                   HorizontalOptions="Center" 
+                                   VerticalOptions="Center"
+                                   HorizontalTextAlignment="Center"
+                                   VerticalTextAlignment="Center" />
                         </DataTemplate>
                     </dg:DataGridColumn.CellTemplate>
                 </dg:DataGridColumn>
