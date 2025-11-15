@@ -12,6 +12,7 @@ using AppFarmacia.Views;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.ApplicationModel;
 
 
 namespace AppFarmacia.ViewModels
@@ -72,9 +73,23 @@ namespace AppFarmacia.ViewModels
         {
             try
             {
-                this.EstaCargando = true;
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    this.EstaCargando = true;
+                });
 
                 var articulos = await articulosService.GetArticulos(CantArticulosSeleccionada);
+
+                if (articulos == null || articulos.Count == 0)
+                {
+                    await MainThread.InvokeOnMainThreadAsync(() =>
+                    {
+                        ListaArticulos = new List<Articulo>();
+                        ListaArticulosMostrar = new List<Articulo>();
+                        this.EstaCargando = false;
+                    });
+                    return;
+                }
 
                 // Iterar sobre cada artículo para obtener y asignar el nombre de la categoría
                 foreach (var articulo in articulos)
@@ -82,28 +97,49 @@ namespace AppFarmacia.ViewModels
                     // Obtener el nombre de la categoría usando el IdCategoria
                     if (articulo.IdCategoria.HasValue)
                     {
-                        Categoria categoria = await categoriasService.GetCategoriaPorId(articulo.IdCategoria.Value);
-                        articulo.NombreCategoria = categoria.Nombre;
+                        try
+                        {
+                            Categoria categoria = await categoriasService.GetCategoriaPorId(articulo.IdCategoria.Value);
+                            articulo.NombreCategoria = categoria?.Nombre ?? "Sin categoría";
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"Error obteniendo categoría para artículo {articulo.IdArticulo}: {ex.Message}");
+                            articulo.NombreCategoria = "Sin categoría";
+                        }
                     }
                     else
                     {
                         articulo.NombreCategoria = "Sin categoría";
                     }
 
-                    Stock? stock = await stocksService.GetUltimoStockPorArticulo(articulo.IdArticulo);
-                    articulo.UltimoStock = stock?.CantidadActual;
+                    try
+                    {
+                        Stock? stock = await stocksService.GetUltimoStockPorArticulo(articulo.IdArticulo);
+                        articulo.UltimoStock = stock?.CantidadActual;
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Error obteniendo stock para artículo {articulo.IdArticulo}: {ex.Message}");
+                        articulo.UltimoStock = null;
+                    }
                 }
 
-                ListaArticulos = articulos;
-                ListaArticulosMostrar = new List<Articulo>(ListaArticulos);
-
-                this.EstaCargando = false;
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    ListaArticulos = articulos;
+                    ListaArticulosMostrar = new List<Articulo>(ListaArticulos);
+                    this.EstaCargando = false;
+                });
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Unable to get articles: {ex.Message}");
+                Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {
+                    this.EstaCargando = false;
                     Shell.Current.DisplayAlert("Error al traer los artículos!", ex.Message, "OK");
                 });
             }

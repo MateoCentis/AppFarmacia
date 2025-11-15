@@ -13,10 +13,8 @@
         <viewModels:PaginaDetalleVentaViewModel/>
     </uranium:UraniumContentPage.BindingContext>
     
-    <Grid RowDefinitions="Auto,*">
-        <ImageButton Source="arrowleftcircle.png" VerticalOptions="Center" HorizontalOptions="Start" Command="{Binding HaciaAtrasCommand}"/>
-
-        <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ArticulosEnVenta}" 
+    <Grid RowDefinitions="*">
+        <dg:DataGrid ItemsSource="{Binding ArticulosEnVenta}" 
               SelectionMode="Single" Style="{StaticResource TablaComun}">
             <!-- Para cuando la página no tiene data para ver-->
             <dg:DataGrid.NoDataView>

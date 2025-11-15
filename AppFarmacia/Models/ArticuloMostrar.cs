@@ -45,6 +45,8 @@ namespace AppFarmacia.Models
             this.UltimoPrecio = articulo.UltimoPrecio ?? 0;
             this.UltimoVencimiento = articulo.UltimoVencimiento; // Mantener null si no hay vencimiento
             this.UltimoStock = articulo.UltimoStock ?? 0;
+            // Asignar Stock desde UltimoStock para que se muestre correctamente en la tabla
+            this.Stock = articulo.UltimoStock ?? 0;
             
             // Usar el nombre de categoría que viene del DTO (evita N+1 queries)
             this.Categoria = !string.IsNullOrWhiteSpace(articulo.NombreCategoria) 

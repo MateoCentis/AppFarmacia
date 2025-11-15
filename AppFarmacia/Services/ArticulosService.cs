@@ -25,15 +25,54 @@ namespace AppFarmacia.Services
 
         public async Task<List<Articulo>> GetArticulos(int size = 0)
         {
-            var respuesta = await httpClient.GetAsync($"{CadenaConexion}/Articulos?size={size}");
-
-            if (respuesta.IsSuccessStatusCode)
+            try
             {
-                // Usar opciones JSON explícitas para asegurar deserialización correcta
-                this.articulos = await respuesta.Content.ReadFromJsonAsync<List<Articulo>>(jsonOptions) ?? [];
-            }
+                var url = $"{CadenaConexion}/Articulos?size={size}";
+                var respuesta = await httpClient.GetAsync(url);
 
-            return this.articulos!;
+                if (respuesta.IsSuccessStatusCode)
+                {
+                    // Leer el contenido como string primero para debugging
+                    var jsonContent = await respuesta.Content.ReadAsStringAsync();
+                    
+                    // Verificar que el contenido no esté vacío y sea JSON válido
+                    if (string.IsNullOrWhiteSpace(jsonContent))
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Respuesta vacía de la API: {url}");
+                        return new List<Articulo>();
+                    }
+
+                    // Intentar deserializar
+                    try
+                    {
+                        this.articulos = JsonSerializer.Deserialize<List<Articulo>>(jsonContent, jsonOptions) ?? [];
+                        return this.articulos!;
+                    }
+                    catch (JsonException jsonEx)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Error deserializando JSON de {url}: {jsonEx.Message}");
+                        System.Diagnostics.Debug.WriteLine($"Contenido recibido (primeros 500 caracteres): {jsonContent.Substring(0, Math.Min(500, jsonContent.Length))}");
+                        throw new Exception($"Error al procesar la respuesta de la API: {jsonEx.Message}. Contenido: {jsonContent.Substring(0, Math.Min(200, jsonContent.Length))}");
+                    }
+                }
+                else
+                {
+                    // Leer el contenido del error
+                    var errorContent = await respuesta.Content.ReadAsStringAsync();
+                    System.Diagnostics.Debug.WriteLine($"Error en API {url}: {respuesta.StatusCode} - {errorContent}");
+                    throw new Exception($"Error en la solicitud: {respuesta.StatusCode} - {errorContent}");
+                }
+            }
+            catch (HttpRequestException httpEx)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error de conexión: {httpEx.Message}");
+                throw new Exception($"Error de conexión con la API: {httpEx.Message}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error inesperado en GetArticulos: {ex.Message}");
+                throw;
+            }
         }
 
         public async Task<Articulo?> GetArticuloPorId(int id)

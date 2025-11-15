@@ -20,7 +20,7 @@
     <!-- Acá un logo/información (shell content?) o qué -->
     <Shell.FlyoutFooter>
         <VerticalStackLayout BackgroundColor="LightGray">
-            <Label Text="Versión 1.0" HorizontalTextAlignment="Center" HeightRequest="30" VerticalTextAlignment="Center"/>
+            <Label Text="Versión 0.1" HorizontalTextAlignment="Center" HeightRequest="30" VerticalTextAlignment="Center"/>
         </VerticalStackLayout>
     </Shell.FlyoutFooter>
     

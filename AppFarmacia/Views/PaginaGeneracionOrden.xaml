@@ -88,47 +88,47 @@
                     <material:DataGrid.Columns>
                         <material:DataGridSelectionColumn/>
 
-                        <material:DataGridColumn Title="Nombre" Width="Auto">
+                        <material:DataGridColumn Title="Nombre" Width="*">
                             <material:DataGridColumn.CellItemTemplate>
                                 <DataTemplate>
                                     <Label Text="{Binding NombreArticulo}" 
                                         TextColor="Black" 
                                         HorizontalOptions="Center" 
-                                        VerticalOptions="Start"/>
+                                        VerticalOptions="Center"/>
                                 </DataTemplate>
                             </material:DataGridColumn.CellItemTemplate>
                         </material:DataGridColumn>
 
-                        <material:DataGridColumn Title="Cantidad sugerida" Width="Auto">
+                        <material:DataGridColumn Title="Cantidad sugerida" Width="*">
                             <material:DataGridColumn.CellItemTemplate>
                                 <DataTemplate>
                                     <Label Text="{Binding CantidadSugerida}" 
                                                 TextColor="Black" 
                                                 HorizontalOptions="Center" 
-                                                VerticalOptions="Start"/>
+                                                VerticalOptions="Center"/>
                                 </DataTemplate>
                             </material:DataGridColumn.CellItemTemplate>
                         </material:DataGridColumn>
 
-                        <material:DataGridColumn Title="Cantidad Faltante" Width="Auto">
+                        <material:DataGridColumn Title="Cantidad Faltante" Width="*">
                             <material:DataGridColumn.CellItemTemplate>
                                 <DataTemplate>
                                     <Label Text="{Binding CantidadFaltante}" 
                                             TextColor="Black" 
                                             HorizontalOptions="Center" 
-                                            VerticalOptions="Start"/>
+                                            VerticalOptions="Center"/>
                                 </DataTemplate>
                             </material:DataGridColumn.CellItemTemplate>
                         </material:DataGridColumn>
 
-                        <material:DataGridColumn Title="Cantidad encargada" Width="Auto">
+                        <material:DataGridColumn Title="Cantidad encargada" Width="*">
                             <material:DataGridColumn.CellItemTemplate>
                                 <DataTemplate>
                                     <Entry Text="{Binding Cantidad, Mode=TwoWay}"
                                         FontAttributes="Bold" 
                                         TextColor="Black" 
                                         HorizontalOptions="Center"
-                                        VerticalOptions="Start"
+                                        VerticalOptions="Center"
                                         Keyboard="Numeric"
                                         MinimumWidthRequest="80"
                                         HorizontalTextAlignment="Center"/>
@@ -136,14 +136,14 @@
                             </material:DataGridColumn.CellItemTemplate>
                         </material:DataGridColumn>
 
-                        <material:DataGridColumn Title="Motivo" Width="Auto">
+                        <material:DataGridColumn Title="Motivo" Width="*">
                             <material:DataGridColumn.CellItemTemplate>
                                 <DataTemplate>
                                     <Entry Text="{Binding MotivoCompra}"
                                         FontAttributes="Bold" 
                                         TextColor="Black" 
                                         HorizontalOptions="Center"
-                                        VerticalOptions="Start"/>
+                                        VerticalOptions="Center"/>
                                 </DataTemplate>
                             </material:DataGridColumn.CellItemTemplate>
                         </material:DataGridColumn>

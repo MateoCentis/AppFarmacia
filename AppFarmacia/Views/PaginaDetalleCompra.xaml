@@ -16,15 +16,13 @@
     <!-- Agregar botón de realizar la compra y la tabla con los artículos (ver bien que poner)-->
     <Grid RowDefinitions="Auto,*">
 
-        <HorizontalStackLayout>
-            <ImageButton Source="arrowleftcircle.png" VerticalOptions="Center" HorizontalOptions="Start" Command="{Binding HaciaAtrasCommand}"/>
-            <Button Text="Realizar compra" 
-                    StyleClass="FilledButton"
-                    VerticalOptions="Center" 
-                    HorizontalOptions="Start"
-                    Margin="20,20,20,20"/>
-        </HorizontalStackLayout>
-
+        <!-- Información de la compra: Proveedor y Descripción -->
+        <StackLayout Grid.Row="0" Orientation="Horizontal" Spacing="20" Margin="10,10,10,10" HorizontalOptions="Start">
+            <Label Text="Proveedor:" FontAttributes="Bold" VerticalOptions="Center"/>
+            <Label Text="{Binding Proveedor}" VerticalOptions="Center"/>
+            <Label Text="Descripción:" FontAttributes="Bold" VerticalOptions="Center" Margin="20,0,0,0"/>
+            <Label Text="{Binding Descripcion}" VerticalOptions="Center"/>
+        </StackLayout>
 
         <dg:DataGrid Grid.Row="1" ItemsSource="{Binding ArticulosEnCompra}" 
               SelectionMode="Single" Style="{StaticResource TablaComun}">

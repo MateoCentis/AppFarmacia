@@ -4,7 +4,7 @@ using AppFarmacia.Models;
 
 namespace AppFarmacia.Services
 {
-    internal class CompraService
+    public class CompraService
     {
         private List<Compra>? compras = new List<Compra>();
         private readonly HttpClient httpClient;
@@ -40,6 +40,27 @@ namespace AppFarmacia.Services
                 return this.compras!;
             }
 
+        }
+
+        public async Task<Compra?> GetCompraPorId(int id)
+        {
+            try
+            {
+                var respuesta = await httpClient.GetAsync($"{CadenaConexion}/Compras/{id}");
+
+                if (respuesta.IsSuccessStatusCode)
+                {
+                    var compra = await respuesta.Content.ReadFromJsonAsync<Compra>();
+                    return compra;
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
         }
 
         public async Task<bool> PostCompra(Compra compra)

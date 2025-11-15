@@ -9,6 +9,12 @@
              xmlns:converters="clr-namespace:AppFarmacia.Converters"
              xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels">
 
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:NullableIntToStringConverter x:Key="NullableIntToStringConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <uranium:UraniumContentPage.BindingContext>
         <viewModels:PaginaPrediccionStockViewModel/>
     </uranium:UraniumContentPage.BindingContext>
@@ -80,9 +86,27 @@
                 <dg:DataGridColumn Title="Nombre" PropertyName="Nombre"/>
                 <dg:DataGridColumn Title="Categoría" PropertyName="NombreCategoria"/>
                 <dg:DataGridColumn Title="Clasificación" PropertyName="Clasificacion"/>
-                <dg:DataGridColumn Title="Punto de reposición" PropertyName="PuntoReposicion"/>
-                <dg:DataGridColumn Title="Cantidad a pedir" PropertyName="CantidadAPedir"/>
-                <dg:DataGridColumn Title="Stock" PropertyName="UltimoStock"/>
+                <dg:DataGridColumn Title="Punto de reposición" PropertyName="PuntoReposicion">
+                    <dg:DataGridColumn.CellTemplate>
+                        <DataTemplate>
+                            <Label Text="{Binding PuntoReposicion, Converter={StaticResource NullableIntToStringConverter}}" />
+                        </DataTemplate>
+                    </dg:DataGridColumn.CellTemplate>
+                </dg:DataGridColumn>
+                <dg:DataGridColumn Title="Cantidad a pedir" PropertyName="CantidadAPedir">
+                    <dg:DataGridColumn.CellTemplate>
+                        <DataTemplate>
+                            <Label Text="{Binding CantidadAPedir, Converter={StaticResource NullableIntToStringConverter}}" />
+                        </DataTemplate>
+                    </dg:DataGridColumn.CellTemplate>
+                </dg:DataGridColumn>
+                <dg:DataGridColumn Title="Stock" PropertyName="UltimoStock">
+                    <dg:DataGridColumn.CellTemplate>
+                        <DataTemplate>
+                            <Label Text="{Binding UltimoStock, Converter={StaticResource NullableIntToStringConverter}}" />
+                        </DataTemplate>
+                    </dg:DataGridColumn.CellTemplate>
+                </dg:DataGridColumn>
             </dg:DataGrid.Columns>
         </dg:DataGrid>
     </Grid>
