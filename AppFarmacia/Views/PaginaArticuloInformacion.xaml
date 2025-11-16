@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
              xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              xmlns:viewModels="clr-namespace:AppFarmacia.ViewModels"
              xmlns:micro="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
              x:Class="AppFarmacia.Views.PaginaArticuloInformacion"
@@ -57,8 +58,22 @@
                 </Frame>
             </Grid>
             <Frame Style="{StaticResource FrameGrafico}" Grid.Row="1" Margin="5,10,5,10" BackgroundColor="White">
-                <VerticalStackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"> 
-                    <Label Text="{Binding NombreArticulo, StringFormat='Demanda mensual de {0}'}" Style="{StaticResource TituloGrafico}" FontSize="Medium"/>
+                <VerticalStackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Spacing="10"> 
+                    <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
+                        <Label Grid.Column="0" Text="{Binding NombreArticulo, StringFormat='Demanda mensual de {0}'}" Style="{StaticResource TituloGrafico}" FontSize="Medium"/>
+                        <material:PickerField Grid.Column="1" 
+                                               Title="Seleccione un Año"
+                                               ItemsSource="{Binding AñosDisponibles}"
+                                               SelectedItem="{Binding YearSeleccionado, Mode=TwoWay}"
+                                               WidthRequest="150"
+                                               HeightRequest="55"
+                                               AllowClear="False"
+                                               Icon="calendarline.png"
+                                               HorizontalOptions="End"
+                                               VerticalOptions="Center"
+                                               FontSize="Default"
+                                               Padding="0,0,0,0"/>
+                    </Grid>
                     <micro:ChartView Chart="{Binding DemandaMensualChart}" HeightRequest="450"/>
                 </VerticalStackLayout>
             </Frame>

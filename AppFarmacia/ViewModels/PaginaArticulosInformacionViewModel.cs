@@ -40,6 +40,53 @@ public partial class PaginaArticuloInformacionViewModel : ObservableObject
     private int yearSeleccionado = DateTime.Now.Year;
 
     [ObservableProperty]
+    private List<int> añosDisponibles = [];
+
+    partial void OnYearSeleccionadoChanged(int value)
+    {
+        // Recargar las demandas cuando cambie el año seleccionado
+        if (IdArticulo > 0)
+        {
+            _ = RecargarDemandasPorAño();
+        }
+    }
+
+    private async Task RecargarDemandasPorAño()
+    {
+        try
+        {
+            EstaCargando = true;
+            var demandasTask = ArticuloService.GetDemandasMensualesArticulo(IdArticulo, YearSeleccionado);
+            await demandasTask;
+
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                DemandasMensuales = demandasTask.Result;
+                
+                if (DemandasMensuales != null && DemandasMensuales.Count >= 12)
+                {
+                    GenerarGraficoDemandas();
+                }
+                else
+                {
+                    DemandasMensuales = Enumerable.Repeat(0, 12).ToList();
+                    GenerarGraficoDemandas();
+                }
+
+                EstaCargando = false;
+            });
+        }
+        catch (Exception ex)
+        {
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                EstaCargando = false;
+                Shell.Current.DisplayAlert("Error", $"Error al cargar las demandas del año {YearSeleccionado}: {ex.Message}", "OK");
+            });
+        }
+    }
+
+    [ObservableProperty]
     private bool estaCargando;
 
     private readonly List<string> Meses = new List<string>
@@ -57,6 +104,10 @@ public partial class PaginaArticuloInformacionViewModel : ObservableObject
         PrecioService = new PreciosService();
         VencimientoService = new VencimientosService();
         ArticuloService = new ArticulosService();
+        
+        // Inicializar años disponibles (últimos 5 años y año actual)
+        var añoActual = DateTime.Now.Year;
+        AñosDisponibles = Enumerable.Range(añoActual - 4, 6).Reverse().ToList();
     }
     
     partial void OnArticuloMostrarChanged(ArticuloMostrar? value)
