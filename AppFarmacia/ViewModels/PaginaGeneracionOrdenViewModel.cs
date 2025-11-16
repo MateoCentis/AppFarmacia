@@ -176,12 +176,20 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
     {
         try
         {
-            this.EstaCargando = true;
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                this.EstaCargando = true;
+            });
+            
             var articulos = await articulosService.GetArticulos();
-            ListaArticulosCompleta = new ObservableCollection<ArticuloMostrar>(articulos.Select(a => new ArticuloMostrar(a)).ToList());
-            NombresArticulos = ListaArticulosCompleta.Select(a => a.Nombre).ToList();
-            this.EstaCargando = false;
-            FiltrarArticulos();
+            
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                ListaArticulosCompleta = new ObservableCollection<ArticuloMostrar>(articulos.Select(a => new ArticuloMostrar(a)).ToList());
+                NombresArticulos = ListaArticulosCompleta.Select(a => a.Nombre).ToList();
+                this.EstaCargando = false;
+                FiltrarArticulos();
+            });
 
         }
         catch (Exception ex)
@@ -189,6 +197,7 @@ public partial class PaginaGeneracionOrdenViewModel : ObservableObject
             Debug.WriteLine($"Unable to get articles: {ex.Message}");
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
+                this.EstaCargando = false;
                 Shell.Current.DisplayAlert("Error en artículos!", ex.Message, "OK");
             });
         }

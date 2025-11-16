@@ -63,18 +63,14 @@
                                 BackgroundColor="White" 
                                 SelectedItems="{Binding ArticulosSeleccionados}">
                     <material:DataGrid.EmptyView>
-                        <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="10">
-                            <ActivityIndicator IsRunning="{Binding EstaCargando}" IsVisible="{Binding EstaCargando}"/>
-                            <Label Text="No hay artículos en la orden de compra" 
-                                   Style="{StaticResource VistaSinData}">
-                                <Label.Triggers>
-                                    <DataTrigger TargetType="Label" Binding="{Binding EstaCargando}" Value="True">
-                                        <Setter Property="Text" Value="Cargando artículos..." />
-                                        <Setter Property="TextColor" Value="#868686" />
-                                    </DataTrigger>
-                                </Label.Triggers>
-                            </Label>
-                        </StackLayout>
+                        <Label Text="No hay artículos en la orden de compra" 
+                               FontSize="Default"
+                               TextColor="#111827"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center"
+                               Margin="0,10,0,10"/>
                     </material:DataGrid.EmptyView>
 
                     <!-- Definición de cada columna-->
@@ -87,7 +83,9 @@
                                     <Label Text="{Binding NombreArticulo}" 
                                         TextColor="Black" 
                                         HorizontalOptions="Center" 
-                                        VerticalOptions="Center"/>
+                                        VerticalOptions="Center"
+                                        HorizontalTextAlignment="Center"
+                                        VerticalTextAlignment="Center"/>
                                 </DataTemplate>
                             </material:DataGridColumn.CellItemTemplate>
                         </material:DataGridColumn>
@@ -96,9 +94,11 @@
                             <material:DataGridColumn.CellItemTemplate>
                                 <DataTemplate>
                                     <Label Text="{Binding CantidadSugerida}" 
-                                                TextColor="Black" 
-                                                HorizontalOptions="Center" 
-                                                VerticalOptions="Center"/>
+                                        TextColor="Black" 
+                                        HorizontalOptions="Center" 
+                                        VerticalOptions="Center"
+                                        HorizontalTextAlignment="Center"
+                                        VerticalTextAlignment="Center"/>
                                 </DataTemplate>
                             </material:DataGridColumn.CellItemTemplate>
                         </material:DataGridColumn>
@@ -107,9 +107,11 @@
                             <material:DataGridColumn.CellItemTemplate>
                                 <DataTemplate>
                                     <Label Text="{Binding CantidadFaltante}" 
-                                            TextColor="Black" 
-                                            HorizontalOptions="Center" 
-                                            VerticalOptions="Center"/>
+                                        TextColor="Black" 
+                                        HorizontalOptions="Center" 
+                                        VerticalOptions="Center"
+                                        HorizontalTextAlignment="Center"
+                                        VerticalTextAlignment="Center"/>
                                 </DataTemplate>
                             </material:DataGridColumn.CellItemTemplate>
                         </material:DataGridColumn>
@@ -124,7 +126,8 @@
                                         VerticalOptions="Center"
                                         Keyboard="Numeric"
                                         MinimumWidthRequest="80"
-                                        HorizontalTextAlignment="Center"/>
+                                        HorizontalTextAlignment="Center"
+                                        VerticalTextAlignment="Center"/>
                                 </DataTemplate>
                             </material:DataGridColumn.CellItemTemplate>
                         </material:DataGridColumn>
@@ -217,24 +220,23 @@
                 <!-- Grilla de artículos -->
                 <dg:DataGrid Grid.Row="2" ItemsSource="{Binding ListaArticulos}" 
                     SelectionMode="Single" SelectedItem="{Binding ArticuloSeleccionadoDeListaCompleta}"
-                    Style="{StaticResource TablaComun}" Margin="0,0,0,10">
+                    Style="{StaticResource TablaComun}" 
+                    IsRefreshing="{Binding EstaCargando}" 
+                    Margin="0,0,0,10">
                     <!-- Para cuando la página no tiene data para ver-->
                     <dg:DataGrid.NoDataView>
-                        <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="10">
-                            <ActivityIndicator IsRunning="{Binding EstaCargando}" IsVisible="{Binding EstaCargando}"/>
-                            <Label Text="No hay artículos que cumplan con esos criterios" Style="{StaticResource VistaSinData}">
-                                <Label.Triggers>
-                                    <DataTrigger TargetType="Label" Binding="{Binding EstaCargando}" Value="True">
-                                        <Setter Property="Text" Value="Cargando Artículos..." />
-                                        <Setter Property="TextColor" Value="#868686" />
-                                        <Setter Property="FontSize" Value="18" />
-                                    </DataTrigger>
-                                    <DataTrigger TargetType="Label" Binding="{Binding EstaCargando}" Value="False">
-                                        <Setter Property="IsVisible" Value="True" />
-                                    </DataTrigger>
-                                </Label.Triggers>
-                            </Label>
-                        </StackLayout>
+                        <Label Text="No hay artículos que cumplan con esos criterios" Style="{StaticResource VistaSinData}">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding EstaCargando}" Value="True">
+                                    <Setter Property="Text" Value="Cargando Artículos..." />
+                                    <Setter Property="TextColor" Value="#868686" />
+                                    <Setter Property="FontSize" Value="18" />
+                                </DataTrigger>
+                                <DataTrigger TargetType="Label" Binding="{Binding EstaCargando}" Value="False">
+                                    <Setter Property="IsVisible" Value="True" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
                     </dg:DataGrid.NoDataView>
 
                     <dg:DataGrid.Columns>
@@ -243,7 +245,6 @@
                         <dg:DataGridColumn Title="Punto de Reposición" PropertyName="PuntoReposicion"/>
                         <dg:DataGridColumn Title="Cantidad a pedir" PropertyName="CantidadAPedir"/>
                     </dg:DataGrid.Columns>
-
                 </dg:DataGrid>
 
                 <!-- Campos de entrada (input-validations) -->
