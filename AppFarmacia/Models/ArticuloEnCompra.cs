@@ -4,7 +4,7 @@ namespace AppFarmacia.Models;
 
 using AppFarmacia.Services;
 
-public class ArticuloEnCompra : ObservableObject
+public partial class ArticuloEnCompra : ObservableObject
 {
     private readonly StockService stockService = new();
 
@@ -29,12 +29,15 @@ public class ArticuloEnCompra : ObservableObject
     public int CantidadSugerida { get; set; }
     public int CantidadFaltante { get; set; }
 
-    public int stockActual { get; set; }
+    [ObservableProperty]
+    private int stockActual;
 
     public async Task ObtenerStockActual()
     {
+        System.Diagnostics.Debug.WriteLine($"[ArticuloEnCompra] Obteniendo stock para artículo ID: {IdArticulo}");
         var stock = await stockService.GetUltimoStockPorArticulo(IdArticulo);
-        stockActual = stock?.CantidadActual ?? 0;
+        StockActual = stock?.CantidadActual ?? 0;
+        System.Diagnostics.Debug.WriteLine($"[ArticuloEnCompra] Stock obtenido para artículo {IdArticulo}: {StockActual}");
     }
 
 }

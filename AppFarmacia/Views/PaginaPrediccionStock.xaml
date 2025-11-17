@@ -51,6 +51,13 @@
 
             <Button Text="Filtrar"
                     Command="{Binding FiltrarArticulosCommand}" 
+                    StyleClass="FilledButton" 
+                    HeightRequest="50"
+                    Margin="10,0,0,-5"
+                    VerticalOptions="Center"/>
+
+            <Button Text="Actualizar"
+                    Command="{Binding ObtenerArticulosCommand}" 
                     StyleClass="OutlinedButton" 
                     HeightRequest="50"
                     Margin="10,0,0,-5"

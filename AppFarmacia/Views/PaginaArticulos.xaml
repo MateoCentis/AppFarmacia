@@ -63,7 +63,14 @@
                     StyleClass="FilledButton"
                     FontSize="Default"
                     HeightRequest="50"
-                    Margin="0,0,80,0"/>
+                    Margin="0,0,10,0"/>
+            
+            <Button Text="Actualizar" 
+                    Command="{Binding ObtenerArticulosCommand}" 
+                    StyleClass="OutlinedButton"
+                    FontSize="Default"
+                    HeightRequest="50"
+                    Margin="0,0,10,0"/>
             
             <Button Text="Ver Artículo" 
                     Command="{Binding VerArticuloCommand}"  

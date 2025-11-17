@@ -59,7 +59,17 @@
                 <dg:DataGridColumn Title="Nombre" PropertyName="NombreArticulo"/>
                 <dg:DataGridColumn Title="Cantidad encargada" PropertyName="Cantidad"/>
                 <dg:DataGridColumn Title="Motivo" PropertyName="MotivoCompra"/>
-                <dg:DataGridColumn Title="Stock actual" PropertyName="stockActual"/>
+                <dg:DataGridColumn Title="Stock actual" PropertyName="StockActual">
+                    <dg:DataGridColumn.CellTemplate>
+                        <DataTemplate>
+                            <Label Text="{Binding .}" 
+                                   HorizontalOptions="Center" 
+                                   VerticalOptions="Center"
+                                   HorizontalTextAlignment="Center"
+                                   VerticalTextAlignment="Center" />
+                        </DataTemplate>
+                    </dg:DataGridColumn.CellTemplate>
+                </dg:DataGridColumn>
             </dg:DataGrid.Columns>
 
         </dg:DataGrid>

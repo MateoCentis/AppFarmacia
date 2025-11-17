@@ -2,6 +2,7 @@
 using AppFarmacia.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Linq;
 
 namespace AppFarmacia.ViewModels
 {
@@ -49,11 +50,22 @@ namespace AppFarmacia.ViewModels
                 // Obtener los artículos de la compra
                 ArticulosEnCompra.Clear();
                 var articulosDetalle = await ArticuloCompraService.GetArticulosEnCompraPorId(IdCompra);
-                foreach (var articulo in articulosDetalle)
+                
+                System.Diagnostics.Debug.WriteLine($"[PaginaDetalleCompraViewModel] Artículos obtenidos: {articulosDetalle.Count}");
+                
+                // Obtener el stock actual para cada artículo de forma asíncrona
+                var tareasStock = articulosDetalle.Select(async articulo =>
                 {
-                    articulo.ObtenerStockActual(); // Llama al método para calcular el stock actual
-                }
+                    await articulo.ObtenerStockActual();
+                    System.Diagnostics.Debug.WriteLine($"[PaginaDetalleCompraViewModel] Stock actualizado para artículo {articulo.IdArticulo}: {articulo.StockActual}");
+                    return articulo;
+                });
+                
+                await Task.WhenAll(tareasStock);
+                
+                // Asignar la lista después de que todos los stocks se hayan obtenido
                 ArticulosEnCompra = new List<ArticuloEnCompra>(articulosDetalle);
+                System.Diagnostics.Debug.WriteLine($"[PaginaDetalleCompraViewModel] Lista de artículos asignada con {ArticulosEnCompra.Count} elementos");
             }
             catch (Exception ex)
             {
@@ -77,6 +89,14 @@ namespace AppFarmacia.ViewModels
                 if (resultado)
                 {
                     CompraConfirmada = true;
+                    
+                    // Actualizar los stocks actuales después de confirmar la compra
+                    var tareasStock = ArticulosEnCompra.Select(async articulo =>
+                    {
+                        await articulo.ObtenerStockActual();
+                    });
+                    await Task.WhenAll(tareasStock);
+                    
                     await Shell.Current.DisplayAlert("Éxito", "Compra confirmada con éxito", "OK");
                 }
                 else

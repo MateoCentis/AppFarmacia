@@ -118,28 +118,40 @@ namespace AppFarmacia.Services
         {
             try
             {
+                Debug.WriteLine($"[CompraService] ConfirmarCompra - ID: {idCompra}");
                 var compra = await GetCompraPorId(idCompra);
                 if (compra == null)
                 {
+                    Debug.WriteLine($"[CompraService] No se encontró la compra con ID: {idCompra}");
                     return false;
                 }
 
+                Debug.WriteLine($"[CompraService] Compra obtenida - ID: {compra.IdCompra}, CompraConfirmada ANTES: {compra.CompraConfirmada}");
                 compra.CompraConfirmada = true;
+                Debug.WriteLine($"[CompraService] CompraConfirmada DESPUÉS: {compra.CompraConfirmada}");
+                Debug.WriteLine($"[CompraService] Enviando PUT a: {CadenaConexion}/Compras/{idCompra}");
+                
                 var respuesta = await httpClient.PutAsJsonAsync($"{CadenaConexion}/Compras/{idCompra}", compra);
+                
+                Debug.WriteLine($"[CompraService] Respuesta recibida - StatusCode: {respuesta.StatusCode}, IsSuccessStatusCode: {respuesta.IsSuccessStatusCode}");
 
                 if (respuesta.IsSuccessStatusCode)
                 {
+                    Debug.WriteLine($"[CompraService] Compra confirmada exitosamente");
                     return true;
                 }
                 else
                 {
-                    Debug.WriteLine($"Error en la solicitud: {respuesta.ReasonPhrase}");
+                    var contenido = await respuesta.Content.ReadAsStringAsync();
+                    Debug.WriteLine($"[CompraService] Error en la solicitud: {respuesta.ReasonPhrase}");
+                    Debug.WriteLine($"[CompraService] Contenido de la respuesta: {contenido}");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"[CompraService] Excepción al confirmar compra: {ex.Message}");
+                Debug.WriteLine($"[CompraService] Stack trace: {ex.StackTrace}");
                 return false;
             }
         }
